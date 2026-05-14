@@ -702,6 +702,8 @@ export type Database = {
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
       gettransactionid: { Args: never; Returns: unknown }
+      like_profile: { Args: { p_likee_id: string }; Returns: Json }
+      list_interests: { Args: never; Returns: Json }
       longtransactionsenabled: { Args: never; Returns: boolean }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
@@ -754,6 +756,28 @@ export type Database = {
         }
         Returns: Json
       }
+      remove_profile_photo: { Args: { p_media_item_id: string }; Returns: Json }
+      reorder_profile_photos: { Args: { p_ordered: string[] }; Returns: Json }
+      set_profile_bio: {
+        Args: { p_about: string; p_tagline: string; p_wants: string }
+        Returns: Json
+      }
+      set_profile_details: {
+        Args: {
+          p_body_type: Database["public"]["Enums"]["body_type"]
+          p_drinking: Database["public"]["Enums"]["drinking_habit"]
+          p_education: Database["public"]["Enums"]["education_level"]
+          p_eye_color: Database["public"]["Enums"]["eye_color"]
+          p_hair_color: Database["public"]["Enums"]["hair_color"]
+          p_has_piercings: boolean
+          p_has_tattoos: boolean
+          p_height_cm: number
+          p_net_worth_band: Database["public"]["Enums"]["net_worth_band"]
+          p_smoking: Database["public"]["Enums"]["smoking_habit"]
+          p_yearly_income_band: Database["public"]["Enums"]["income_band"]
+        }
+        Returns: Json
+      }
       set_profile_identity: {
         Args: {
           p_date_of_birth: string
@@ -761,6 +785,10 @@ export type Database = {
           p_gender: Database["public"]["Enums"]["profile_gender"]
           p_looking_for: Database["public"]["Enums"]["profile_looking_for"]
         }
+        Returns: Json
+      }
+      set_profile_interests: {
+        Args: { p_interest_ids: string[] }
         Returns: Json
       }
       set_profile_location: {
@@ -1352,6 +1380,7 @@ export type Database = {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
       }
+      unlike_profile: { Args: { p_likee_id: string }; Returns: Json }
       unlockrows: { Args: { "": string }; Returns: number }
       updategeometrysrid: {
         Args: {
@@ -1363,6 +1392,7 @@ export type Database = {
         }
         Returns: string
       }
+      view_likes_tab: { Args: never; Returns: Json }
       view_my_profile: { Args: never; Returns: Json }
       view_profile: { Args: { p_profile_id: string }; Returns: Json }
       view_search: {
