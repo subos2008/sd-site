@@ -45,6 +45,7 @@ The following deviations from Plan 02 are baked into the codebase and Plan 03 mu
 _(Populated by the executor when the spec text doesn't survive contact with reality. Keep entries sorted by task number.)_
 
 - Task 3: In `supabase/tests/21_interests_schema_rls.sql`, moved the second `INSERT INTO auth.users` (user 2 fixture) to run before `SET LOCAL ROLE authenticated`. Reason: the `authenticated` role lacks INSERT privilege on `auth.users` (only superuser can write there), so the spec's placement would have raised `permission denied`. Reorder preserves all 10 RLS assertions — they switch the JWT claim between the two pre-existing fixture users to exercise owner vs non-owner paths.
+- Task 4: Removed the fixture `INSERT INTO public.interests ... 'interest.hiking' ...` from `supabase/tests/21_interests_schema_rls.sql`. Reason: after the Task 4 seed migration runs during `supabase db reset`, that exact `label_key` is already present, so the fixture insert raises `duplicate key value violates unique constraint "interests_label_key_key"` before any assertions execute. The seed itself satisfies the test's "active interests are SELECT-able by authenticated users" precondition, so the fixture row is now redundant. Plan count stays at 10 (the removed line was a fixture INSERT, not a pgTAP assertion).
 
 ### Open questions for the user before execution
 
