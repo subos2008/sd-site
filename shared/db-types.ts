@@ -49,6 +49,33 @@ export type Database = {
         }
         Relationships: []
       }
+      interests: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          id: string
+          label_key: string
+          ordinal: number
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          id?: string
+          label_key: string
+          ordinal?: number
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          id?: string
+          label_key?: string
+          ordinal?: number
+        }
+        Relationships: []
+      }
       media_items: {
         Row: {
           created_at: string
@@ -93,6 +120,39 @@ export type Database = {
           {
             foreignKeyName: "media_items_owner_id_fkey"
             columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profile_interests: {
+        Row: {
+          created_at: string
+          interest_id: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          interest_id: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          interest_id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_interests_interest_id_fkey"
+            columns: ["interest_id"]
+            isOneToOne: false
+            referencedRelation: "interests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_interests_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
