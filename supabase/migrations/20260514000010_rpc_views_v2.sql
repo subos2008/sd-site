@@ -232,3 +232,103 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION public.view_my_profile() TO authenticated;
+
+-- view_search v2: filters supported = {min_age, max_age, distance_miles, interest_ids}.
+-- Page size 20, role-pair filter unchanged, order unchanged.
+
+CREATE OR REPLACE FUNCTION public.view_search(
+  p_filters jsonb,
+  p_cursor  text
+) RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  me uuid := auth.uid();
+  my_role profile_role;
+  target_role profile_role;
+  cards jsonb := '[]'::jsonb;
+  card  jsonb;
+  next_cursor text;
+  cur_last_active timestamptz;
+  cur_id uuid;
+  rec record;
+
+  f_min_age int;
+  f_max_age int;
+  f_distance int;
+  f_interest_ids uuid[];
+  me_lat double precision;
+  me_lng double precision;
+BEGIN
+  IF me IS NULL THEN
+    RAISE EXCEPTION 'unauthenticated' USING errcode = 'P0001';
+  END IF;
+
+  SELECT role, city_lat, city_lng INTO my_role, me_lat, me_lng
+    FROM public.profiles WHERE id = me;
+  IF my_role IS NULL THEN
+    RAISE EXCEPTION 'forbidden' USING errcode = 'P0002';
+  END IF;
+
+  target_role := CASE my_role WHEN 'benefactor' THEN 'baby'::profile_role
+                              WHEN 'baby'       THEN 'benefactor'::profile_role END;
+
+  -- Parse filters; unknown keys are silently ignored.
+  f_min_age := NULLIF(p_filters->>'min_age', '')::int;
+  f_max_age := NULLIF(p_filters->>'max_age', '')::int;
+  f_distance := NULLIF(p_filters->>'distance_miles', '')::int;
+  IF p_filters ? 'interest_ids' THEN
+    SELECT array_agg(value::uuid)
+      INTO f_interest_ids
+      FROM jsonb_array_elements_text(p_filters->'interest_ids');
+  END IF;
+
+  IF p_cursor IS NOT NULL THEN
+    cur_last_active := split_part(p_cursor, ':', 1)::timestamptz;
+    cur_id          := split_part(p_cursor, ':', 2)::uuid;
+  END IF;
+
+  FOR rec IN
+    SELECT p.id, p.last_active_at
+      FROM public.profiles p
+     WHERE p.role = target_role
+       AND p.status = 'active'
+       AND p.id <> me
+       AND (p_cursor IS NULL OR (p.last_active_at, p.id) < (cur_last_active, cur_id))
+       AND (f_min_age IS NULL
+              OR p.date_of_birth IS NULL
+              OR extract(year from age(p.date_of_birth))::int >= f_min_age)
+       AND (f_max_age IS NULL
+              OR p.date_of_birth IS NULL
+              OR extract(year from age(p.date_of_birth))::int <= f_max_age)
+       AND (f_distance IS NULL
+              OR me_lat IS NULL OR me_lng IS NULL
+              OR p.city_lat IS NULL OR p.city_lng IS NULL
+              OR ST_Distance(
+                   ST_MakePoint(me_lng, me_lat)::geography,
+                   ST_MakePoint(p.city_lng, p.city_lat)::geography
+                 ) / 1609.344 <= f_distance)
+       AND (f_interest_ids IS NULL
+              OR EXISTS (
+                SELECT 1 FROM public.profile_interests pi
+                 WHERE pi.profile_id = p.id
+                   AND pi.interest_id = ANY (f_interest_ids)
+              ))
+     ORDER BY p.last_active_at DESC NULLS LAST, p.id ASC
+     LIMIT 20
+  LOOP
+    card := public._profile_card_for_viewer(me, rec.id);
+    IF card IS NOT NULL THEN
+      cards := cards || card;
+    END IF;
+    next_cursor := COALESCE(rec.last_active_at::text, '') || ':' || rec.id::text;
+  END LOOP;
+
+  RETURN jsonb_build_object('ok', true, 'cards', cards, 'next_cursor', next_cursor);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.view_search(jsonb, text) TO authenticated;
