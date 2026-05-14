@@ -76,6 +76,39 @@ export type Database = {
         }
         Relationships: []
       }
+      likes: {
+        Row: {
+          created_at: string
+          likee_id: string
+          liker_id: string
+        }
+        Insert: {
+          created_at?: string
+          likee_id: string
+          liker_id: string
+        }
+        Update: {
+          created_at?: string
+          likee_id?: string
+          liker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_likee_id_fkey"
+            columns: ["likee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_liker_id_fkey"
+            columns: ["liker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media_items: {
         Row: {
           created_at: string
