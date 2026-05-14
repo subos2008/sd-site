@@ -159,6 +159,44 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          dismissed_at: string | null
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          payload: Json
+          read_at: string | null
+          recipient_id: string
+        }
+        Insert: {
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          payload?: Json
+          read_at?: string | null
+          recipient_id: string
+        }
+        Update: {
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          payload?: Json
+          read_at?: string | null
+          recipient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_interests: {
         Row: {
           created_at: string
@@ -1367,6 +1405,7 @@ export type Database = {
         | "5m_25m"
         | "over_25m"
         | "prefer_not_to_say"
+      notification_kind: "like" | "placeholder"
       profile_gender: "male" | "female" | "nonbinary" | "other"
       profile_looking_for: "male" | "female" | "any"
       profile_role: "benefactor" | "baby"
@@ -1556,6 +1595,7 @@ export const Constants = {
         "over_25m",
         "prefer_not_to_say",
       ],
+      notification_kind: ["like", "placeholder"],
       profile_gender: ["male", "female", "nonbinary", "other"],
       profile_looking_for: ["male", "female", "any"],
       profile_role: ["benefactor", "baby"],
