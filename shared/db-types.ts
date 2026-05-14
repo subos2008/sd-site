@@ -567,6 +567,7 @@ export type Database = {
           }
       complete_onboarding: { Args: never; Returns: Json }
       disablelongtransactions: { Args: never; Returns: string }
+      dismiss_notification: { Args: { p_id: string }; Returns: Json }
       dropgeometrycolumn:
         | {
             Args: {
@@ -705,6 +706,7 @@ export type Database = {
       like_profile: { Args: { p_likee_id: string }; Returns: Json }
       list_interests: { Args: never; Returns: Json }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      notifications_unread_count: { Args: never; Returns: Json }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -1394,6 +1396,7 @@ export type Database = {
       }
       view_likes_tab: { Args: never; Returns: Json }
       view_my_profile: { Args: never; Returns: Json }
+      view_notifications: { Args: { p_cursor: string }; Returns: Json }
       view_profile: { Args: { p_profile_id: string }; Returns: Json }
       view_search: {
         Args: { p_cursor: string; p_filters: Json }
