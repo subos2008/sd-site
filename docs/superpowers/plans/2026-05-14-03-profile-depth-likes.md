@@ -44,6 +44,8 @@ The following deviations from Plan 02 are baked into the codebase and Plan 03 mu
 
 _(Populated by the executor when the spec text doesn't survive contact with reality. Keep entries sorted by task number.)_
 
+- Task 3: In `supabase/tests/21_interests_schema_rls.sql`, moved the second `INSERT INTO auth.users` (user 2 fixture) to run before `SET LOCAL ROLE authenticated`. Reason: the `authenticated` role lacks INSERT privilege on `auth.users` (only superuser can write there), so the spec's placement would have raised `permission denied`. Reorder preserves all 10 RLS assertions — they switch the JWT claim between the two pre-existing fixture users to exercise owner vs non-owner paths.
+
 ### Open questions for the user before execution
 
 Flag and resolve before starting:
