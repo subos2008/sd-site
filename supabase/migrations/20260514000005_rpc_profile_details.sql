@@ -51,3 +51,40 @@ GRANT EXECUTE ON FUNCTION public.set_profile_details(
   int, body_type, hair_color, eye_color, boolean, boolean,
   smoking_habit, drinking_habit, education_level, income_band, net_worth_band
 ) TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.set_profile_bio(
+  p_tagline text,
+  p_about   text,
+  p_wants   text
+) RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE me uuid := auth.uid();
+BEGIN
+  IF me IS NULL THEN
+    RAISE EXCEPTION 'unauthenticated' USING errcode = 'P0001';
+  END IF;
+
+  IF p_tagline IS NOT NULL AND (length(trim(p_tagline)) = 0 OR length(p_tagline) > 120) THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'tagline_too_long');
+  END IF;
+  IF p_about IS NOT NULL AND length(p_about) > 4000 THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'about_too_long');
+  END IF;
+  IF p_wants IS NOT NULL AND length(p_wants) > 2000 THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'wants_too_long');
+  END IF;
+
+  UPDATE public.profiles
+     SET tagline = CASE WHEN p_tagline IS NULL THEN NULL ELSE trim(p_tagline) END,
+         about   = p_about,
+         wants   = p_wants
+   WHERE id = me;
+
+  RETURN jsonb_build_object('ok', true);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.set_profile_bio(text, text, text) TO authenticated;
