@@ -69,3 +69,57 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION public.unlike_profile(uuid) TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.view_likes_tab() RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public, storage, extensions
+AS $$
+DECLARE
+  me uuid := auth.uid();
+  liked_me  jsonb := '[]'::jsonb;
+  favourites jsonb := '[]'::jsonb;
+  card jsonb;
+  rec record;
+BEGIN
+  IF me IS NULL THEN
+    RAISE EXCEPTION 'unauthenticated' USING errcode = 'P0001';
+  END IF;
+
+  -- "liked_me" = people who liked me, excluding those I already liked back (those are "matches" — deferred)
+  FOR rec IN
+    SELECT l.liker_id AS profile_id
+      FROM public.likes l
+     WHERE l.likee_id = me
+       AND NOT EXISTS (
+         SELECT 1 FROM public.likes l2 WHERE l2.liker_id = me AND l2.likee_id = l.liker_id
+       )
+     ORDER BY l.created_at DESC
+     LIMIT 50
+  LOOP
+    card := public._profile_card_for_viewer(me, rec.profile_id);
+    IF card IS NOT NULL THEN liked_me := liked_me || card; END IF;
+  END LOOP;
+
+  -- "favourites" = people I liked
+  FOR rec IN
+    SELECT l.likee_id AS profile_id
+      FROM public.likes l
+     WHERE l.liker_id = me
+     ORDER BY l.created_at DESC
+     LIMIT 50
+  LOOP
+    card := public._profile_card_for_viewer(me, rec.profile_id);
+    IF card IS NOT NULL THEN favourites := favourites || card; END IF;
+  END LOOP;
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'liked_me', liked_me,
+    'favourites', favourites
+  );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.view_likes_tab() TO authenticated;
