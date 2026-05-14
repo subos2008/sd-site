@@ -134,56 +134,98 @@ export type Database = {
       }
       profiles: {
         Row: {
+          about: string | null
+          body_type: Database["public"]["Enums"]["body_type"] | null
           city_display_name: string | null
           city_lat: number | null
           city_lng: number | null
           created_at: string
           date_of_birth: string | null
           display_name: string | null
+          drinking: Database["public"]["Enums"]["drinking_habit"] | null
+          education: Database["public"]["Enums"]["education_level"] | null
+          eye_color: Database["public"]["Enums"]["eye_color"] | null
           gender: Database["public"]["Enums"]["profile_gender"] | null
+          hair_color: Database["public"]["Enums"]["hair_color"] | null
+          has_piercings: boolean | null
+          has_tattoos: boolean | null
+          height_cm: number | null
           id: string
           last_active_at: string | null
           looking_for: Database["public"]["Enums"]["profile_looking_for"] | null
+          net_worth_band: Database["public"]["Enums"]["net_worth_band"] | null
           role: Database["public"]["Enums"]["profile_role"] | null
+          smoking: Database["public"]["Enums"]["smoking_habit"] | null
           status: Database["public"]["Enums"]["profile_status"]
+          tagline: string | null
           token_balance: number
           updated_at: string
+          wants: string | null
+          yearly_income_band: Database["public"]["Enums"]["income_band"] | null
         }
         Insert: {
+          about?: string | null
+          body_type?: Database["public"]["Enums"]["body_type"] | null
           city_display_name?: string | null
           city_lat?: number | null
           city_lng?: number | null
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          drinking?: Database["public"]["Enums"]["drinking_habit"] | null
+          education?: Database["public"]["Enums"]["education_level"] | null
+          eye_color?: Database["public"]["Enums"]["eye_color"] | null
           gender?: Database["public"]["Enums"]["profile_gender"] | null
+          hair_color?: Database["public"]["Enums"]["hair_color"] | null
+          has_piercings?: boolean | null
+          has_tattoos?: boolean | null
+          height_cm?: number | null
           id: string
           last_active_at?: string | null
           looking_for?:
             | Database["public"]["Enums"]["profile_looking_for"]
             | null
+          net_worth_band?: Database["public"]["Enums"]["net_worth_band"] | null
           role?: Database["public"]["Enums"]["profile_role"] | null
+          smoking?: Database["public"]["Enums"]["smoking_habit"] | null
           status?: Database["public"]["Enums"]["profile_status"]
+          tagline?: string | null
           token_balance?: number
           updated_at?: string
+          wants?: string | null
+          yearly_income_band?: Database["public"]["Enums"]["income_band"] | null
         }
         Update: {
+          about?: string | null
+          body_type?: Database["public"]["Enums"]["body_type"] | null
           city_display_name?: string | null
           city_lat?: number | null
           city_lng?: number | null
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          drinking?: Database["public"]["Enums"]["drinking_habit"] | null
+          education?: Database["public"]["Enums"]["education_level"] | null
+          eye_color?: Database["public"]["Enums"]["eye_color"] | null
           gender?: Database["public"]["Enums"]["profile_gender"] | null
+          hair_color?: Database["public"]["Enums"]["hair_color"] | null
+          has_piercings?: boolean | null
+          has_tattoos?: boolean | null
+          height_cm?: number | null
           id?: string
           last_active_at?: string | null
           looking_for?:
             | Database["public"]["Enums"]["profile_looking_for"]
             | null
+          net_worth_band?: Database["public"]["Enums"]["net_worth_band"] | null
           role?: Database["public"]["Enums"]["profile_role"] | null
+          smoking?: Database["public"]["Enums"]["smoking_habit"] | null
           status?: Database["public"]["Enums"]["profile_status"]
+          tagline?: string | null
           token_balance?: number
           updated_at?: string
+          wants?: string | null
+          yearly_income_band?: Database["public"]["Enums"]["income_band"] | null
         }
         Relationships: []
       }
@@ -1198,8 +1240,40 @@ export type Database = {
       }
     }
     Enums: {
+      body_type:
+        | "slim"
+        | "athletic"
+        | "average"
+        | "curvy"
+        | "plus_size"
+        | "muscular"
+      drinking_habit: "never" | "socially" | "regularly" | "prefer_not_to_say"
+      education_level:
+        | "high_school"
+        | "some_college"
+        | "bachelors"
+        | "masters"
+        | "doctorate"
+        | "other"
+      eye_color: "brown" | "blue" | "green" | "hazel" | "grey" | "other"
+      hair_color: "black" | "brown" | "blonde" | "red" | "grey" | "other"
+      income_band:
+        | "under_50k"
+        | "50_100k"
+        | "100_250k"
+        | "250_500k"
+        | "500k_1m"
+        | "over_1m"
+        | "prefer_not_to_say"
       media_kind: "photo" | "video"
       media_status: "pending_moderation" | "approved" | "rejected"
+      net_worth_band:
+        | "under_250k"
+        | "250k_1m"
+        | "1m_5m"
+        | "5m_25m"
+        | "over_25m"
+        | "prefer_not_to_say"
       profile_gender: "male" | "female" | "nonbinary" | "other"
       profile_looking_for: "male" | "female" | "any"
       profile_role: "benefactor" | "baby"
@@ -1208,6 +1282,11 @@ export type Database = {
         | "active"
         | "suspended"
         | "deactivated"
+      smoking_habit:
+        | "never"
+        | "occasionally"
+        | "regularly"
+        | "prefer_not_to_say"
     }
     CompositeTypes: {
       geometry_dump: {
@@ -1346,8 +1425,44 @@ export const Constants = {
   },
   public: {
     Enums: {
+      body_type: [
+        "slim",
+        "athletic",
+        "average",
+        "curvy",
+        "plus_size",
+        "muscular",
+      ],
+      drinking_habit: ["never", "socially", "regularly", "prefer_not_to_say"],
+      education_level: [
+        "high_school",
+        "some_college",
+        "bachelors",
+        "masters",
+        "doctorate",
+        "other",
+      ],
+      eye_color: ["brown", "blue", "green", "hazel", "grey", "other"],
+      hair_color: ["black", "brown", "blonde", "red", "grey", "other"],
+      income_band: [
+        "under_50k",
+        "50_100k",
+        "100_250k",
+        "250_500k",
+        "500k_1m",
+        "over_1m",
+        "prefer_not_to_say",
+      ],
       media_kind: ["photo", "video"],
       media_status: ["pending_moderation", "approved", "rejected"],
+      net_worth_band: [
+        "under_250k",
+        "250k_1m",
+        "1m_5m",
+        "5m_25m",
+        "over_25m",
+        "prefer_not_to_say",
+      ],
       profile_gender: ["male", "female", "nonbinary", "other"],
       profile_looking_for: ["male", "female", "any"],
       profile_role: ["benefactor", "baby"],
@@ -1356,6 +1471,12 @@ export const Constants = {
         "active",
         "suspended",
         "deactivated",
+      ],
+      smoking_habit: [
+        "never",
+        "occasionally",
+        "regularly",
+        "prefer_not_to_say",
       ],
     },
   },
