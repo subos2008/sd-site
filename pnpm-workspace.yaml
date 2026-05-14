@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - esbuild
+ignoredBuiltDependencies:
+  - msw
+  - protobufjs
+allowBuilds:
+  esbuild: true
+  msw: false
+  protobufjs: false

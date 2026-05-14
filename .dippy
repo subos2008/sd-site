@@ -1,0 +1,62 @@
+allow git add
+allow git commit
+allow git stash
+
+allow mkdir
+
+allow npm install
+allow npm run test
+allow npm run test:*
+allow npm run build
+allow npx tsc
+allow pnpm create
+allow pnpm install
+allow pnpm run test
+allow pnpm run test:*
+allow pnpm run build
+allow pnpm dev
+allow pnpm add
+allow pnpm exec 
+allow pnpm build
+allow pnpm lint 
+allow pnpm format 
+allow pnpm typecheck
+allow pnpm test
+allow pnpm tsc
+allow pnpm approve-builds
+allow pnpm gen:config
+allow pnpm gen:types
+allow pnpm test:db
+allow pnpm test:e2e
+allow pnpm seed:dev
+
+allow ./build.sh
+allow bash build.sh
+
+# Tests
+allow deno check
+allow deno test
+allow npx vitest
+allow deno run --allow-net --allow-env --allow-read supabase/test-e2e-flow.ts
+allow ./test-all.sh
+
+# Deploys
+allow ./web-apps/*/deploy.sh staging
+allow bash terraform/lambda/notifications/deploy.sh staging
+allow ./deploy.sh staging
+allow AWS_PROFILE=dinner-app-deploy bash /Users/ryan/dinner-matcher/lambda/deploy.sh staging
+
+allow npx supabase functions deploy * --project-ref sejdgfimcrrxfdmiwmcu
+allow npx supabase secrets list --project-ref sejdgfimcrrxfdmiwmcu
+allow npx supabase --version
+
+allow supabase start
+allow supabase stop
+allow supabase db
+allow supabase status
+
+allow redirect-to /tmp/*
+allow redirect to /tmp/vite-dev.log
+
+allow cp -R
+allow wait
