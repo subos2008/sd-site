@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { isAdult } from '@/lib/dob'
 import { useSetIdentity } from '../hooks'
@@ -20,7 +20,7 @@ export function IdentityStep() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
@@ -31,7 +31,7 @@ export function IdentityStep() {
     },
   })
 
-  const dobValue = watch('date_of_birth')
+  const dobValue = useWatch({ control, name: 'date_of_birth' })
   const dobDate = dobValue ? new Date(dobValue) : null
   const dobValid = dobDate && !Number.isNaN(dobDate.getTime())
   const adult = dobValid ? isAdult(dobDate) : false

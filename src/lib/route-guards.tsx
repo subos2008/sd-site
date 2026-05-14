@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useSession } from './auth'
+import { useSession } from './auth-context'
 import { viewMyProfile } from '@/features/onboarding/api'
 
 /**

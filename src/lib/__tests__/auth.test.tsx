@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { AuthProvider, useSession } from '../auth'
+import { AuthProvider } from '../auth'
+import { useSession } from '../auth-context'
 
 function Probe() {
   const { session, status } = useSession()

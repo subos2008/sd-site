@@ -9,7 +9,7 @@ import { MemoryRouter, Routes, Route } from 'react-router'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 
-vi.mock('@/lib/auth', async () => {
+vi.mock('@/lib/auth-context', async () => {
   return { useSession: vi.fn() }
 })
 
@@ -17,7 +17,7 @@ vi.mock('@/features/onboarding/api', async () => {
   return { viewMyProfile: vi.fn() }
 })
 
-import { useSession } from '@/lib/auth'
+import { useSession } from '@/lib/auth-context'
 import { viewMyProfile } from '@/features/onboarding/api'
 import { RequireOnboarded } from '@/lib/route-guards'
 

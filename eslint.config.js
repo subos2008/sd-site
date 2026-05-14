@@ -9,7 +9,13 @@ import prettierConfig from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', 'shared/db-types.ts']),
+  globalIgnores([
+    'dist',
+    'dev-dist',
+    'coverage',
+    'node_modules',
+    'shared/db-types.ts',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
