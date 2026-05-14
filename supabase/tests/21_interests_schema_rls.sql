@@ -11,9 +11,8 @@ SELECT col_type_is('public', 'interests', 'label_key', 'text', 'label_key is tex
 SELECT col_is_pk('public', 'profile_interests', ARRAY['profile_id', 'interest_id'],
                  'profile_interests PK is (profile_id, interest_id)');
 
--- interests is publicly readable to authenticated users (no RLS surprises)
-INSERT INTO public.interests (id, label_key, category, ordinal, active)
-VALUES (gen_random_uuid(), 'interest.hiking', 'activities', 0, true);
+-- interests is publicly readable to authenticated users (no RLS surprises).
+-- Taxonomy rows are provided by the seed migration (20260514000002_interests_seed.sql).
 
 INSERT INTO auth.users (id, instance_id, email, raw_app_meta_data, raw_user_meta_data,
                         aud, role, created_at, updated_at,
