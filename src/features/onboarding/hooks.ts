@@ -1,6 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  viewMyProfile,
   setProfileRole,
   setProfileIdentity,
   setProfileLocation,
@@ -11,9 +10,8 @@ import {
 } from './api'
 import { supabase } from '@/lib/supabase'
 
-export function useMyProfile() {
-  return useQuery({ queryKey: ['my-profile'], queryFn: viewMyProfile })
-}
+// Re-export from the canonical location to avoid duplicate query definitions.
+export { useMyProfile } from '@/features/profile/hooks'
 
 export function useSetRole() {
   const qc = useQueryClient()

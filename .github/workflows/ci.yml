@@ -36,24 +36,28 @@ jobs:
       - run: pnpm gen:config
       - run: pnpm test
 
-  db-tests:
+  db-and-drift:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
-        with:
-          version: 2.78.1
+        with: { version: 2.78.1 }
+      - uses: denoland/setup-deno@v1
+        with: { deno-version: v1.x }
       - uses: pnpm/action-setup@v3
-        with:
-          version: 11
+        with: { version: 11 }
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm gen:config
       - run: supabase start
+      - run: pnpm gen:config
+      - run: git diff --exit-code supabase/migrations
+      - run: pnpm gen:types
+      - run: git diff --exit-code shared/db-types.ts
       - run: pnpm test:db
+      - run: deno check supabase/functions/geocode-city/index.ts
       - run: supabase stop
 
   e2e-tests:
@@ -83,34 +87,6 @@ jobs:
         run: supabase functions serve geocode-city --no-verify-jwt &
       - run: pnpm test:e2e
       - run: supabase stop
-
-  drift-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
-        with: { version: 2.78.1 }
-      - uses: pnpm/action-setup@v3
-        with: { version: 11 }
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: supabase start
-      - run: pnpm gen:config
-      - run: git diff --exit-code supabase/migrations
-      - run: pnpm gen:types
-      - run: git diff --exit-code shared/db-types.ts
-      - run: supabase stop
-
-  edge-functions-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v1
-        with: { deno-version: v1.x }
-      - run: deno check supabase/functions/geocode-city/index.ts
 
   build:
     runs-on: ubuntu-latest
