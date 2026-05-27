@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { signOut } from '@/features/auth/api'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export function HamburgerMenu() {
   const { t } = useTranslation('shell')
@@ -19,6 +20,7 @@ export function HamburgerMenu() {
           >
             ✕
           </button>
+          <LanguageSwitcher />
           <button onClick={() => void signOut()} className="block w-full text-left py-2">
             {t('menu.signOut')}
           </button>
