@@ -58,7 +58,9 @@ export function useCompleteOnboarding() {
 export function useUploadProfilePhoto() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async (args: File | { file: File; ordinal?: number }) => {
+      const file = args instanceof File ? args : args.file
+      const ordinal = args instanceof File ? 0 : (args.ordinal ?? 0)
       const { sha256Hex } = await import('@/lib/hash')
       const hash = await sha256Hex(file)
       const prepared = await prepareMediaUpload({
@@ -86,7 +88,7 @@ export function useUploadProfilePhoto() {
 
       const fin = await finalizeMediaUpload(prepared.media_item_id)
       if (!fin.ok) throw new Error(fin.error)
-      const add = await addToProfilePhotos(prepared.media_item_id, 0)
+      const add = await addToProfilePhotos(prepared.media_item_id, ordinal)
       if (!add.ok) throw new Error(add.error)
       return prepared.media_item_id
     },

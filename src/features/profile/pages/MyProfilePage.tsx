@@ -1,26 +1,9 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { supabase } from '@/lib/supabase'
 import { useMyProfile } from '../hooks'
-
-function ProfilePhoto({ path, alt }: { path: string; alt: string }) {
-  const [url, setUrl] = useState<string | null>(null)
-  useEffect(() => {
-    let cancelled = false
-    void supabase.storage
-      .from('media')
-      .createSignedUrl(path, 3600)
-      .then(({ data }) => {
-        if (!cancelled && data?.signedUrl) setUrl(data.signedUrl)
-      })
-    return () => { cancelled = true }
-  }, [path])
-  return (
-    <div className="aspect-square bg-slate-200 rounded overflow-hidden">
-      {url ? <img src={url} alt={alt} className="w-full h-full object-cover" /> : null}
-    </div>
-  )
-}
+import { BioSection } from '../components/BioSection'
+import { DetailsSection } from '../components/DetailsSection'
+import { InterestsSection } from '../components/InterestsSection'
+import { PhotoGallery } from '../components/PhotoGallery'
 
 export function MyProfilePage() {
   const { t } = useTranslation('profile')
@@ -34,7 +17,8 @@ export function MyProfilePage() {
     <main className="p-4 space-y-4">
       <header>
         <h1 className="text-2xl font-semibold">
-          {p.display_name ?? ''}{p.age != null ? `, ${p.age}` : ''}
+          {p.display_name ?? ''}
+          {p.age != null ? `, ${p.age}` : ''}
         </h1>
         <p className="text-slate-600">{p.city_display_name}</p>
         <p className="text-sm text-slate-500">
@@ -49,11 +33,22 @@ export function MyProfilePage() {
         <dt className="text-slate-500">{t('yourTokens')}</dt>
         <dd>{p.token_balance}</dd>
       </dl>
-      <section className="grid grid-cols-2 gap-3">
-        {p.photos.map((ph) => (
-          <ProfilePhoto key={ph.ordinal} path={ph.path} alt={p.display_name ?? ''} />
-        ))}
-      </section>
+      <PhotoGallery photos={p.photos} />
+      <BioSection tagline={p.tagline} about={p.about} wants={p.wants} />
+      <DetailsSection
+        height_cm={p.height_cm}
+        body_type={p.body_type}
+        hair_color={p.hair_color}
+        eye_color={p.eye_color}
+        has_piercings={p.has_piercings}
+        has_tattoos={p.has_tattoos}
+        smoking={p.smoking}
+        drinking={p.drinking}
+        education={p.education}
+        yearly_income_band={p.yearly_income_band}
+        net_worth_band={p.net_worth_band}
+      />
+      <InterestsSection interests={p.interests} />
     </main>
   )
 }
