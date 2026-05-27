@@ -21,6 +21,7 @@ import { AppShell } from './features/shell/AppShell'
 import { SearchPage } from './features/search/pages/SearchPage'
 import { ProfilePage } from './features/profile/pages/ProfilePage'
 import { MyProfilePage } from './features/profile/pages/MyProfilePage'
+import { LikesPage } from './features/likes/pages/LikesPage'
 
 export const routeConfig: RouteObject[] = [
   { path: '/', element: <RootRedirect /> },
@@ -65,7 +66,7 @@ export const routeConfig: RouteObject[] = [
           { path: '/profile/:id', element: <ProfilePage /> },
           { path: '/me', element: <MyProfilePage /> },
           { path: '/messages', element: <div className="p-4">Messages — Plan 05</div> },
-          { path: '/likes', element: <div className="p-4">Likes — Plan 03</div> },
+          { path: '/likes', element: <LikesPage /> },
         ],
       },
     ],
