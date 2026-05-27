@@ -1,5 +1,15 @@
 {
   "title": "Search",
   "loading": "Loading…",
-  "error": "Failed to load search."
+  "error": "Failed to load search.",
+  "filter.open": "Filters",
+  "filter.title": "Filters",
+  "filter.age": "Age",
+  "filter.min_age": "Min",
+  "filter.max_age": "Max",
+  "filter.distance": "Distance (miles)",
+  "filter.interests": "Interests",
+  "filter.apply": "Apply",
+  "filter.reset": "Reset",
+  "filter.close": "Close"
 }

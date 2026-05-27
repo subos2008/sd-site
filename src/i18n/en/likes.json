@@ -1,0 +1,11 @@
+{
+  "title": "Likes",
+  "tab.liked_me": "Liked you",
+  "tab.favourites": "Favourites",
+  "empty.liked_me": "Nobody has liked you yet.",
+  "empty.favourites": "You haven't liked anyone yet.",
+  "button.like": "Like",
+  "button.unlike": "Unlike",
+  "loading": "Loading…",
+  "error": "Failed to load likes."
+}

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import type { ProfileCardT } from '@shared/rpc-contracts'
+import type { ProfileCardV2T } from '@shared/rpc-contracts'
 import { formatDistance } from '@/lib/format'
 import { supabase } from '@/lib/supabase'
 
-export function ProfileCard({ card }: { card: ProfileCardT }) {
+export function ProfileCard({ card }: { card: ProfileCardV2T }) {
   const { i18n } = useTranslation()
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 

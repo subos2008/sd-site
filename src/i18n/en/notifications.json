@@ -1,0 +1,5 @@
+{
+  "banner.like.title": "Someone liked you",
+  "banner.like.body": "{{actor_name}} liked your profile.",
+  "banner.dismiss": "Dismiss"
+}

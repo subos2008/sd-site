@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { viewSearch } from './api'
+import { viewSearch, type SearchFilters } from './api'
 
-export function useSearchFirstPage() {
+export function useSearchFirstPage(filters: SearchFilters = {}) {
   return useQuery({
-    queryKey: ['search', 'first-page'],
-    queryFn: () => viewSearch(null),
+    queryKey: ['search', 'first-page', filters],
+    queryFn: () => viewSearch(filters, null),
   })
 }

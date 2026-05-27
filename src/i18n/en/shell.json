@@ -6,5 +6,7 @@
   "tab.me": "Me",
   "menu.open": "Menu",
   "menu.close": "Close",
-  "menu.signOut": "Sign out"
+  "menu.signOut": "Sign out",
+  "menu.language": "Language",
+  "language.en": "English"
 }

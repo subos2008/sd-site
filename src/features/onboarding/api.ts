@@ -7,7 +7,7 @@ import {
   PrepareMediaUploadResult,
   FinalizeMediaUploadResult,
   AddToProfilePhotosResult,
-  ViewMyProfileResult,
+  ViewMyProfileResultV2,
   ProfileRole,
   ProfileGender,
   ProfileLookingFor,
@@ -75,4 +75,4 @@ export const addToProfilePhotos = (id: string, ordinal: number) =>
 export const completeOnboarding = () =>
   callRpc('complete_onboarding', {}, CompleteOnboardingResult)
 
-export const viewMyProfile = () => callRpc('view_my_profile', {}, ViewMyProfileResult)
+export const viewMyProfile = () => callRpc('view_my_profile', {}, ViewMyProfileResultV2)
