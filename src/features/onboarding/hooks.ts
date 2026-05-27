@@ -12,6 +12,9 @@ import { supabase } from '@/lib/supabase'
 
 // Re-export from the canonical location to avoid duplicate query definitions.
 export { useMyProfile } from '@/features/profile/hooks'
+export { useSetDetails } from '@/features/profile/hooks'
+export { useSetProfileInterests as useSetInterests } from '@/features/interests/hooks'
+export { useInterests } from '@/features/interests/hooks'
 
 export function useSetRole() {
   const qc = useQueryClient()

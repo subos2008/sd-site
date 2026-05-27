@@ -45,7 +45,7 @@ export function PhotoStep() {
         <button
           type="button"
           className="bg-slate-800 text-white py-2 rounded"
-          onClick={() => navigate('/onboarding/complete')}
+          onClick={() => navigate('/onboarding/details')}
         >
           {t('photo.continue')}
         </button>

@@ -14,6 +14,8 @@ import { RoleStep } from './features/onboarding/components/RoleStep'
 import { IdentityStep } from './features/onboarding/components/IdentityStep'
 import { LocationStep } from './features/onboarding/components/LocationStep'
 import { PhotoStep } from './features/onboarding/components/PhotoStep'
+import { DetailsStep } from './features/onboarding/components/DetailsStep'
+import { InterestsStep } from './features/onboarding/components/InterestsStep'
 import { OnboardingCompletePage } from './features/onboarding/pages/OnboardingCompletePage'
 import { AppShell } from './features/shell/AppShell'
 import { SearchPage } from './features/search/pages/SearchPage'
@@ -45,6 +47,8 @@ export const routeConfig: RouteObject[] = [
           { path: 'identity', element: <IdentityStep /> },
           { path: 'location', element: <LocationStep /> },
           { path: 'photo', element: <PhotoStep /> },
+          { path: 'details', element: <DetailsStep /> },
+          { path: 'interests', element: <InterestsStep /> },
           { path: 'complete', element: <OnboardingCompletePage /> },
         ],
       },
