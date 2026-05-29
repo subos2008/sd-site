@@ -22,6 +22,18 @@ Plan 02 complete: auth, onboarding, search, profile views, and the app shell are
 - **Profile views.** `/profile/:id` for other people and `/me` for the signed-in user.
 - **App shell.** Bottom tab bar plus a hamburger menu containing sign-out.
 
+## Features (Plan 03)
+
+Plan 03 deepens profiles and adds the likes mechanic on top of the Plan 02 foundation.
+
+- **Extended profile fields.** Bio, physical attributes (height, body type, ethnicity), lifestyle (smoking, drinking, children, education, occupation), and free-text interests. Editable from `/me`, optional and skippable at onboarding.
+- **Multi-photo management.** Up to six profile photos with ordinal-based ordering; the first is the primary card photo. Add, reorder, and delete from `/me`.
+- **Onboarding extension.** Two new skippable steps after photo — `/onboarding/details` and `/onboarding/interests` — bringing onboarding to six visible steps before completion.
+- **Likes mechanic.** A heart button on every search card and profile page toggles like/unlike. `/likes` shows two sections: "Liked you" and "Favourites" (people you liked). Likes are private until both sides like (matching arrives in a later plan).
+- **In-app banners.** A `BannerHost` polls notifications and surfaces "X liked your profile" banners with a red unread dot on the Likes tab.
+- **Search filters.** `/search` has a filter sheet for minimum age, maximum age, distance (miles), and interest IDs. Filters are reflected in the URL as a power-user shortcut: `/search?min_age=25&max_age=40&distance_miles=20&interest_ids=hiking,music`. Open `/search` with any of those params and the sheet picks them up.
+- **Language switcher.** A dropdown in the hamburger menu picks the active language. Plan 03 ships English only; the picker is in place for adding more languages in later plans.
+
 ## Local development
 
 Prerequisites: Node 22, pnpm 11, Docker, Supabase CLI.
