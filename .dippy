@@ -29,6 +29,7 @@ allow pnpm gen:types
 allow pnpm test:db
 allow pnpm test:e2e
 allow pnpm seed:dev
+allow pnpm vitest
 
 allow ./build.sh
 allow bash build.sh

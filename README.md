@@ -4,7 +4,7 @@ A niche dating site, UK-first, installable PWA. React SPA on AWS, Supabase backe
 
 ## Status
 
-Plan 02 complete: auth, onboarding, search, profile views, and the app shell are live. Discovery, messaging, and matching come in later plans.
+Plan 03 complete: auth, onboarding (now 6 steps), search with filters, full profiles with edit modes, multi-photo galleries, the likes mechanic with an in-app banner system, and a language switcher are all live on top of Plan 02's foundation. Token economy, messaging, and the secret album come in later plans.
 
 ## Stack
 
