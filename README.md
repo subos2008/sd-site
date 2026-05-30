@@ -92,4 +92,22 @@ The single source of truth for application configuration is `shared/app-config.t
 ## Project layout
 
 See `docs/superpowers/specs/2026-05-09-sd-site-design.md` for the full design.
-See `docs/superpowers/plans/README.md` for the implementation plan series.
+See `docs/superpowers/plans/README.md` for the implementation plan series, including the status of each milestone and pointers to each plan file.
+
+## Picking this up in a fresh session
+
+If you (or a fresh Claude session) are coming back to this repo cold:
+
+1. **Bring the local sandbox up:** follow the **Local development** section above. `supabase start && supabase db reset && pnpm gen:types && pnpm seed:dev` recreates everything that lives outside the repo (Docker volumes, generated types, fixture users).
+2. **Find the current milestone:** `docs/superpowers/plans/README.md` shows which plan is complete and which is next.
+3. **Read the carry-over for the next milestone:** every plan ends with a **Carry-over to Plan N+1** section listing follow-ups the current plan deferred. Those are the most useful pointers for the next plan to address first. (Plan 03's carry-overs are at the bottom of `docs/superpowers/plans/2026-05-14-03-profile-depth-likes.md` — they cover a `view_search` cursor bug, dead V1 Zod schemas, a too-broad storage SELECT policy, and several smaller items.)
+4. **Read the execution deviations:** each plan also has a `### Plan N execution deviations` section near the top that records every place the spec didn't survive contact with reality and why. These are load-bearing context for future tasks (e.g. Plan 02 + 03 both record that the local Supabase image doesn't expose `storage.create_signed_url`, which is why every signed URL is minted client-side).
+5. **Write the next plan, then execute it.** A fresh Claude session can be asked to `Write plan NN` — it'll read the spec, the README, and the prior plans, then invoke its `superpowers:writing-plans` skill. Execution uses `superpowers:subagent-driven-development` (fresh subagent per task with two-stage review).
+
+## What's not in the repo
+
+Things that are local-only and won't follow a `git clone`:
+
+- **`node_modules/`, `dist/`, `dev-dist/`, `test-results/`** — gitignored build/test outputs. Recreated by `pnpm install`, `pnpm build`, `pnpm test:e2e`.
+- **Local Supabase Docker volumes** — the running database, storage bucket, and seeded fixture users. Recreated by `supabase start && supabase db reset && pnpm seed:dev`.
+- **`.git.broken.bak/`** — a one-off backup of a corrupted `.git` directory from a mid-execution Dropbox sync conflict during Plan 02. Safe to delete (`rm -rf .git.broken.bak`); the live `.git` and `origin/main` are healthy.
