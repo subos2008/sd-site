@@ -1382,6 +1382,7 @@ export type Database = {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
       }
+      touch_last_active: { Args: never; Returns: Json }
       unlike_profile: { Args: { p_likee_id: string }; Returns: Json }
       unlockrows: { Args: { "": string }; Returns: number }
       updategeometrysrid: {
