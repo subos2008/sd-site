@@ -21,6 +21,10 @@ category, we treat that channel as closed and route around it.
 - [founder-anonymity.md](founder-anonymity.md) — what Secret Benefits did to
   stay faceless, what UK law allows, and our position: pseudonymous in
   marketing, accountable on paper.
+- [onboarding-notes.md](onboarding-notes.md) — Secret Benefits' asymmetric
+  onboarding (lightweight for the demand side, full-profile-before-market
+  for the supply side) and why we should copy it; spec in
+  `execution/010-separate-onboarding-flows.md`.
 - [case-studies/](case-studies/README.md) — how six competitors launched and
   acquired users, individually sourced, with cross-cutting conclusions.
 
