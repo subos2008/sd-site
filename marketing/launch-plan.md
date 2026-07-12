@@ -21,6 +21,15 @@ that density honestly.
 - **Free-for-supply-side is committed** (lessons-learned.md), as is credits
   pricing for the paying side. Both are marketing infrastructure decisions
   and feed directly into the token-economy plan.
+- **Dating users multi-home — recruit switchers.** Nobody expects a new
+  dating site to be their only dating site; switchers from incumbents add
+  us to their rotation and tolerate early low density far better than
+  new-to-category users. Comparison/alternatives content
+  ([channels.md](channels.md) #2) is a launch asset, not just an SEO play.
+- **Be honest about early density.** "New in your city" framing, real
+  member counts where we show numbers, and clear empty states — never a
+  fake impression of liquidity. (An empty search result and a failed fetch
+  must also look different in the UI.)
 - **Never fake supply.** Density comes from seeding, incentives, and
   concierge onboarding below — the Ashley Madison fembot case study is the
   permanent reminder of the alternative.
@@ -37,16 +46,20 @@ attribution plumbing in place, before messaging/payments ship.
   concrete, costs nothing now, and gives the supply side a reason to be first.
 - `acquisition_source` captured at signup (UTM/ref → Postgres); the same
   rails carry affiliate ref codes later.
-- Affiliate groundwork (channel #1): attribution design, payout terms
-  against credit purchases, the UK review-site shortlist, and the affiliate
-  agreement with its approved-creatives clause — drafted now so listings can
-  switch on at open launch without a legal scramble.
-- Navigational SERP pages (channel #2): brand, "brand review", "is brand
-  legit", safety/how-it-works content — live before any affiliate or
-  scraper writes them for us. City-page template ready. Baseline the
-  branded-search KPI at zero.
-- Press capability, reactive-only (channel #8): press kit page, media@
-  address, named spokesperson with prepared lines. Drafted, not pitched.
+- Affiliate groundwork (channel #1): attribution design, payout terms for
+  both sides (demand-side CPA on credit purchases; gated supply-side CPL on
+  verified, active profiles), the UK review-site shortlist, and the
+  affiliate agreement with its approved-creatives clause and payout gates —
+  drafted now so listings can switch on at open launch without a legal
+  scramble.
+- Navigational SERP pages (channel #9): brand, "brand review", "is brand
+  legit" — live before any affiliate or scraper writes them for us. Trust
+  and safety guides (channel #6) and the city-page template ready. Baseline
+  the branded-search KPI at zero.
+- Press capability, reactive-only (channel #11): press kit page, media@
+  address, designated spokesperson — not the founder, per
+  [founder-anonymity.md](founder-anonymity.md) — with prepared lines.
+  Drafted, not pitched.
 - Resolve the payments question (high-risk processor — see
   [README.md](README.md)). This now formally blocks the token-economy plan:
   credits pricing is a strategic commitment, so the processor decision comes
@@ -80,14 +93,20 @@ quiet machine start compounding. No press push.
 
 - Open self-serve signup for London; founding-member premium unlocks for
   waitlist converts.
-- Affiliate listings go live (#1) — the actual launch lever. First UK
-  review-site placements negotiated in Phase 0 activate against a live,
-  verifiable product.
-- Navigational SERPs (#2) updated from "coming soon" to live product; city
+- Affiliate listings go live (#1) — the actual launch lever, serving both
+  sides: demand-side placement in the listicles, plus supply-side presence
+  in their "for sugar babies" sections with our creatives. Supply-side CPL
+  starts gated and capped from day one.
+- Comparison/alternatives pages (#2) published — switcher recruitment is
+  the demand-side tactic most tolerant of launch-stage density.
+- Navigational SERPs (#9) updated from "coming soon" to live product; city
   pages published for London plus waitlist-strong cities (as
   waitlist-for-your-city pages).
-- Small paid tests where attribution is proven: one ad network (#4, vetted
-  placements), X (#5). Private referral codes (#3) enabled for beta users.
+- Supply-side density layer activates for London: private referral codes
+  (#5) for the concierge-onboarded cohort, trust/safety guides (#6) live,
+  student media (#7) timed to the next term-rhythm window.
+- Small paid tests where attribution is proven: one ad network (#3, vetted
+  placements), X (#4).
 - Press kit stays current for reactive use — if coverage happens, we answer
   well; we do not pitch a launch story.
 - Not Product Hunt / Hacker News — wrong audience and assured hostile
@@ -102,7 +121,7 @@ quiet machine start compounding. No press push.
   economy, secret album) is announced to the list and the changelog;
   affiliates get refreshed approved creatives. Press engagement remains
   reactive.
-- Optional hedge, post-scale: the annual UK data report (channel #8) —
+- Optional hedge, post-scale: the annual UK data report (channel #11) —
   exercised only when we have fact-checkable numbers and want insurance
   against affiliate-channel concentration. It is not a growth dependency.
 - Affiliate policing is a standing task from Phase 2 onward: creative
@@ -112,9 +131,17 @@ quiet machine start compounding. No press push.
 
 Per channel, one funnel, all in Postgres: visit (UTM/ref) → waitlist/signup →
 activated profile (photo + verified + role + city) → D7 return → (later)
-first credit purchase. The two deciding metrics (lessons-learned.md):
+first credit purchase. The deciding metrics, per side (lessons-learned.md
+and [channels.md](channels.md)):
 
-1. Cost per **activated supply-side profile in a target city**, per channel —
-   not clicks, not raw signups. Kill anything that can't be attributed.
-2. **Monthly branded search volume** for our name — the proof that the
-   affiliate engine is compounding into brand equity rather than renting it.
+1. **Supply side:** cost per activated, verified supply-side profile in a
+   target city — not clicks, not raw signups. This is also the event the
+   affiliate supply-side CPL pays on, so the metric and the payout gate are
+   the same measurement.
+2. **Demand side:** cost per activated demand-side profile and per first
+   credit purchase.
+3. **Brand:** monthly branded search volume for our name — the proof that
+   the affiliate engine is compounding into brand equity rather than
+   renting it.
+
+Kill anything that can't be attributed.

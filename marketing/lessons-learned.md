@@ -35,21 +35,34 @@ evidence quality in [case-studies/secret-benefits.md](case-studies/secret-benefi
    companion app" — the PWA is the product. Payments run through our own
    high-risk-capable processor (see [README.md](README.md)), never store IAP.
 
-2. **The affiliate/review ecosystem is our primary acquisition channel.**
-   Concretely:
+2. **The affiliate/review ecosystem is our primary acquisition channel —
+   for both sides of the marketplace.** Supply-side members google their
+   way in through the same listicles ("best sugar dating sites", "how to
+   find a sugar daddy") that deliver the demand side; what differs per side
+   is the economics. Concretely:
    - Get listed in the "best sugar dating sites" listicles that already
      own the money keywords, prioritising UK-facing ones; the ecosystem is
      smaller than the US one Secret Benefits rides, so early placements are
-     winnable.
+     winnable. Equip affiliates for the supply-side audience too ("for
+     sugar babies" sections, safety/verification talking points).
    - Run the affiliate programme direct/invite-only (as Secret Benefits
      appears to), not on public CPA network rate cards — we keep control of
      who promotes us and how.
-   - Pay CPA on credit purchases (aligning affiliate incentives with real
-     revenue, not junk signups).
+   - Demand-side payouts: CPA on credit purchases (aligning affiliate
+     incentives with real revenue). Supply-side payouts: realistically we
+     must pay for verified female activations too — gender/geo-tiered CPL
+     is industry standard — but never on raw signups: payable only on video
+     verification plus an activity window, with delayed payout, clawbacks,
+     and per-affiliate caps. The bounty is priced from the demand-side
+     revenue an active verified profile generates.
    - Approved-creatives clause, enforced. Two studies supply the warning:
      rogue affiliate copy is an ASA liability that attaches to us, and
      affiliates kept publishing fake-fresh "reviews" of RichMeetBeautiful
      years after it died. We police the channel or it poisons us.
+   - What affiliates cannot do is concentrate supply in a launch city —
+     the supply-side density layer in channels.md (referral, trust
+     content, student media) exists for that, not because listicles can't
+     deliver women.
 
 3. **Brand-harvest SEO, not content-empire SEO.** Secret Benefits does not
    rank for non-brand terms; its affiliates do. We invert our earlier
@@ -149,12 +162,16 @@ that risk; we hedge it cheaply:
 
 ## What this changed in our other docs (applied)
 
-- **[channels.md](channels.md) re-ranked:** affiliates/review sites are now
-  the primary channel (#1), with brand-harvest SEO (#2) and product-led
-  loops (#3) completing Tier 1. Digital PR dropped from "category
-  superpower" to a reactive capability plus optional annual report (#8).
-  OOH is out entirely (a loud-playbook tool with the worst risk profile in
-  our category). Ad-network tests survive with the placement-vetting caveat.
+- **[channels.md](channels.md) restructured:** affiliates/review sites are
+  the primary channel (#1), serving both sides with per-side economics;
+  demand-side channels (switcher SEO, ad networks, X) and a city-targetable
+  supply-side density layer (referral, trust content, student media,
+  podcasts) sit beneath it, with brand-harvest SEO, product-led trust, and
+  reactive press as cross-side infrastructure. Digital PR dropped from
+  "category superpower" to a reactive capability plus optional annual
+  report. OOH is out entirely (a loud-playbook tool with the worst risk
+  profile in our category). Ad-network tests survive with the
+  placement-vetting caveat.
 - **[launch-plan.md](launch-plan.md) Phase 2** is now a quiet open launch:
   affiliate listings switching on, waitlist conversion, and founding-member
   unlocks are the levers; the press kit exists for reactive use only.
@@ -166,12 +183,14 @@ that risk; we hedge it cheaply:
   discretion features (secret album) as marketing-critical, not
   nice-to-have.
 
-## The two metrics that decide everything
+## The metrics that decide everything
 
-1. **Cost per activated supply-side profile in a target city**, per channel,
-   attributed in Postgres. (Unchanged from [channels.md](channels.md); the
-   affiliate programme is paid on exactly this logic.)
-2. **Branded search volume for our name** — the Secret Benefits model's
+1. **Cost per activated, verified supply-side profile in a target city**,
+   per channel, attributed in Postgres — also the exact event the affiliate
+   supply-side CPL pays on, so metric and payout gate are one measurement.
+2. **Cost per activated demand-side profile and per first credit purchase**,
+   per channel.
+3. **Branded search volume for our name** — the Secret Benefits model's
    single best proxy for whether the quiet machine is compounding. Track it
    monthly from launch; it is the KPI that tells us the affiliates' work is
    accruing to us and not just to them.

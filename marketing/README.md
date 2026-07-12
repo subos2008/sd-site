@@ -18,6 +18,9 @@ category, we treat that channel as closed and route around it.
 - [launch-plan.md](launch-plan.md) — phased launch plan (waitlist → seeded
   closed beta → quiet open launch via affiliates), including
   two-sided-marketplace seeding.
+- [founder-anonymity.md](founder-anonymity.md) — what Secret Benefits did to
+  stay faceless, what UK law allows, and our position: pseudonymous in
+  marketing, accountable on paper.
 - [case-studies/](case-studies/README.md) — how six competitors launched and
   acquired users, individually sourced, with cross-cutting conclusions.
 
