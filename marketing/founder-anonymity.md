@@ -14,23 +14,64 @@ is ongoing and rules are tightening, not loosening.
 ## What Secret Benefits did
 
 From [case-studies/secret-benefits.md](case-studies/secret-benefits.md),
-their opacity is a stack of deliberate choices, none individually exotic:
+their opacity is a stack of deliberate choices, none individually exotic.
+The concrete, observed mechanics:
 
-1. **Offshore, fragmented corporate identity.** Operator reported as
-   Digital Barter Limited (Cyprus); LinkedIn presence in New Zealand; a New
-   York contact address on newswire releases. No single authoritative "this
-   is the company" surface exists.
+1. **Offshore, fragmented corporate identity.** The operating entity is
+   reported as **Digital Barter Limited, Cyprus** (named in VIDA Select's
+   review; a cancellation address circulating in user reviews points to an
+   office in **Nicosia**). The company LinkedIn page places the business in
+   **Auckland, New Zealand**. Their own 2025 GlobeNewswire release gives a
+   **New York street address**. Data brokers hold visibly junk records on
+   them (one profile calls them a deadpooled US company founded in 2021).
+   Whether the fragmentation is deliberate misdirection or just neglect,
+   the effect is the same: no single authoritative "this is the company"
+   surface exists, and every journalist starts from contradictions.
 2. **No named humans, ever.** No founder, no executives, no interviews, no
-   conference appearances, no LinkedIn profiles tied to the brand. There is
-   nobody for a journalist to profile or doorstep.
-3. **Infrastructure privacy.** Domain registered via a corporate
-   brand-protection registrar with registrant withheld; Cloudflare in front
-   of everything.
-4. **No PR surface.** The only "press releases" are affiliate-disclosed
-   review-shaped advertisements. There is no press office to query and no
-   quote history to mine.
+   conference appearances, no staff LinkedIn profiles tied to the brand,
+   skeletal Crunchbase/Tracxn entries with no people and no funding
+   history. There is nobody to profile or doorstep. Category exposés (BBC
+   documentaries, student sugar-dating investigations) consequently
+   attached to Seeking and Brandon Wade — the competitor with a face.
+3. **Infrastructure privacy, done properly and early.** How the domain is
+   anonymised (verifiable in Verisign's RDAP record): secretbenefits.com
+   was registered on 6 August 2014 through **SafeNames Ltd** — a corporate
+   brand-protection registrar used by enterprises, not a consumer
+   registrar — with all registrant contact details withheld, the registrar
+   acting as the public-facing contact. Post-GDPR WHOIS redaction hides
+   most registrant data by default anyway; using a corporate registrar on
+   top of that means even the registrar relationship reveals nothing
+   consumer-grade (no GoDaddy account to subpoena-fish or social-engineer),
+   and the registration is paid up to **2033**, so it never lapses into a
+   moment of exposure or loss. Nameservers point at **Cloudflare**, which
+   proxies all traffic — the origin host, hosting provider, and server IP
+   are invisible. Net effect: the domain, the most public asset the
+   business owns, connects to nothing and nobody.
+4. **No PR surface.** The only "press releases" ever issued are
+   affiliate-disclosed, review-shaped advertisements pushed through paid
+   newswire syndication (GlobeNewswire → Yahoo Finance). There is no press
+   office to query and no quote history to mine.
 5. **Affiliates as the public face.** All public discussion of the product
-   is conducted by commercially-incentivised third parties.
+   is conducted by commercially-incentivised third parties. Even the
+   affiliate programme itself is private: Secret Benefits is absent from
+   public CPA network catalogues (CrakRevenue lists Ashley Madison and
+   AdultFriendFinder; not them), so there is no public rate card, no
+   network profile, and no partner-facing corporate identity to scrape.
+6. **Ambiguous satellites.** A separate **secretbenefits.co.uk** site
+   (with its own /affiliates page) styles itself "the UK's leading sugar
+   dating app"; its relationship to the .com is unverifiable — a regional
+   shell, or a third-party clone they tolerate. Either way it further
+   muddies attribution.
+
+**The category pattern worth noticing:** this is not just Secret Benefits.
+WhatsYourPrice and MissTravel bill through **W8Tech Cyprus Limited**;
+RichMeetBeautiful ran through **Digisec Media (Malta/Cyprus entities)**.
+Three of the four commercial operators we studied are structured through
+Cyprus/Malta — almost certainly because the high-risk payments and adult
+billing ecosystem (acquirers, PSPs, corporate service providers who
+understand the vertical) clusters there. Offshore structuring in this
+category is the norm, not the exception, and it is partly a payments
+decision, not only a privacy one.
 
 The payoff was real: category exposes (BBC documentaries, student sugar-baby
 investigations) attached themselves to Seeking and Brandon Wade — the
@@ -45,7 +86,7 @@ processors.
 
 ## What a UK founder can and cannot do
 
-### Cannot (without breaking the law or leaving the UK)
+### Cannot (as a UK-registered company)
 
 - **Anonymous directorship.** Directors' names are public at Companies
   House, and ECCTA identity verification is now mandatory (new directors
@@ -90,10 +131,30 @@ processors.
 
 ## Our position
 
-**Pseudonymous in marketing, accountable on paper.** Concretely:
+**Jurisdiction and structure are now an open decision** — see
+`execution/020-brand-name-and-corporate-structure.md`. We do not have to be
+a UK-registered company to serve UK users: incorporation elsewhere (the
+category's norm is Cyprus/Malta, per the pattern above) is lawful, offers
+materially more public anonymity than Companies House (EU beneficial-owner
+registers are no longer publicly accessible following the 2022 CJEU ruling,
+and nominee directors are legal and routine in Cyprus), and colocates us
+with the high-risk payments ecosystem this vertical actually uses. What
+offshore incorporation does NOT do: remove OSA/ICO/ASA exposure for a
+UK-targeted service, or remove UK tax obligations for a UK-resident founder
+(a company managed and controlled from the UK is generally UK tax-resident
+wherever it is incorporated — privacy structuring is legitimate; hiding
+from HMRC is not). The spec lays out the options; professional tax and
+corporate advice decides it.
 
-1. UK limited company with a neutral name unconnected to the brand; agent
-   registered office; directors' service addresses.
+**Wherever we incorporate, the marketing posture is the same** —
+pseudonymous in marketing, accountable to regulators and counterparties.
+Concretely:
+
+1. Operating company (whichever jurisdiction) with a neutral name
+   unconnected to the brand; agent registered office; service addresses;
+   corporate-grade domain registration with registrant withheld and
+   Cloudflare in front (the Secret Benefits mechanics in point 3 above,
+   which are available to us regardless of jurisdiction).
 2. Founder is on the register (unavoidable) but appears nowhere in
    marketing, PR, site copy, conference talks, or social media. No founder
    story, no origin-myth content — the Seeking case study shows the founder
@@ -107,16 +168,22 @@ processors.
    not to prevent that; it is to make the discovery boring: a compliant UK
    company, verified users, honest numbers, no scandal to attach it to.
    This is the reactive-press capability from channels.md doing its job.
-5. We do not do the offshore version. It would not remove OSA/ICO/ASA
-   exposure for a UK-targeted service, it would poison the high-risk
-   payments relationship we still need to win (acquirers price opacity as
-   risk), and it forfeits the trust differentiator the whole playbook is
-   built on.
+5. If we do go offshore, it is the compliant version: proper tax treatment
+   of a UK-managed company, full KYC transparency with acquirers and banks
+   (they know who we are regardless of the public register), and OSA/ICO/
+   ASA obligations met exactly as a UK company would. The anonymity gained
+   is public-register anonymity — protection from doxxing and casual
+   discovery — not anonymity from the state, processors, or a determined
+   journalist. Whatever brand positioning we eventually choose (still an
+   open decision), any trust element of it must then be carried by the
+   product and its practices rather than by a Companies House entry —
+   which is how Secret Benefits' segment of the market works anyway.
 
 ## Open items
 
 - Incorporation structure and name: decide before payments onboarding
-  (the acquirer application fixes the legal-entity story).
+  (the acquirer application fixes the legal-entity story). Spec:
+  `execution/020-brand-name-and-corporate-structure.md`.
 - Whether any second person (co-founder, adviser, hired spokesperson) is
   willing to hold the public-facing role; if not, the reactive-press lines
   default to written statements from "the company".
