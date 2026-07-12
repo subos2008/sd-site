@@ -1,9 +1,12 @@
 # Launch plan
 
-Phased launch for a two-sided dating marketplace, UK-first. The hard problem
-at launch is not attention — it's density: a new user in the first week must
-see enough active, credible profiles on the other side to come back. Every
-phase below is really about manufacturing that density honestly.
+Phased launch for a two-sided dating marketplace, UK-first, following the
+quiet-growth playbook in [lessons-learned.md](lessons-learned.md): the launch
+mechanism is affiliate listings, waitlist conversion, and product-led trust —
+not a PR moment. The hard problem at launch is not attention — it's density:
+a new user in the first week must see enough active, credible profiles on
+the other side to come back. Every phase below is really about manufacturing
+that density honestly.
 
 ## Marketplace physics (read first)
 
@@ -15,60 +18,80 @@ phase below is really about manufacturing that density honestly.
   look alive. Launch city-by-city: London first, then expand when a city
   crosses a liquidity threshold (e.g. a new user's first search returns 20+
   profiles active within 7 days).
-- **Free-for-supply-side pricing** is the standard structural subsidy in this
-  market. Decide before the token-economy plan whether the female side pays
-  at all; that decision is marketing infrastructure, not just pricing.
+- **Free-for-supply-side is committed** (lessons-learned.md), as is credits
+  pricing for the paying side. Both are marketing infrastructure decisions
+  and feed directly into the token-economy plan.
+- **Never fake supply.** Density comes from seeding, incentives, and
+  concierge onboarding below — the Ashley Madison fembot case study is the
+  permanent reminder of the alternative.
 
 ## Phase 0 — now, pre-launch (runs alongside remaining build plans)
 
-Goal: an owned audience waiting, and attribution plumbing in place, before
-messaging/payments ship.
+Goal: an owned audience waiting, the affiliate machinery ready, and
+attribution plumbing in place, before messaging/payments ship.
 
 - Waitlist landing page on the production domain: value proposition,
   city selector, email capture, role selector (so we can see supply/demand
   mix per city in advance).
 - Founding-member offer: free premium period at launch for waitlist signups —
   concrete, costs nothing now, and gives the supply side a reason to be first.
-- `acquisition_source` captured at signup (UTM/ref → Postgres).
-- Start SEO now (it's the slowest channel): blog live on the main domain,
-  city-page template, first 10 informational guides. See
-  [channels.md](channels.md) #1.
-- Press kit page + media address, so PR (#2) can start the moment there's
-  something to show.
-- Resolve the payments question (high-risk processor — see README) before the
-  token-economy plan locks in a checkout design.
+- `acquisition_source` captured at signup (UTM/ref → Postgres); the same
+  rails carry affiliate ref codes later.
+- Affiliate groundwork (channel #1): attribution design, payout terms
+  against credit purchases, the UK review-site shortlist, and the affiliate
+  agreement with its approved-creatives clause — drafted now so listings can
+  switch on at open launch without a legal scramble.
+- Navigational SERP pages (channel #2): brand, "brand review", "is brand
+  legit", safety/how-it-works content — live before any affiliate or
+  scraper writes them for us. City-page template ready. Baseline the
+  branded-search KPI at zero.
+- Press capability, reactive-only (channel #8): press kit page, media@
+  address, named spokesperson with prepared lines. Drafted, not pitched.
+- Resolve the payments question (high-risk processor — see
+  [README.md](README.md)). This now formally blocks the token-economy plan:
+  credits pricing is a strategic commitment, so the processor decision comes
+  first.
 
 ## Phase 1 — closed beta (London), invite-only
 
 Goal: real activity from real users; kill the dead-marketplace first
 impression before anyone pays.
 
-- Invite from the waitlist in batches, supply side first at roughly 2–3:1
+- Invite from the waitlist in batches, supply side first at roughly 2-3:1
   before opening demand-side invites.
 - Personally onboard the first ~100 supply-side users (concierge profile
-  help, photo guidance). Slow, unscalable, and exactly what makes early
-  profiles credible. These users become the referral seed.
+  help, photo guidance, video verification walkthrough). Slow, unscalable,
+  and exactly what makes early profiles credible. These users become the
+  referral seed.
+- Verification-by-default from day one: the badge is the product's trust
+  story and the thing that beats the model we're copying (Secret Benefits'
+  fake-profile complaints are its ceiling).
 - Weekly activity email ("new members near you", "X liked you" digest) using
   the existing notifications infrastructure — beta users must have a reason
   to return before messaging ships.
-- Measure: activation (photo + complete profile), D7 return, first-search
-  results count, supply/demand ratio. These numbers decide when Phase 2
-  opens, not the calendar.
+- Measure: activation (photo + verified + complete profile), D7 return,
+  first-search results count, supply/demand ratio. These numbers decide when
+  Phase 2 opens, not the calendar.
 
-## Phase 2 — open launch (London), the PR moment
+## Phase 2 — quiet open launch (London)
 
-Goal: one coordinated attention spike, converted into the owned funnel.
+Goal: convert the waitlist, switch on the affiliate engine, and let the
+quiet machine start compounding. No press push.
 
-- Open self-serve signup for London. Everything in the launch story funnels
-  to signup or waitlist-for-your-city.
-- The launch story (see channels.md #2): UK-built, age-verified,
-  safety-first entrant in a category the app stores and ad platforms have
-  abandoned — that framing is itself newsworthy and differentiating.
-- Same week: affiliate listings go live (#3), X organic + small paid test
-  (#5), first ad-network test (#4) if attribution is proven.
-- Founding-member premium unlocks for waitlist converts.
+- Open self-serve signup for London; founding-member premium unlocks for
+  waitlist converts.
+- Affiliate listings go live (#1) — the actual launch lever. First UK
+  review-site placements negotiated in Phase 0 activate against a live,
+  verifiable product.
+- Navigational SERPs (#2) updated from "coming soon" to live product; city
+  pages published for London plus waitlist-strong cities (as
+  waitlist-for-your-city pages).
+- Small paid tests where attribution is proven: one ad network (#4, vetted
+  placements), X (#5). Private referral codes (#3) enabled for beta users.
+- Press kit stays current for reactive use — if coverage happens, we answer
+  well; we do not pitch a launch story.
 - Not Product Hunt / Hacker News — wrong audience and assured hostile
-  comments; UK press and category review sites are our equivalent.
+  comments; UK review sites are our launch venue.
 
 ## Phase 3 — city expansion + steady state
 
@@ -76,14 +99,22 @@ Goal: one coordinated attention spike, converted into the owned funnel.
   waitlist crosses a set size; repeat Phase 1→2 per city with the playbook,
   compressing each time.
 - Steady-state cadence: every later product milestone (messaging, token
-  economy, secret album) is re-launch material — announce to list, press
-  where it carries a story, changelog always.
-- Annual data report (channels.md #2) becomes the recurring PR tentpole once
-  the user base supports honest aggregate stats.
+  economy, secret album) is announced to the list and the changelog;
+  affiliates get refreshed approved creatives. Press engagement remains
+  reactive.
+- Optional hedge, post-scale: the annual UK data report (channel #8) —
+  exercised only when we have fact-checkable numbers and want insurance
+  against affiliate-channel concentration. It is not a growth dependency.
+- Affiliate policing is a standing task from Phase 2 onward: creative
+  audits, takedown of fake or non-compliant reviews, payout integrity.
 
 ## Measurement
 
-Per channel, one funnel, all in Postgres: visit (UTM) → waitlist/signup →
-activated profile (photo + role + city) → D7 return → (later) first purchase.
-Judge channels on cost per **activated supply-side profile in a target
-city** — not clicks, not raw signups. Kill anything that can't be attributed.
+Per channel, one funnel, all in Postgres: visit (UTM/ref) → waitlist/signup →
+activated profile (photo + verified + role + city) → D7 return → (later)
+first credit purchase. The two deciding metrics (lessons-learned.md):
+
+1. Cost per **activated supply-side profile in a target city**, per channel —
+   not clicks, not raw signups. Kill anything that can't be attributed.
+2. **Monthly branded search volume** for our name — the proof that the
+   affiliate engine is compounding into brand equity rather than renting it.

@@ -9,8 +9,9 @@ from the loud playbook anyway, what we explicitly reject, and where we must
 deviate from Secret Benefits because we are a UK-registered, UK-regulated
 company.
 
-Where this contradicts the earlier channel ranking, this document wins — see
-"What this changes in our other docs" at the end.
+[channels.md](channels.md) and [launch-plan.md](launch-plan.md) have been
+updated to implement this playbook — "What this changed in our other docs"
+at the end records the deltas.
 
 ## The model in one paragraph
 
@@ -146,21 +147,21 @@ that risk; we hedge it cheaply:
 | Tolerates fake-profile complaints | Verification-by-default, moderation budget | OSA compliance; beats the model's known weakness |
 | Silent on safety | Safety-forward content and onboarding | Legal necessity that doubles as supply-side acquisition copy |
 
-## What this changes in our other docs
+## What this changed in our other docs (applied)
 
-- **[channels.md](channels.md) re-ranking:** affiliates/review sites
-  (currently Tier 1 #3) move to primary channel, co-equal with brand-harvest
-  SEO. Digital PR (#2) drops from "category superpower" to the optional
-  hedge described above. OOH (#8) is effectively out — it is a loud-playbook
-  tool with the worst risk profile in our category. Ad-network tests (#4)
-  survive with the placement-vetting caveat.
-- **[launch-plan.md](launch-plan.md) Phase 2:** the "PR moment" is no longer
-  the launch mechanism. Open launch is quiet: affiliate listings switching
-  on, waitlist conversion, and founding-member unlocks are the levers. The
-  launch story stays drafted in the press kit for reactive use.
-- **[README.md](README.md) payments note hardens:** the credits model is now
-  a strategic commitment, so the high-risk processor decision blocks the
-  token-economy plan and should be resolved first.
+- **[channels.md](channels.md) re-ranked:** affiliates/review sites are now
+  the primary channel (#1), with brand-harvest SEO (#2) and product-led
+  loops (#3) completing Tier 1. Digital PR dropped from "category
+  superpower" to a reactive capability plus optional annual report (#8).
+  OOH is out entirely (a loud-playbook tool with the worst risk profile in
+  our category). Ad-network tests survive with the placement-vetting caveat.
+- **[launch-plan.md](launch-plan.md) Phase 2** is now a quiet open launch:
+  affiliate listings switching on, waitlist conversion, and founding-member
+  unlocks are the levers; the press kit exists for reactive use only.
+- **[README.md](README.md) payments note hardened:** the credits model is a
+  strategic commitment, so the high-risk processor decision blocks the
+  token-economy plan and should be resolved first (now reflected in
+  launch-plan Phase 0).
 - **Product backlog:** video verification and heavy-user cost caps join the
   discretion features (secret album) as marketing-critical, not
   nice-to-have.

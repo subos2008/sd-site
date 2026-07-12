@@ -12,12 +12,12 @@ category, we treat that channel as closed and route around it.
   our playbook. We follow the Secret Benefits quiet-growth model; this doc
   records the concrete commitments, rejections, and where it re-ranks
   channels.md. Read this first.
-- [channels.md](channels.md) — which acquisition channels are actually open to
-  us, ranked, with first steps for each. Ranking amended by
-  lessons-learned.md (affiliates up, PR down, OOH out).
+- [channels.md](channels.md) — acquisition channels ranked per the playbook
+  (affiliates primary, brand-harvest SEO, product-led loops; PR reactive
+  only; OOH excluded), with first steps for each.
 - [launch-plan.md](launch-plan.md) — phased launch plan (waitlist → seeded
-  closed beta → public launch), including two-sided-marketplace seeding.
-  Phase 2's PR moment is downgraded to reactive-only by lessons-learned.md.
+  closed beta → quiet open launch via affiliates), including
+  two-sided-marketplace seeding.
 - [case-studies/](case-studies/README.md) — how six competitors launched and
   acquired users, individually sourced, with cross-cutting conclusions.
 

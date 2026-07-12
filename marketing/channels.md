@@ -1,144 +1,153 @@
 # Acquisition channels
 
-Ranked by expected long-run contribution given the constraint landscape in
-[README.md](README.md). The ORB framing: build **owned** channels (SEO
-content, email list, the PWA itself) as the destination; use **rented**
-channels (X, Reddit, ad networks) and **borrowed** channels (affiliates, PR,
-podcasts) to fill them.
+Ranked according to the playbook in [lessons-learned.md](lessons-learned.md)
+(the Secret Benefits quiet-growth model), which governs this document. The
+ORB framing still applies — owned channels (the PWA, email list, our SERPs)
+are the destination; borrowed channels (affiliates) and rented channels (ad
+networks, X) fill them — but the engine is now affiliates plus brand
+harvesting, not content-empire SEO plus PR.
 
-## Tier 1 — build from day one
+Evidence base: [case-studies/](case-studies/README.md), especially
+[secret-benefits.md](case-studies/secret-benefits.md) for why this ranking
+works and [richmeetbeautiful.md](case-studies/richmeetbeautiful.md) for what
+is excluded.
 
-### 1. SEO and content (owned; the workhorse)
+## Tier 1 — the quiet engine (build from day one)
 
-Every incumbent in this vertical is SEO-heavy because paid mainstream channels
-are closed. This is the compounding asset.
+### 1. Affiliate / review-site ecosystem (borrowed; the primary channel)
 
-- **Programmatic city/local pages.** "Dating in London / Manchester / Leeds…"
-  pages backed by real (anonymised, aggregate) profile counts once we have
-  them. UK-first gives a tractable page set (~50–100 towns/cities).
-- **Informational content.** The category has enormous question-shaped search
-  volume (what is it, is it legal in the UK, safety, first-meeting advice,
-  allowance norms). Honest, safety-forward answers rank and also build the
-  trust the brand needs.
-- **Comparison/alternative pages.** "X vs Y", "alternatives to Seeking" —
-  high-intent traffic from people already convinced of the category, only
-  choosing a provider.
-- First steps: keyword map (UK geo + informational + comparison), publish the
-  blog on the main domain (`/blog` or `/guides`, not a subdomain), ship
-  city landing pages as a template early even with thin launch-city data.
-- Expectations: 6–12 months to meaningful traffic; the moat thereafter.
+The "best sugar dating sites" listicle ecosystem owns the category's money
+keywords, and a top-3 global player was built on it with zero earned media.
+We buy distribution here rather than fighting for it ourselves.
 
-### 2. Digital PR / earned media (borrowed; the category superpower)
+- Get listed in the listicles that already rank, prioritising UK-facing
+  review/comparison sites — a smaller pond than the US ecosystem Secret
+  Benefits rides, so early placements are winnable and defensible.
+- Run the programme direct/invite-only, not on public CPA network rate
+  cards: we choose who promotes us and keep creative control.
+- Pay CPA on credit purchases, not signups — affiliate incentives align
+  with real revenue and with our activated-profile funnel metric.
+- Approved-creatives clause, actively enforced. Rogue affiliate copy is an
+  ASA liability that attaches to us, and this vertical's affiliates keep
+  publishing fake-fresh reviews of dead brands — the channel must be
+  policed continuously, not just contracted.
+- First steps: ref-code attribution into Postgres (before adopting any
+  affiliate platform), payout terms defined against credit purchases,
+  shortlist of the top 10 UK-relevant review sites, affiliate agreement
+  drafted with the creatives clause.
+- Expectations: the first placements matter more than volume; rankings last
+  exactly as long as payouts do, so this is a permanent cost of revenue, not
+  a launch expense.
 
-Sugar dating is press catnip; the category leader was substantially built on
-it. UK tabloids and mainstream outlets cover this category eagerly.
+### 2. Brand-harvest SEO (owned)
 
-- **Data-driven PR.** Once there's a user base: aggregate, anonymised stats
-  (average allowance by city, demand by region, behavioural trends) packaged
-  as an annual report. Journalists reprint these endlessly; each pickup is a
-  branded backlink that feeds channel 1.
-- **Founder availability.** A named spokesperson willing to do interviews and
-  defend the model articulately. Controversial-but-legal categories get
-  disproportionate coverage per pound spent.
-- **Newsjacking.** Comment quickly (via a PR wire or direct journalist
-  relationships) whenever dating economics, cost-of-living-and-relationships,
-  or dating-app-fatigue stories run.
-- Constraint: prepare lines for the hostile version of every story. The
-  students-funding-their-studies angle is the one journalists will reach for
-  first — engage it honestly with the guardrails in README.md ("The student
-  demographic") rather than dodging it.
-- First steps: press kit page, media@ address, one launch story ("the
-  UK-built, safety-first entrant — age-verified, no app-store data games"),
-  pitch list of UK journalists who cover dating/tech/relationships.
+Secret Benefits does not rank for non-brand terms; its affiliates do, and it
+harvests the branded demand they create. We copy that inversion.
 
-### 3. Affiliate / partner traffic (borrowed; how this vertical actually buys traffic)
+- Own every navigational SERP for our name before anyone else does: brand,
+  "brand login", "brand review", "is brand legit", "brand app". These are
+  our pages, live from launch.
+- The brand name itself is channel infrastructure: memorable, clean,
+  spellable, and free of category keywords that inherit platform risk.
+- A modest blog for long-tail trust queries (safety, how-it-works, is-it-
+  legal-in-the-UK) — trust content, not a content empire.
+- Comparison/alternatives pages ("alternatives to Seeking") stay: they are
+  affiliate-style content we own, catching high-intent switchers.
+- City pages remain worth shipping (cheap, UK-tractable, feed launch-city
+  density) but are a secondary investment, not the flagship.
+- KPI: monthly branded search volume for our name — the signal that
+  affiliate spend is compounding into brand equity rather than accruing
+  only to the affiliates.
 
-Dating is one of the largest affiliate verticals; the infrastructure exists
-precisely because mainstream ads don't work here.
+### 3. Product-led loops (owned)
 
-- **Dating review/comparison sites.** UK-facing "best sugar dating sites"
-  pages convert extremely well; get listed, then pay per lead or per signup.
-- **CPA networks with dating verticals** (e.g. CrakRevenue and similar) give
-  reach into hundreds of small publishers without one-by-one deals.
-- Pay-per-lead (double-opt-in email) or pay-per-sale once payments exist.
-- Non-negotiable: approved-creatives-only clause, and actually police it.
-  Rogue affiliate copy is the top cause of platform bans and bad press.
-- First steps: pick affiliate tracking (even a simple ref-code + Postgres
-  attribution table before adopting a platform), define payouts, approach the
-  top 10 UK-relevant review sites directly.
+Product decisions are the marketing under this model; these are the ones
+with channel weight (build details belong in product plans):
 
-## Tier 2 — test with small budgets once Tier 1 is moving
+- Visible verification badge (video selfie), surfaced in search results and
+  profiles — converts the category's scam anxiety, and doubles as Online
+  Safety Act groundwork.
+- Free for the supply side; credits (not subscriptions) for the paying side.
+- Discretion features (secret album, private profiles) as the brand promise.
+- Referral designed for private 1:1 sharing (link/code), never social
+  broadcast — nobody advertises membership of this category on their feed.
 
-### 4. Dating-friendly ad networks (rented; the paid channel that is open)
+## Tier 2 — paid tests and secondary channels
+
+### 4. Dating-friendly ad networks (rented; vetted placements only)
 
 Networks serving adult and dating inventory accept the category and offer UK
-geo-targeting: ExoClick, TrafficStars, TrafficJunky, Adsterra-class display
-and push networks, plus native networks with dating verticals.
+geo-targeting: ExoClick, TrafficStars, Adsterra-class display and push
+networks, plus native networks with dating verticals.
 
-- Traffic quality is far below Meta/Google; expect low CPCs, low conversion,
-  and a real bot problem. Run with strict attribution and treat as
-  performance arithmetic: cost per activated profile, per side of the
-  marketplace.
-- Creatives must match landing pages and our positioning discipline.
-- First steps: one network, one UK campaign, £500–1k test budget, measure to
+- Placement quality is vetted, not bought blind: no escort-adjacent or
+  sex-work-adjacent placements, even where they convert — the positioning
+  and legal risk outweighs the traffic (see lessons-learned.md on Secret
+  Benefits' referral profile, which we deliberately do not copy).
+- Expect low CPCs, low conversion, and a real bot problem; measure to
   activated-profile level before scaling.
+- First steps: one network, one UK campaign, £500-1k test budget, strict
+  attribution.
 
 ### 5. X (Twitter) — the one big platform partially open (rented)
 
 Dating ads are permitted with restrictions, and organic policy tolerates the
-category. Worth both an organic presence (brand voice, dating-culture
-commentary, PR amplification) and a small paid test. Expect policy volatility;
-never make it a single point of failure.
+category. Under the quiet model the organic presence is low-key and
+functional (brand answers, support, occasional dating-culture posts), not a
+provocation machine. Small paid test is worthwhile; expect policy
+volatility; never a single point of failure.
 
 ### 6. Podcast and newsletter sponsorships (borrowed)
 
 Host-read ads on dating/relationships/lifestyle podcasts and paid slots in
-dating-culture newsletters. Sponsorship acceptance is host-by-host — many will
-decline, some won't; each yes delivers an engaged audience with implicit host
-endorsement. UK podcast ad rates are reasonable at the mid-tail. Use unique
-promo codes for attribution.
+dating-culture newsletters. Acceptance is host-by-host; each yes carries
+implicit host endorsement. Unique promo codes for attribution. Mid-tail UK
+rates are reasonable.
 
-## Tier 3 — situational
-
-### 7. Referral programme (owned/product-led)
-
-Two-sided referral once messaging exists (invite → premium credit for both
-sides). In this category people don't broadcast membership, so expect lower
-K-factor than mainstream apps — design for private 1:1 sharing (link/code),
-not social-feed sharing.
-
-### 8. Out-of-home and print (rented)
-
-Dating brands use OOH heavily precisely because digital is closed. Realistic
-for us post-launch in one city (London) as a PR-multiplier: a witty,
-ASA-cleared campaign generates earned coverage worth more than the media
-spend. Expect TfL and some media owners to refuse the category; billboards,
-taxis and lifestyle print are more accepting. Not a performance channel —
-don't measure it like one.
-
-### 9. Student media and student-city targeting (rented)
+### 7. Student media and student-city targeting (rented)
 
 The supply side skews toward university students funding their studies —
 see "The student demographic" in [README.md](README.md) for the guardrails
-(18+ placements, agency framing, dating proposition in creative).
+(18+ placements, agency framing, dating proposition in creative). The
+RichMeetBeautiful case study maps the criminal line precisely; our copy
+never goes near debt-relief framing.
 
 - University student papers/sites and student-focused publishers with
-  verified adult audiences accept ads mainstream platforms won't; acceptance
-  is editor-by-editor, so pitch several.
-- Time pushes to term rhythm: freshers period and January (post-Christmas,
-  pre-loan-instalment) are when the audience is most reachable — reachable,
-  not desperate; keep the copy on the right side of that line.
-- Layer geography onto other channels: student-heavy postcodes for OOH (#8),
-  student-city geo-targeting in ad-network tests (#4), student-life podcasts
-  in #6.
-- Expect some placements to be refused and the occasional complaint to the
-  ASA; that's priced in, per README.
+  verified adult audiences accept ads mainstream platforms won't; pitch
+  several, expect refusals.
+- Time pushes to term rhythm (freshers period, January), and layer
+  student-city geo onto ad-network tests (#4) and student-life podcasts
+  (#6).
+- Expect the occasional ASA complaint; that's priced in, per README.
 
-### 10. Reddit / forums / communities (rented, organic only)
+## Tier 3 — hedges and reactive channels
 
-Participate honestly (flagged affiliation) where subreddit rules allow;
-sponsor AMAs rather than astroturfing. High effort, modest reach, but good
-for early qualitative feedback and SEO-adjacent brand searches.
+### 8. Press: reactive capability plus an optional annual report (borrowed; downgraded)
+
+We do not launch or grow via PR under this playbook, but a UK company cannot
+be anonymous (Companies House), so journalists will find us — the choice is
+answering well or stonewalling badly.
+
+- Maintain: press kit page, media@ address, one named spokesperson with
+  prepared lines for the hostile version of every category story (the
+  student angle first — engage it honestly per README guardrails).
+- Option, post-scale: an annual UK data report with fact-checkable numbers
+  only — the proven mechanic (Seeking, Ashley Madison) without the
+  provocation. A hedge against affiliate-channel concentration, exercised
+  only when the numbers are defensible.
+
+### 9. Reddit / forums / communities (rented, organic only)
+
+Participate honestly (flagged affiliation) where subreddit rules allow.
+High effort, modest reach; useful for early qualitative feedback and for
+seeding honest answers on the "is brand legit" queries we want to own.
+
+## Not in this playbook
+
+- **OOH/billboards.** A loud-playbook tool with the worst risk profile in
+  our category (see richmeetbeautiful.md); excluded by lessons-learned.md.
+- **Stunt/outrage marketing and engineered ad rejections.** Same exclusion,
+  same evidence.
 
 ## Channel → funnel wiring
 
@@ -146,9 +155,13 @@ Whatever the channel, the destination is owned:
 
 - Every channel lands on the site with UTM/ref attribution captured into
   Postgres at signup (add `acquisition_source` to profiles early — it's a
-  one-column migration now, an unanswerable question later).
+  one-column migration now, an unanswerable question later). Affiliate ref
+  codes ride the same rails.
 - Pre-launch, everything points at the waitlist (email capture) — see
   [launch-plan.md](launch-plan.md).
-- Email is the retention channel: onboarding sequence, "X liked you" digests
-  (already have the notifications infrastructure), win-back. The list is the
-  only audience no platform can take away.
+- Email is the retention channel: onboarding sequence, "X liked you"
+  digests (already have the notifications infrastructure), win-back. The
+  list is the only audience no platform can take away.
+- The two metrics that decide everything (per lessons-learned.md): cost per
+  activated supply-side profile in a target city, per channel; and monthly
+  branded search volume for our name.
