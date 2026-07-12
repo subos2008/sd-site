@@ -16,3 +16,12 @@ describe('APP_CONFIG', () => {
     expect(APP_CONFIG.payments.provider).toBe('faux')
   })
 })
+
+describe('APP_CONFIG.onboarding', () => {
+  it('defines positive baby onboarding minimums', () => {
+    expect(APP_CONFIG.onboarding.babyMinPhotos).toBeGreaterThan(0)
+    expect(Number.isInteger(APP_CONFIG.onboarding.babyMinPhotos)).toBe(true)
+    expect(APP_CONFIG.onboarding.babyMinBioChars).toBeGreaterThan(0)
+    expect(Number.isInteger(APP_CONFIG.onboarding.babyMinBioChars)).toBe(true)
+  })
+})

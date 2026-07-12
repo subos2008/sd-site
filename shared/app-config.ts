@@ -12,6 +12,13 @@ export const APP_CONFIG = {
     allowedVideoMimeTypes: ['video/mp4'] as const,
   },
   age: { minimum: 18 },
+  onboarding: {
+    // Baby (supply-side) activation gate. Structure is the fraud gate;
+    // numbers are tuning — start modest, ratchet toward the incumbent bar
+    // (~6 photos) as density and brand trust grow. See execution/010.
+    babyMinPhotos: 3,
+    babyMinBioChars: 40,
+  },
   payments: {
     provider: 'faux' as 'faux' | 'segpay',
     packages: [

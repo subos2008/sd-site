@@ -10,5 +10,8 @@ INSERT INTO public.app_config(key, value) VALUES ('media', $cfg_media${"maxVideo
 INSERT INTO public.app_config(key, value) VALUES ('age', $cfg_age${"minimum":18}$cfg_age$::jsonb)
   ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
+INSERT INTO public.app_config(key, value) VALUES ('onboarding', $cfg_onboarding${"babyMinPhotos":3,"babyMinBioChars":40}$cfg_onboarding$::jsonb)
+  ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
+
 INSERT INTO public.app_config(key, value) VALUES ('payments', $cfg_payments${"provider":"faux","packages":[{"id":"starter","tokens":50,"priceCents":4999,"currency":"GBP"},{"id":"plus","tokens":150,"priceCents":12999,"currency":"GBP"},{"id":"premium","tokens":500,"priceCents":39999,"currency":"GBP"}]}$cfg_payments$::jsonb)
   ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
