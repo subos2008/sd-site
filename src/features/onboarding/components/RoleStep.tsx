@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useSetRole } from '../hooks'
+import { nextStepPath } from '../steps'
 
 export function RoleStep() {
   const { t } = useTranslation('onboarding')
@@ -11,16 +12,9 @@ export function RoleStep() {
 
   async function choose(role: 'benefactor' | 'baby') {
     setServerError(null)
-    try {
-      const res = await setRole.mutateAsync(role)
-      if (!res.ok) {
-        setServerError(res.error)
-        return
-      }
-      navigate('/onboarding/identity')
-    } catch (e) {
-      setServerError(e instanceof Error ? e.message : 'unknown')
-    }
+    const res = await setRole.mutateAsync(role)
+    if (!res.ok) { setServerError(res.error); return }
+    navigate(nextStepPath(role, 'role'))
   }
 
   return (
