@@ -29,6 +29,9 @@ SELECT is(
 );
 
 -- Seed exactly babyMinPhotos photos (read count from app_config so the test tracks config).
+-- Do this as postgres (RESET ROLE): media_items is deny-all / RPC-only for `authenticated`,
+-- and postgres bypasses RLS, so we both seed and link the photos here rather than reading
+-- media_items back as the owner (which the deny-all posture correctly forbids).
 RESET ROLE;
 INSERT INTO public.media_items (id, owner_id, storage_path, kind, hash, size_bytes, status)
 SELECT gen_random_uuid(),
@@ -39,19 +42,13 @@ FROM generate_series(
        1,
        (SELECT (value->>'babyMinPhotos')::int FROM public.app_config WHERE key = 'onboarding')
      ) g;
+-- Link each seeded media item into profile_photos directly (postgres bypasses RLS).
+INSERT INTO public.profile_photos (profile_id, media_item_id, ordinal)
+SELECT owner_id, id, (row_number() OVER (ORDER BY hash)) - 1
+FROM public.media_items
+WHERE owner_id = '33333333-3333-3333-3333-333333333333';
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = '33333333-3333-3333-3333-333333333333';
-
--- Link each seeded media item as a profile photo.
-DO $$
-DECLARE m record; ord int := 0;
-BEGIN
-  FOR m IN SELECT id FROM public.media_items
-           WHERE owner_id = '33333333-3333-3333-3333-333333333333' ORDER BY hash LOOP
-    PERFORM public.add_to_profile_photos(m.id, ord);
-    ord := ord + 1;
-  END LOOP;
-END $$;
 
 -- 2. Photos now sufficient, but no bio -> tagline_required.
 SELECT is(
