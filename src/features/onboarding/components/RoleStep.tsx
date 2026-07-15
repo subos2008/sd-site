@@ -12,9 +12,13 @@ export function RoleStep() {
 
   async function choose(role: 'benefactor' | 'baby') {
     setServerError(null)
-    const res = await setRole.mutateAsync(role)
-    if (!res.ok) { setServerError(res.error); return }
-    navigate(nextStepPath(role, 'role'))
+    try {
+      const res = await setRole.mutateAsync(role)
+      if (!res.ok) { setServerError(res.error); return }
+      navigate(nextStepPath(role, 'role'))
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : 'unknown')
+    }
   }
 
   return (
