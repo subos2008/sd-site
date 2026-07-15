@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from './auth-context'
 import { viewMyProfile } from '@/features/onboarding/api'
+import { useMyProfile } from '@/features/profile/hooks'
 
 /**
  * RequireAnonymous: blocks signed-in users from /signup, /login, /forgot-password.
@@ -49,6 +50,19 @@ export function RequirePendingOnboarding() {
   if (!me.data) return null
   if (!me.data.ok) return null
   if (me.data.profile.status === 'active') return <Navigate to="/search" replace />
+  return <Outlet />
+}
+
+/**
+ * RequireRoleChosen: blocks post-role onboarding steps until a role is set,
+ * sends users without a role back to /onboarding/role.
+ */
+export function RequireRoleChosen() {
+  const { data, isLoading } = useMyProfile()
+  if (isLoading) return null
+  if (!data?.ok || data.profile.role == null) {
+    return <Navigate to="/onboarding/role" replace />
+  }
   return <Outlet />
 }
 

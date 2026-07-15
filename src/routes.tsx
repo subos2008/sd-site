@@ -3,6 +3,7 @@ import {
   RequireAnonymous,
   RequireOnboarded,
   RequirePendingOnboarding,
+  RequireRoleChosen,
   RootRedirect,
 } from './lib/route-guards'
 import { SignupPage } from './features/auth/pages/SignupPage'
@@ -14,6 +15,7 @@ import { RoleStep } from './features/onboarding/components/RoleStep'
 import { IdentityStep } from './features/onboarding/components/IdentityStep'
 import { LocationStep } from './features/onboarding/components/LocationStep'
 import { PhotoStep } from './features/onboarding/components/PhotoStep'
+import { BioStep } from './features/onboarding/components/BioStep'
 import { DetailsStep } from './features/onboarding/components/DetailsStep'
 import { InterestsStep } from './features/onboarding/components/InterestsStep'
 import { OnboardingCompletePage } from './features/onboarding/pages/OnboardingCompletePage'
@@ -45,12 +47,18 @@ export const routeConfig: RouteObject[] = [
         element: <OnboardingLayout />,
         children: [
           { path: 'role', element: <RoleStep /> },
-          { path: 'identity', element: <IdentityStep /> },
-          { path: 'location', element: <LocationStep /> },
-          { path: 'photo', element: <PhotoStep /> },
-          { path: 'details', element: <DetailsStep /> },
-          { path: 'interests', element: <InterestsStep /> },
-          { path: 'complete', element: <OnboardingCompletePage /> },
+          {
+            element: <RequireRoleChosen />,
+            children: [
+              { path: 'identity', element: <IdentityStep /> },
+              { path: 'location', element: <LocationStep /> },
+              { path: 'photo', element: <PhotoStep /> },
+              { path: 'bio', element: <BioStep /> },
+              { path: 'details', element: <DetailsStep /> },
+              { path: 'interests', element: <InterestsStep /> },
+              { path: 'complete', element: <OnboardingCompletePage /> },
+            ],
+          },
         ],
       },
     ],
