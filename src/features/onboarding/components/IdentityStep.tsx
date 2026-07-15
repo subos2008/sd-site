@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { isAdult } from '@/lib/dob'
-import { useSetIdentity } from '../hooks'
+import { useSetIdentity, useMyProfile } from '../hooks'
+import { nextStepPath } from '../steps'
 
 type FormData = {
   display_name: string
@@ -16,6 +17,8 @@ export function IdentityStep() {
   const { t } = useTranslation('onboarding')
   const navigate = useNavigate()
   const setIdentity = useSetIdentity()
+  const { data: me } = useMyProfile()
+  const role = me?.ok ? me.profile.role : null
   const [serverError, setServerError] = useState<string | null>(null)
   const {
     register,
@@ -46,7 +49,7 @@ export function IdentityStep() {
         setServerError(res.error)
         return
       }
-      navigate('/onboarding/location')
+      navigate(nextStepPath(role ?? 'benefactor', 'identity'))
     } catch (e) {
       setServerError(e instanceof Error ? e.message : 'unknown')
     }

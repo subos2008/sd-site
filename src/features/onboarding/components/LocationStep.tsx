@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { geocodeCity } from '../geocode'
-import { useSetLocation } from '../hooks'
+import { useSetLocation, useMyProfile } from '../hooks'
+import { nextStepPath } from '../steps'
 
 type Resolved = { display_name: string; lat: number; lng: number }
 
@@ -10,6 +11,8 @@ export function LocationStep() {
   const { t } = useTranslation('onboarding')
   const navigate = useNavigate()
   const setLocation = useSetLocation()
+  const { data: me } = useMyProfile()
+  const role = me?.ok ? me.profile.role : null
   const [input, setInput] = useState('')
   const [resolved, setResolved] = useState<Resolved | null>(null)
   const [lookupError, setLookupError] = useState<string | null>(null)
@@ -45,7 +48,7 @@ export function LocationStep() {
         setServerError(res.error)
         return
       }
-      navigate('/onboarding/photo')
+      navigate(nextStepPath(role ?? 'benefactor', 'location'))
     } catch (e) {
       setServerError(e instanceof Error ? e.message : 'unknown')
     }
