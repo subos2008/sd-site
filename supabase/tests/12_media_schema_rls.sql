@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(8);
+SELECT plan(9);
 
 SELECT has_table('public', 'media_items', 'media_items table exists');
 SELECT has_table('public', 'profile_photos', 'profile_photos junction exists');
@@ -19,6 +19,15 @@ INSERT INTO auth.users (id, instance_id, email, raw_app_meta_data, raw_user_meta
                         confirmation_token, email_change_token_new, recovery_token)
 VALUES ('33333333-3333-3333-3333-333333333333', '00000000-0000-0000-0000-000000000000',
         'mediatest@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(),
+        '', '', '');
+
+-- Second user, inserted here (still postgres role) so RLS fixtures can impersonate
+-- it later without needing an authenticated role to write auth.users.
+INSERT INTO auth.users (id, instance_id, email, raw_app_meta_data, raw_user_meta_data,
+                        aud, role, created_at, updated_at,
+                        confirmation_token, email_change_token_new, recovery_token)
+VALUES ('44444444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000000',
+        'mediatest2@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(),
         '', '', '');
 
 INSERT INTO public.media_items (id, owner_id, storage_path, kind, hash, size_bytes, status)
@@ -59,13 +68,20 @@ SELECT throws_ok(
   'duplicate (owner_id, hash) is rejected'
 );
 
--- media_items SELECT denied to plain authenticated direct reads
+-- media_items: owner can SELECT their own rows directly; a non-owner sees none.
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = '33333333-3333-3333-3333-333333333333';
 SELECT is(
   (SELECT count(*) FROM public.media_items WHERE owner_id = '33333333-3333-3333-3333-333333333333')::int,
+  2,
+  'owner can SELECT their own media_items directly'
+);
+
+SET LOCAL "request.jwt.claim.sub" = '44444444-4444-4444-4444-444444444444';
+SELECT is(
+  (SELECT count(*) FROM public.media_items WHERE owner_id = '33333333-3333-3333-3333-333333333333')::int,
   0,
-  'direct SELECT on media_items returns 0 (RLS deny-all)'
+  'non-owner cannot SELECT another user''s media_items (RLS scopes to owner_id = auth.uid())'
 );
 
 SELECT * FROM finish();
