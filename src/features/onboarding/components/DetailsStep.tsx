@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -61,6 +61,7 @@ export function DetailsStep() {
   const setDetails = useSetDetails()
   const { data: me } = useMyProfile()
   const role = me?.ok ? me.profile.role : null
+  const [serverError, setServerError] = useState<string | null>(null)
 
   useEffect(() => {
     if (role === 'benefactor') navigate(nextStepPath('benefactor', 'details'))
@@ -76,25 +77,39 @@ export function DetailsStep() {
   })
 
   async function onSubmit(values: FormData) {
-    await setDetails.mutateAsync({
-      height_cm: values.height_cm,
-      body_type: emptyToNull(values.body_type),
-      hair_color: emptyToNull(values.hair_color),
-      eye_color: emptyToNull(values.eye_color),
-      has_piercings: values.has_piercings,
-      has_tattoos: values.has_tattoos,
-      smoking: emptyToNull(values.smoking),
-      drinking: emptyToNull(values.drinking),
-      education: emptyToNull(values.education),
-      yearly_income_band: emptyToNull(values.yearly_income_band),
-      net_worth_band: emptyToNull(values.net_worth_band),
-    })
-    navigate(nextStepPath('baby', 'details'))
+    setServerError(null)
+    try {
+      const res = await setDetails.mutateAsync({
+        height_cm: values.height_cm,
+        body_type: emptyToNull(values.body_type),
+        hair_color: emptyToNull(values.hair_color),
+        eye_color: emptyToNull(values.eye_color),
+        has_piercings: values.has_piercings,
+        has_tattoos: values.has_tattoos,
+        smoking: emptyToNull(values.smoking),
+        drinking: emptyToNull(values.drinking),
+        education: emptyToNull(values.education),
+        yearly_income_band: emptyToNull(values.yearly_income_band),
+        net_worth_band: emptyToNull(values.net_worth_band),
+      })
+      if (!res.ok) {
+        setServerError(res.error)
+        return
+      }
+      navigate(nextStepPath('baby', 'details'))
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : 'unknown')
+    }
   }
 
   return (
     <form className="flex flex-col gap-3 p-4" onSubmit={handleSubmit(onSubmit)}>
       <h2 className="text-lg font-semibold">{t('details.title')}</h2>
+      {serverError && (
+        <div role="alert" className="text-red-700">
+          {serverError}
+        </div>
+      )}
 
       <label className="flex flex-col gap-1">
         <span>{t('section.details.height', { ns: 'profile' })}</span>

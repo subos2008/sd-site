@@ -18,6 +18,7 @@ export function InterestsStep() {
   const { data, isLoading } = useInterests()
   const setInterests = useSetInterests()
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [serverError, setServerError] = useState<string | null>(null)
   const { data: me } = useMyProfile()
   const role = me?.ok ? me.profile.role : null
 
@@ -49,8 +50,17 @@ export function InterestsStep() {
   }
 
   async function onContinue() {
-    await setInterests.mutateAsync(Array.from(selected))
-    navigate(nextStepPath('baby', 'interests'))
+    setServerError(null)
+    try {
+      const res = await setInterests.mutateAsync(Array.from(selected))
+      if (!res.ok) {
+        setServerError(res.error)
+        return
+      }
+      navigate(nextStepPath('baby', 'interests'))
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : 'unknown')
+    }
   }
 
   return (
@@ -76,6 +86,11 @@ export function InterestsStep() {
           </div>
         </section>
       ))}
+      {serverError && (
+        <div role="alert" className="text-red-700 mt-2">
+          {serverError}
+        </div>
+      )}
       <div className="flex justify-between mt-4">
         <button
           type="button"
