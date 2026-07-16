@@ -39,9 +39,15 @@ const supabase = createClient(url, serviceRoleKey, { auth: { persistSession: fal
 
 const fixtures = [
   { email: 'lex@local.test',  role: 'baby',       display_name: 'Lex',  dob: '1998-04-12',
-    gender: 'female', looking_for: 'male', city: 'London',     lat: 51.5074, lng: -0.1278 },
+    gender: 'female', looking_for: 'male', city: 'London',     lat: 51.5074, lng: -0.1278,
+    tagline: 'London-based, curious and warm',
+    about: 'I offer genuine company, good conversation and an easy, warm presence.',
+    wants: 'A respectful, established partner who values discretion and kindness.' },
   { email: 'sam@local.test',  role: 'baby',       display_name: 'Sam',  dob: '1999-09-03',
-    gender: 'female', looking_for: 'male', city: 'Manchester', lat: 53.4808, lng: -2.2426 },
+    gender: 'female', looking_for: 'male', city: 'Manchester', lat: 53.4808, lng: -2.2426,
+    tagline: 'Manchester student, bright and easy-going',
+    about: 'Fun, grounded company and real conversation for the right person.',
+    wants: 'Someone generous, respectful and discreet who enjoys good company.' },
   { email: 'rick@local.test', role: 'benefactor', display_name: 'Rick', dob: '1980-01-22',
     gender: 'male',   looking_for: 'female', city: 'London',   lat: 51.5074, lng: -0.1278 },
 ]
@@ -58,7 +64,7 @@ for (const f of fixtures) {
   if (!userId) throw new Error(`could not resolve user id for ${f.email}`)
 
   // Apply onboarding fields directly via the service-role client (bypasses RPC role checks).
-  await supabase.from('profiles').update({
+  const { error: updateError } = await supabase.from('profiles').update({
     role: f.role,
     display_name: f.display_name,
     date_of_birth: f.dob,
@@ -67,9 +73,15 @@ for (const f of fixtures) {
     city_display_name: f.city,
     city_lat: f.lat,
     city_lng: f.lng,
+    tagline: f.tagline ?? null,
+    about: f.about ?? null,
+    wants: f.wants ?? null,
     status: 'active',
     last_active_at: new Date().toISOString(),
   }).eq('id', userId)
+  if (updateError) {
+    throw new Error(`failed to update profile for ${f.email}: ${updateError.message}`)
+  }
 
   console.log(`seeded ${f.email}`)
 }
