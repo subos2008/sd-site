@@ -703,18 +703,29 @@ git push
 
 ---
 
-### Task 6: PhotoStep — role-aware (benefactor optional; baby minimum grid)
+### Task 6: PhotoStep — split into per-role components (benefactor optional; baby minimum grid)
+
+The two photo screens are genuinely different jobs (baby = manufacture inventory: a
+required grid of N photos; benefactor = one optional snap on the way to the catalog).
+Rather than one component branching on role internally, split them into two focused
+components with a thin role dispatcher. The shared `/onboarding/photo` route is unchanged
+(Tasks 3–5 untouched); the dispatcher reads role and renders the right screen.
 
 **Files:**
-- Modify: `src/features/onboarding/components/PhotoStep.tsx`
+- Create: `src/features/onboarding/components/BabyPhotoStep.tsx`
+- Create: `src/features/onboarding/components/BenefactorPhotoStep.tsx`
+- Modify: `src/features/onboarding/components/PhotoStep.tsx` (becomes a thin dispatcher)
 - Create: `src/features/onboarding/__tests__/PhotoStep.test.tsx`
 - Modify: `src/i18n/en/onboarding.json`
 
 **Interfaces:**
 - Consumes: `useMyProfile` (photos array + role), `useUploadProfilePhoto` (existing, accepts `{ file, ordinal }`), `nextStepPath`, `APP_CONFIG.onboarding.babyMinPhotos` from `@shared/app-config`.
 - Behaviour:
-  - **benefactor:** single optional upload; a "Continue" appears after an upload AND a "Skip for now" is always available; both call `nextStepPath('benefactor', 'photo')` → `/onboarding/complete`.
-  - **baby:** grid of `babyMinPhotos` "+" placeholders (filled slots show a thumbnail), progress line "N of M", Continue enabled only when `photos.length >= babyMinPhotos`; navigates `nextStepPath('baby', 'photo')` → `/onboarding/bio`. No skip.
+  - **benefactor** (`BenefactorPhotoStep`): single optional upload; a "Continue" appears after an upload AND a "Skip for now" is always available; both call `nextStepPath('benefactor', 'photo')` → `/onboarding/complete`.
+  - **baby** (`BabyPhotoStep`): grid of `babyMinPhotos` "+" placeholders (filled slots show a check), progress line "N of M", Continue enabled only when `photos.length >= babyMinPhotos`; navigates `nextStepPath('baby', 'photo')` → `/onboarding/bio`. No skip.
+  - **dispatcher** (`PhotoStep`): reads role from `useMyProfile`; renders `<BabyPhotoStep/>` for baby, else `<BenefactorPhotoStep/>`. Returns nothing while the profile query is loading. (`RequireRoleChosen` guarantees a role by the time this route mounts; defaulting the non-baby branch to the benefactor screen is safe.)
+
+**Error handling:** both screens wrap `upload.mutateAsync` in try/catch that sets a `serverError` shown in a `role="alert"` — this repo requires surfacing errors, never swallowing them. Do not drop it.
 
 - [ ] **Step 1: Add i18n keys**
 
@@ -733,7 +744,7 @@ In `src/i18n/en/onboarding.json`, add these flat keys (alongside the existing `p
 
 - [ ] **Step 2: Write the failing PhotoStep tests**
 
-Create `src/features/onboarding/__tests__/PhotoStep.test.tsx`. Use the existing test scaffolding pattern (MemoryRouter + QueryClientProvider + MSW + `await initI18n()`; mirror `DetailsStep.test.tsx`). Assert the role branch renders and the baby Continue is gated:
+Create `src/features/onboarding/__tests__/PhotoStep.test.tsx`. It renders the dispatcher `<PhotoStep/>` with a `view_my_profile` MSW mock for each role, which exercises the dispatch plus the rendered sub-component. Uses the repo's established scaffolding (top-level `await initI18n()`, `mswServer` from `../../../test-setup`, `createQueryClient`, a `wrap()` helper):
 
 ```tsx
 import { describe, expect, it } from 'vitest'
@@ -822,9 +833,9 @@ describe('PhotoStep (benefactor)', () => {
 Run: `pnpm vitest run src/features/onboarding/__tests__/PhotoStep.test.tsx`
 Expected: FAIL — current PhotoStep has no role branch, no skip button, no gated Continue.
 
-- [ ] **Step 4: Rewrite PhotoStep**
+- [ ] **Step 4: Create `BabyPhotoStep`**
 
-Replace `src/features/onboarding/components/PhotoStep.tsx`:
+Create `src/features/onboarding/components/BabyPhotoStep.tsx`:
 
 ```tsx
 import { useState } from 'react'
@@ -834,14 +845,89 @@ import { APP_CONFIG } from '@shared/app-config'
 import { useUploadProfilePhoto, useMyProfile } from '../hooks'
 import { nextStepPath } from '../steps'
 
-export function PhotoStep() {
+export function BabyPhotoStep() {
   const { t } = useTranslation('onboarding')
   const navigate = useNavigate()
   const upload = useUploadProfilePhoto()
   const { data: me } = useMyProfile()
   const [serverError, setServerError] = useState<string | null>(null)
 
-  const role = me?.ok ? me.profile.role : null
+  const photos = me?.ok ? me.profile.photos : []
+  const min = APP_CONFIG.onboarding.babyMinPhotos
+  const met = photos.length >= min
+  const slots = Math.max(min, photos.length)
+
+  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.currentTarget.value = ''
+    if (!file) return
+    setServerError(null)
+    try {
+      await upload.mutateAsync({ file, ordinal: photos.length })
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : 'unknown')
+    }
+  }
+
+  return (
+    <section className="flex flex-col gap-3 p-4 max-w-sm">
+      <h2 className="text-xl">{t('photo.baby.title')}</h2>
+      <p className="text-sm text-slate-600">{t('photo.baby.subtitle')}</p>
+      <p className="text-sm">{t('photo.baby.progress', { count: photos.length, min })}</p>
+      <div className="grid grid-cols-3 gap-2">
+        {Array.from({ length: slots }).map((_, i) => {
+          const filled = i < photos.length
+          return (
+            <label
+              key={i}
+              className="relative aspect-square bg-slate-200 rounded flex items-center justify-center cursor-pointer text-2xl text-slate-500"
+            >
+              {filled ? '✓' : '+'}
+              <span className="sr-only">{t('photo.baby.addSlot')}</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onFileChange}
+                disabled={upload.isPending}
+              />
+            </label>
+          )
+        })}
+      </div>
+      {upload.isPending && <p>{t('photo.uploading')}</p>}
+      {serverError && <div role="alert" className="text-red-700">{serverError}</div>}
+      <button
+        type="button"
+        className="bg-slate-800 text-white py-2 rounded disabled:opacity-50"
+        disabled={!met}
+        onClick={() => navigate(nextStepPath('baby', 'photo'))}
+      >
+        {t('photo.baby.continue')}
+      </button>
+    </section>
+  )
+}
+```
+
+- [ ] **Step 5: Create `BenefactorPhotoStep`**
+
+Create `src/features/onboarding/components/BenefactorPhotoStep.tsx`:
+
+```tsx
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+import { useUploadProfilePhoto, useMyProfile } from '../hooks'
+import { nextStepPath } from '../steps'
+
+export function BenefactorPhotoStep() {
+  const { t } = useTranslation('onboarding')
+  const navigate = useNavigate()
+  const upload = useUploadProfilePhoto()
+  const { data: me } = useMyProfile()
+  const [serverError, setServerError] = useState<string | null>(null)
+
   const photos = me?.ok ? me.profile.photos : []
 
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -856,51 +942,6 @@ export function PhotoStep() {
     }
   }
 
-  if (role === 'baby') {
-    const min = APP_CONFIG.onboarding.babyMinPhotos
-    const met = photos.length >= min
-    const slots = Math.max(min, photos.length)
-    return (
-      <section className="flex flex-col gap-3 p-4 max-w-sm">
-        <h2 className="text-xl">{t('photo.baby.title')}</h2>
-        <p className="text-sm text-slate-600">{t('photo.baby.subtitle')}</p>
-        <p className="text-sm">{t('photo.baby.progress', { count: photos.length, min })}</p>
-        <div className="grid grid-cols-3 gap-2">
-          {Array.from({ length: slots }).map((_, i) => {
-            const filled = i < photos.length
-            return (
-              <label
-                key={i}
-                className="relative aspect-square bg-slate-200 rounded flex items-center justify-center cursor-pointer text-2xl text-slate-500"
-              >
-                {filled ? '✓' : '+'}
-                <span className="sr-only">{t('photo.baby.addSlot')}</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={onFileChange}
-                  disabled={upload.isPending}
-                />
-              </label>
-            )
-          })}
-        </div>
-        {upload.isPending && <p>{t('photo.uploading')}</p>}
-        {serverError && <div role="alert" className="text-red-700">{serverError}</div>}
-        <button
-          type="button"
-          className="bg-slate-800 text-white py-2 rounded disabled:opacity-50"
-          disabled={!met}
-          onClick={() => navigate(nextStepPath('baby', 'photo'))}
-        >
-          {t('photo.baby.continue')}
-        </button>
-      </section>
-    )
-  }
-
-  // Benefactor: single optional photo.
   return (
     <section className="flex flex-col gap-3 p-4 max-w-sm">
       <h2 className="text-xl">{t('photo.benefactor.title')}</h2>
@@ -934,25 +975,40 @@ export function PhotoStep() {
 }
 ```
 
-- [ ] **Step 5: Run PhotoStep tests**
+- [ ] **Step 6: Replace `PhotoStep` with the dispatcher**
+
+Replace `src/features/onboarding/components/PhotoStep.tsx`:
+
+```tsx
+import { useMyProfile } from '../hooks'
+import { BabyPhotoStep } from './BabyPhotoStep'
+import { BenefactorPhotoStep } from './BenefactorPhotoStep'
+
+export function PhotoStep() {
+  const { data: me, isLoading } = useMyProfile()
+  if (isLoading) return null
+  const role = me?.ok ? me.profile.role : null
+  return role === 'baby' ? <BabyPhotoStep /> : <BenefactorPhotoStep />
+}
+```
+
+- [ ] **Step 7: Run PhotoStep tests**
 
 Run: `pnpm vitest run src/features/onboarding/__tests__/PhotoStep.test.tsx`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Typecheck + lint + full unit suite**
+- [ ] **Step 8: Typecheck + lint + full unit suite**
 
 Run: `pnpm typecheck && pnpm lint && pnpm vitest run`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
-git add src/features/onboarding/components/PhotoStep.tsx src/features/onboarding/__tests__/PhotoStep.test.tsx src/i18n/en/onboarding.json
-git commit -m "Make PhotoStep role-aware: benefactor optional, baby minimum grid"
+git add src/features/onboarding/components/PhotoStep.tsx src/features/onboarding/components/BabyPhotoStep.tsx src/features/onboarding/components/BenefactorPhotoStep.tsx src/features/onboarding/__tests__/PhotoStep.test.tsx src/i18n/en/onboarding.json
+git commit -m "Split PhotoStep into per-role BabyPhotoStep and BenefactorPhotoStep via a dispatcher"
 git push
 ```
-
----
 
 ### Task 7: BioStep — required tagline + split bio (baby)
 
@@ -1668,3 +1724,5 @@ _(The executor fills this section as reality meets the spec, one commit per devi
 - **Spec constraint #6 is already satisfied by plan 03.** The split-bio columns (`tagline`, `about`, `wants`) and the `set_profile_bio` RPC already exist, and `view_profile` / `view_my_profile` already return all three (`_profile_card_for_viewer` already returns `tagline`). So NO schema migration and NO view-RPC changes are required — the plan reuses the existing columns/RPC and only adds enforcement in `complete_onboarding`. If a task appears to need a bio migration, it does not.
 - **No onboarding progress UI exists.** The spec's constraint that "step indicators/progress UI assume one fixed step sequence" does not hold: `OnboardingLayout.tsx` is a title + `<Outlet/>` with no step list or indicator. There is nothing to make role-aware there, so no task touches it. If a progress indicator is wanted later, `OnboardingLayout` is the place and `stepsForRole` already provides the per-role list.
 - **Onboarding has no central sequence today.** Each step hard-codes its own `navigate('/onboarding/<next>')`. Task 3 introduces `steps.ts` as the single fork point; Tasks 4–8 replace each hard-coded target with `nextStepPath`. This is a deliberate (small) structural change, not incidental.
+- **Task 4 dropped and then restored error surfacing.** The plan's Task 4 snippet for `RoleStep.choose` omitted the pre-existing `try/catch` that surfaces thrown `mutateAsync` errors to the user; the review caught it and a fix commit restored it (per the repo's error-surfacing rule). The remaining step tasks preserve their existing `try/catch`.
+- **Task 6 split into per-role components (user decision, 2026-07-16).** The plan originally had one `PhotoStep` branching on role internally. Per the user, the two photo screens are genuinely different jobs (baby = required photo grid to manufacture inventory; benefactor = one optional snap), so Task 6 now produces two focused components — `BabyPhotoStep` and `BenefactorPhotoStep` — with `PhotoStep` reduced to a thin role dispatcher. The shared `/onboarding/photo` route and the step sequence are unchanged (Tasks 3–5 untouched). This is the agreed component-sharing philosophy: share step components that are identical across roles (identity, location), split those that genuinely differ.
