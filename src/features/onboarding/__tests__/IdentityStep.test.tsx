@@ -27,7 +27,7 @@ describe('IdentityStep', () => {
         HttpResponse.json({
           ok: true,
           profile: {
-            profile_id: '00000000-0000-0000-0000-000000000001',
+            profile_id: '00000000-0000-4000-8000-000000000001',
             role: 'benefactor', status: 'pending_onboarding',
             display_name: null, age: null, date_of_birth: null,
             gender: null, looking_for: null, city_display_name: null,

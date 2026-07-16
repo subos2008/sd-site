@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useInterests, useSetInterests } from '../hooks'
+import { useInterests, useSetInterests, useMyProfile } from '../hooks'
+import { nextStepPath } from '../steps'
 
 type InterestItem = {
   id: string
@@ -17,6 +18,12 @@ export function InterestsStep() {
   const { data, isLoading } = useInterests()
   const setInterests = useSetInterests()
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const { data: me } = useMyProfile()
+  const role = me?.ok ? me.profile.role : null
+
+  useEffect(() => {
+    if (role === 'benefactor') navigate(nextStepPath('benefactor', 'interests'))
+  }, [role, navigate])
 
   if (isLoading || !data || !data.ok) {
     return <p className="p-4">{t('interests.title')}…</p>
@@ -43,7 +50,7 @@ export function InterestsStep() {
 
   async function onContinue() {
     await setInterests.mutateAsync(Array.from(selected))
-    navigate('/onboarding/complete')
+    navigate(nextStepPath('baby', 'interests'))
   }
 
   return (
@@ -72,7 +79,7 @@ export function InterestsStep() {
       <div className="flex justify-between mt-4">
         <button
           type="button"
-          onClick={() => navigate('/onboarding/complete')}
+          onClick={() => navigate(nextStepPath('baby', 'interests'))}
           className="underline"
         >
           {t('interests.skip')}

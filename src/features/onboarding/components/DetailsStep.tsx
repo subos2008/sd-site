@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useSetDetails } from '../hooks'
+import { useSetDetails, useMyProfile } from '../hooks'
+import { nextStepPath } from '../steps'
 import {
   BodyType,
   HairColor,
@@ -57,6 +59,12 @@ export function DetailsStep() {
   const { t } = useTranslation('onboarding')
   const navigate = useNavigate()
   const setDetails = useSetDetails()
+  const { data: me } = useMyProfile()
+  const role = me?.ok ? me.profile.role : null
+
+  useEffect(() => {
+    if (role === 'benefactor') navigate(nextStepPath('benefactor', 'details'))
+  }, [role, navigate])
 
   const {
     register,
@@ -81,7 +89,7 @@ export function DetailsStep() {
       yearly_income_band: emptyToNull(values.yearly_income_band),
       net_worth_band: emptyToNull(values.net_worth_band),
     })
-    navigate('/onboarding/interests')
+    navigate(nextStepPath('baby', 'details'))
   }
 
   return (
@@ -171,7 +179,7 @@ export function DetailsStep() {
       <div className="flex justify-between mt-4">
         <button
           type="button"
-          onClick={() => navigate('/onboarding/interests')}
+          onClick={() => navigate(nextStepPath('baby', 'details'))}
           className="underline"
         >
           {t('details.skip')}
