@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next'
 const KEY = 'sd.nudge.completeProfile.dismissed'
 
 interface Props {
-  role: 'benefactor' | 'baby' | null
+  profileRole: 'benefactor' | 'baby' | null
   hasDetails: boolean
   hasInterests: boolean
 }
 
-export function CompleteProfileNudge({ role, hasDetails, hasInterests }: Props) {
+export function CompleteProfileNudge({ profileRole, hasDetails, hasInterests }: Props) {
   const { t } = useTranslation('profile')
   const [dismissed, setDismissed] = useState(() => localStorage.getItem(KEY) === '1')
 
-  if (role !== 'benefactor') return null
+  if (profileRole !== 'benefactor') return null
   if (hasDetails && hasInterests) return null
   if (dismissed) return null
 

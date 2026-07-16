@@ -37,9 +37,6 @@ export default defineConfig([
     rules: {
       ...react.configs.recommended.rules,
       ...jsxA11y.configs.recommended.rules,
-      // Custom components may have a `role` prop unrelated to the DOM
-      // aria role attribute (e.g. a user role like "benefactor" | "baby").
-      'jsx-a11y/aria-role': ['error', { ignoreNonDOM: true }],
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
     },

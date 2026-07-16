@@ -28,7 +28,11 @@ export function MyProfilePage() {
           {p.gender} · looking for {p.looking_for}
         </p>
       </header>
-      <CompleteProfileNudge role={p.role} hasDetails={hasDetails} hasInterests={hasInterests} />
+      <CompleteProfileNudge
+        profileRole={p.role}
+        hasDetails={hasDetails}
+        hasInterests={hasInterests}
+      />
       <dl className="text-sm grid grid-cols-2 gap-2">
         <dt className="text-slate-500">{t('yourStatus')}</dt>
         <dd>{p.status}</dd>
