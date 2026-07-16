@@ -43,5 +43,13 @@
   "interests.title": "Pick a few interests",
   "interests.subtitle": "Choose up to 20.",
   "interests.skip": "Skip for now",
-  "interests.continue": "Continue"
+  "interests.continue": "Continue",
+  "bio.title": "Tell them about you",
+  "bio.subtitle": "This is what members read before they reach out. Make it yours.",
+  "bio.tagline.label": "Your tagline",
+  "bio.tagline.placeholder": "One line that sounds like you",
+  "bio.about.label": "What do you have to offer",
+  "bio.wants.label": "What are you looking for",
+  "bio.minChars": "At least {{min}} characters",
+  "bio.continue": "Continue"
 }
