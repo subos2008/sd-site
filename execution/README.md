@@ -18,7 +18,7 @@ Numbered, high-level specs for things that need doing. Convention:
 
 | Spec | Status | Plan |
 |---|---|---|
-| [010-separate-onboarding-flows.md](010-separate-onboarding-flows.md) | Planned | [2026-07-12-010-separate-onboarding-flows.md](../docs/superpowers/plans/2026-07-12-010-separate-onboarding-flows.md) |
+| [010-separate-onboarding-flows.md](010-separate-onboarding-flows.md) | Done | [2026-07-12-010-separate-onboarding-flows.md](../docs/superpowers/plans/2026-07-12-010-separate-onboarding-flows.md) |
 | [015-location-gazetteer-and-distance.md](015-location-gazetteer-and-distance.md) | Not started | - |
 | [020-brand-name-and-corporate-structure.md](020-brand-name-and-corporate-structure.md) | Not started | - |
 | [030-dating-affiliate-expert.md](030-dating-affiliate-expert.md) | Not started | - |
