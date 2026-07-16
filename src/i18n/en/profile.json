@@ -30,5 +30,8 @@
   "edit.save": "Save",
   "edit.cancel": "Cancel",
   "edit.saving": "Saving…",
-  "edit.error": "Couldn't save — please retry."
+  "edit.error": "Couldn't save — please retry.",
+  "nudge.completeProfile.title": "Finish your profile",
+  "nudge.completeProfile.body": "Add your details and interests below to get better matches.",
+  "nudge.completeProfile.dismiss": "Dismiss"
 }

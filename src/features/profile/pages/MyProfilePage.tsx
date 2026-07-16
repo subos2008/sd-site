@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useMyProfile } from '../hooks'
 import { BioSection } from '../components/BioSection'
+import { CompleteProfileNudge } from '../components/CompleteProfileNudge'
 import { DetailsSection } from '../components/DetailsSection'
 import { InterestsSection } from '../components/InterestsSection'
 import { PhotoGallery } from '../components/PhotoGallery'
@@ -13,6 +14,8 @@ export function MyProfilePage() {
   if (error || !data?.ok) return <p className="p-4 text-red-700">{t('notFound')}</p>
 
   const p = data.profile
+  const hasDetails = p.height_cm != null || p.body_type != null || p.education != null
+  const hasInterests = p.interests.length > 0
   return (
     <main className="p-4 space-y-4">
       <header>
@@ -25,6 +28,7 @@ export function MyProfilePage() {
           {p.gender} · looking for {p.looking_for}
         </p>
       </header>
+      <CompleteProfileNudge role={p.role} hasDetails={hasDetails} hasInterests={hasInterests} />
       <dl className="text-sm grid grid-cols-2 gap-2">
         <dt className="text-slate-500">{t('yourStatus')}</dt>
         <dd>{p.status}</dd>
