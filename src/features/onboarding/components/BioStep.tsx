@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { APP_CONFIG } from '@shared/app-config'
@@ -11,7 +11,14 @@ export function BioStep() {
   const navigate = useNavigate()
   const setBio = useSetBio()
   const { data: me } = useMyProfile()
+  const role = me?.ok ? me.profile.role : null
   const min = APP_CONFIG.onboarding.babyMinBioChars
+
+  // Bio is a baby-only step. If a benefactor lands here (e.g. manual URL),
+  // send them forward — consistent with DetailsStep / InterestsStep.
+  useEffect(() => {
+    if (role === 'benefactor') navigate(nextStepPath('benefactor', 'bio'))
+  }, [role, navigate])
 
   const [tagline, setTagline] = useState(me?.ok ? (me.profile.tagline ?? '') : '')
   const [about, setAbout] = useState(me?.ok ? (me.profile.about ?? '') : '')
