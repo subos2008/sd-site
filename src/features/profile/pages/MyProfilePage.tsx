@@ -46,6 +46,7 @@ export function MyProfilePage() {
       <DetailsSection
         height_cm={p.height_cm}
         body_type={p.body_type}
+        ethnicity={p.ethnicity}
         hair_color={p.hair_color}
         eye_color={p.eye_color}
         has_piercings={p.has_piercings}

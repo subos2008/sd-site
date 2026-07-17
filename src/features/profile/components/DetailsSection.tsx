@@ -6,6 +6,7 @@ import { EditableSection } from './EditableSection'
 import { useSetDetails } from '../hooks'
 import {
   BodyType,
+  Ethnicity,
   HairColor,
   EyeColor,
   Smoking,
@@ -18,6 +19,7 @@ import {
 interface Props {
   height_cm: number | null
   body_type: string | null
+  ethnicity: string | null
   hair_color: string | null
   eye_color: string | null
   has_piercings: boolean | null
@@ -34,6 +36,7 @@ const orEmpty = <T extends z.ZodTypeAny>(s: T) => z.union([z.literal(''), s.null
 const Schema = z.object({
   height_cm: z.number().int().min(120).max(240).nullable(),
   body_type: orEmpty(BodyType),
+  ethnicity: orEmpty(Ethnicity),
   hair_color: orEmpty(HairColor),
   eye_color: orEmpty(EyeColor),
   has_piercings: z.boolean().nullable(),
@@ -70,6 +73,8 @@ export function DetailsSection(props: Props) {
           <dd>{props.height_cm == null ? '—' : `${props.height_cm} cm`}</dd>
           <dt className="font-medium">{t('section.details.body_type')}</dt>
           <dd>{fmt(props.body_type)}</dd>
+          <dt className="font-medium">{t('section.details.ethnicity')}</dt>
+          <dd>{fmt(props.ethnicity)}</dd>
           <dt className="font-medium">{t('section.details.hair_color')}</dt>
           <dd>{fmt(props.hair_color)}</dd>
           <dt className="font-medium">{t('section.details.eye_color')}</dt>
@@ -115,6 +120,7 @@ function DetailsForm({
     defaultValues: {
       height_cm: props.height_cm,
       body_type: (props.body_type ?? null) as FormData['body_type'],
+      ethnicity: (props.ethnicity ?? null) as FormData['ethnicity'],
       hair_color: (props.hair_color ?? null) as FormData['hair_color'],
       eye_color: (props.eye_color ?? null) as FormData['eye_color'],
       has_piercings: props.has_piercings,
@@ -131,6 +137,7 @@ function DetailsForm({
     await setDetails.mutateAsync({
       height_cm: values.height_cm,
       body_type: emptyToNull(values.body_type),
+      ethnicity: emptyToNull(values.ethnicity),
       hair_color: emptyToNull(values.hair_color),
       eye_color: emptyToNull(values.eye_color),
       has_piercings: values.has_piercings,
@@ -165,6 +172,13 @@ function DetailsForm({
         label={t('section.details.body_type')}
         options={['slim', 'athletic', 'average', 'curvy', 'plus_size', 'muscular']}
         register={register}
+      />
+      <EnumSelect
+        name="ethnicity"
+        label={t('section.details.ethnicity')}
+        options={['white', 'black', 'asian', 'hispanic', 'other']}
+        register={register}
+        renderLabel={(v) => t(`option.ethnicity.${v}`)}
       />
       <EnumSelect
         name="hair_color"
@@ -248,11 +262,13 @@ function EnumSelect({
   label,
   options,
   register,
+  renderLabel,
 }: {
   name: keyof FormData
   label: string
   options: readonly string[]
   register: ReturnType<typeof useForm<FormData>>['register']
+  renderLabel?: (v: string) => string
 }) {
   return (
     <label className="flex flex-col gap-1">
@@ -261,7 +277,7 @@ function EnumSelect({
         <option value="">—</option>
         {options.map((v) => (
           <option key={v} value={v}>
-            {v.replace(/_/g, ' ')}
+            {renderLabel ? renderLabel(v) : v.replace(/_/g, ' ')}
           </option>
         ))}
       </select>

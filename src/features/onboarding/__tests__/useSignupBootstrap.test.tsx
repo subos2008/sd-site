@@ -9,6 +9,29 @@ import { AuthContext } from '@/lib/auth-context'
 import { createQueryClient } from '@/lib/query-client'
 import type { ReactNode } from 'react'
 
+function baseProfile(overrides: { body_type: string | null; ethnicity: string | null }) {
+  return {
+    profile_id: '00000000-0000-4000-8000-000000000003',
+    role: 'baby', status: 'pending_onboarding',
+    display_name: 'B', age: 25, date_of_birth: '1999-01-01',
+    gender: 'female', looking_for: 'male', city_display_name: 'London',
+    tagline: null, about: null, wants: null,
+    height_cm: null, body_type: overrides.body_type, ethnicity: overrides.ethnicity,
+    hair_color: null, eye_color: null,
+    has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
+    education: null, yearly_income_band: null, net_worth_band: null,
+    token_balance: 0, photos: [], interests: [],
+  }
+}
+
+function mockViewMyProfile(overrides: { body_type: string | null; ethnicity: string | null }) {
+  mswServer.use(
+    http.post('http://127.0.0.1:54321/rest/v1/rpc/view_my_profile', () =>
+      HttpResponse.json({ ok: true, profile: baseProfile(overrides) }),
+    ),
+  )
+}
+
 function wrap(meta: Record<string, unknown>) {
   const session = { user: { id: 'u1', user_metadata: meta } } as unknown as Session
   function Wrapper({ children }: { children: ReactNode }) {
@@ -26,6 +49,7 @@ function wrap(meta: Record<string, unknown>) {
 describe('useSignupBootstrap', () => {
   it('commits body_type + ethnicity from metadata via set_profile_details', async () => {
     let body: unknown = null
+    mockViewMyProfile({ body_type: null, ethnicity: null })
     mswServer.use(
       http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_details', async ({ request }) => {
         body = await request.json()
@@ -39,6 +63,7 @@ describe('useSignupBootstrap', () => {
 
   it('does nothing when metadata has no captured fields', async () => {
     let called = false
+    mockViewMyProfile({ body_type: null, ethnicity: null })
     mswServer.use(
       http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_details', () => {
         called = true
@@ -46,6 +71,20 @@ describe('useSignupBootstrap', () => {
       }),
     )
     renderHook(() => useSignupBootstrap(), { wrapper: wrap({}) })
+    await new Promise((r) => setTimeout(r, 50))
+    expect(called).toBe(false)
+  })
+
+  it('skips the commit when the profile already has body_type/ethnicity set', async () => {
+    let called = false
+    mockViewMyProfile({ body_type: 'athletic', ethnicity: 'white' })
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_details', () => {
+        called = true
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    renderHook(() => useSignupBootstrap(), { wrapper: wrap({ body_type: 'curvy', ethnicity: 'asian' }) })
     await new Promise((r) => setTimeout(r, 50))
     expect(called).toBe(false)
   })
