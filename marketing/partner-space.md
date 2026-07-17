@@ -12,11 +12,13 @@
   $3.5k/fortnight retainer may be the cheapest way to buy the answers
   the research couldn't verify. Rev-share willingness unknown — first
   question.
-- **Rate benchmarks to beat:** Seeking pays affiliates a flat $140/sale
-  via CrakRevenue (UK tier-1); LoveRevenue's public revshare card tops
-  at 80% lifetime; Seeking's in-house program allegedly $2 CPL + 45%
-  revshare (unverified). **Secret Benefits offers no revshare at all**,
-  so a ~50%+ lifetime-revshare offer is differentiated shelf space.
+- **What the market actually offers is a MENU, not a single model** —
+  see "What incumbent programs offer and pay" below. Bounties for male
+  purchases dominate ($60–300/sale), registrations (incl. female) fetch
+  ~$2, revshare is offered as an option (45–80% where visible) but
+  rarely the whole program. **Secret Benefits offers no revshare at
+  all** — a revshare lane remains differentiated shelf space, offered
+  within a menu (see affiliate-program-terms.md).
 - **Both gaps now closed by follow-up research (2026-07-17):**
   [uk-review-sites.md](uk-review-sites.md) maps who owns the UK review
   shelf (top target: datinghelp.co.uk / Webels ApS, Denmark — verified
@@ -102,6 +104,44 @@ PPS €70 (0–9 sales) → €130 (40+ sales, up to €200 initial), CPL up to
 €20–25, Net-15/twice-monthly payouts. This is the rate card affiliates
 will compare our program against — and a template for how to present
 tiers.
+
+## What incumbent programs offer and pay
+
+The consolidated reference of observed market practice (2026-07-17;
+sources: verified deep-research findings plus the follow-up agent sweeps
+recorded in uk-review-sites.md / supply-side-channels.md — confidence
+marked per row). This is the intelligence the program design in
+affiliate-program-terms.md is anchored to.
+
+| Program | Structure offered | Rates observed | Confidence |
+|---|---|---|---|
+| Secret Benefits (in-house) | CPA + CPL only — no revshare | Private, application-gated | Verified (site JS bundle) |
+| Seeking via CrakRevenue | Flat PPS | $140/sale, UK tier-1 | Verified (offer page) |
+| Seeking in-house (Reflex Media, partners.reflexmedia.com) | Hybrid CPL + revshare | $2/lead + 45% of sales | Unverified (affpaying listing) |
+| SugarDaddyMeet (in-house) | Gender-split CPA ladder + two-tier | $2/confirmed reg, $60/paid member, $150/MALE order, 10% two-tier, 90-day cookie | Single source (affpaying) |
+| SugarDaddy.co.uk (in-house) | CPA + CPL, "both male and female signups" | Not published | Indexed page text; page blocks bots — confirm |
+| MySugarDaddy (msd-affiliates.com) | Menu: CPA / RevShare / Hybrid | Not published; claims ~75%-female base | Single source |
+| LoveRevenue (Victoria Milan/NextLove) | Menu: revshare OR tiered PPS OR CPL | Up to 80% lifetime; PPS €70–130 (initial to €200); CPL to €20–25; Net-15 2x/month | Verified (rate card) |
+| Sugar-Daters.com | Premium-signup bounty | $150–300/premium signup | Single source (own page) |
+| Sugar Baby Adelaide / OnlineSugarDaddy.org | Small programs, gender-split bounties | $60–150/order, ~$2 CPL | Single source (own pages) |
+| CrakRevenue network norm | Multi-CPA menu (PPS/PPL/RevShare) | PPS $65–90 for named brands; revshare to ~65% lifetime | Verified + third-party |
+
+Structural reads from the table (what "what's being done" actually is):
+
+1. **Menus are the norm** — most programs let the affiliate pick the
+   instrument; single-instrument programs (Secret Benefits, the Crak
+   Seeking offer) are the exception.
+2. **Gender-split is the norm in this niche** — big bounties attach to
+   male purchases; registrations (the female side) are bought at ~$2 or
+   acquired by free-for-women product design.
+3. **Recruitment happens via in-house programs listed on
+   Affpaying/OfferVault and via niche affiliates** — not by putting the
+   sugar brand on mainstream CPA network shelves (only Seeking is on
+   CrakRevenue from our set).
+4. **Terms are private by default** — public rate cards are the
+   exception (LoveRevenue); most terms are negotiated after an
+   application form. Publishing a clear menu is itself mildly
+   differentiated.
 
 ## Competitor programs
 
