@@ -16,7 +16,9 @@ import { LandingPage } from '@/features/landing/pages/LandingPage'
  */
 function useSignOutDeadSession(dead: boolean) {
   useEffect(() => {
-    if (dead) void supabase.auth.signOut()
+    // scope: 'local' — clearing storage must not depend on the auth server
+    // accepting a token it already considers invalid.
+    if (dead) void supabase.auth.signOut({ scope: 'local' })
   }, [dead])
 }
 
