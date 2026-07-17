@@ -13,6 +13,7 @@ export function useSetProfileInterests() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: setProfileInterests,
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }

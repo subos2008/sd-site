@@ -20,6 +20,7 @@ export function useSetRole() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: setProfileRole,
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
@@ -34,6 +35,7 @@ export function useSetIdentity() {
       looking_for: 'male' | 'female' | 'any'
     }) =>
       setProfileIdentity(args.display_name, args.date_of_birth, args.gender, args.looking_for),
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
@@ -43,6 +45,7 @@ export function useSetLocation() {
   return useMutation({
     mutationFn: (args: { display_name: string; lat: number; lng: number }) =>
       setProfileLocation(args.display_name, args.lat, args.lng),
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
@@ -51,6 +54,7 @@ export function useCompleteOnboarding() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: completeOnboarding,
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
@@ -92,6 +96,7 @@ export function useUploadProfilePhoto() {
       if (!add.ok) throw new Error(add.error)
       return prepared.media_item_id
     },
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }

@@ -28,6 +28,7 @@ export function useSetBio() {
   return useMutation({
     mutationFn: (args: { tagline: string | null; about: string | null; wants: string | null }) =>
       setProfileBio(args.tagline, args.about, args.wants),
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
@@ -36,6 +37,7 @@ export function useSetDetails() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: setProfileDetails,
+    meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
