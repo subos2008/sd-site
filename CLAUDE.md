@@ -16,6 +16,17 @@ Conventions, preferences, and gotchas that apply to anything Claude does in this
 - **`supabase db reset` 502 hiccup:** the Supabase CLI 2.78.1 often reports `Error status 502: invalid response from upstream server` during the post-reset container restart. Migrations themselves apply cleanly; verify with `supabase status` and a `psql` query. Not a code bug.
 - **Service-role-key guard:** `scripts/seed-dev-users.mjs` and `e2e/helpers/admin-signup.ts` refuse to run unless `SUPABASE_URL` resolves to `127.0.0.1`, `localhost`, or `::1`. The user maintains multiple Supabase projects locally and wants this hard safety net. Keep the guard in any new script that takes a service-role key.
 
+## Launch coordination
+
+- **`LAUNCH.md` (repo root) is the master launch schedule.** When Ryan asks
+  "what's next", "what do we do today", or anything about launch timing,
+  read `LAUNCH.md` (This week + timeline + gates) together with
+  `execution/README.md` and `docs/superpowers/plans/README.md`, and answer
+  from those — don't reconstruct the plan from scratch. Keep LAUNCH.md's
+  "This week" section and decisions log current as work completes; the
+  partner/market intelligence it points to lives in `marketing/`
+  (partner-space.md and its linked docs).
+
 ## Plan/execution workflow
 
 - The implementation milestones live in `docs/superpowers/plans/`. Each plan is independently executable.

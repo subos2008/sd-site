@@ -216,28 +216,33 @@ New build items with no spec yet — write as execution specs 050–100:
 - [ ] ASA/CAP check on all launch copy and partner creatives (agency
       framing, "dating" not "income", 18+ placements only)
 
-### E. The launch partner (spec 030, reframed — this IS the launch)
+### E. The launch partners (spec 030 — this IS the launch)
 
-Spec 030 was "find a dating-vertical affiliate expert (hire or partner)".
-The partner model resolves it: we are looking for a **launch partner with
-existing dating traffic on both sides, paid by consumer-side revenue
-share** — not a salaried hire. The spec's venue list (TES, Affiliate World,
-CPA networks with dating verticals, STM/affLIFT, review-site owners found
-by reverse-engineering secretbenefits.com's referring domains) is the
-candidate pool; the deal structure changes, the people don't.
+Two deal lanes, revenue-funded (a single both-sides partner is unlikely
+to exist — research finding, 2026-07-17). The market intelligence lives
+in four docs: `marketing/partner-space.md` (landscape, incumbent program
+terms table, venues), `marketing/uk-review-sites.md` (demand-side shelf
+owners + approach order), `marketing/supply-side-channels.md` (how
+female signups are delivered), `marketing/affiliate-program-terms.md`
+(our menu — founder sign-off pending).
 
-- [ ] Reframe spec 030 accordingly; outreach starts this week
-- [ ] Candidate profile: owns or controls dating traffic (review sites,
-      smartlink/CPA network with revshare appetite, dating media,
-      operator-adjacent super-affiliates); UK reach; willing to work
-      revshare; supply-side audience access is the differentiator —
-      consumer traffic alone is the easy half
-- [ ] Term sheet: revshare % (vertical norm 25–50%), duration (lifetime vs
-      time-boxed), exclusivity (avoid granting broad exclusivity for a
-      launch-sized commitment), approved creatives, reporting access
-- [ ] Tracking integration test with the partner during beta (spec 100)
-- [ ] Signed by Fri 28 Aug; placements/campaigns scheduled for 14 Sep
-- Our own free machinery still runs regardless of partner: concierge
+- [x] Spec 030 reframed; space research done; candidate shortlist exists
+      (2026-07-17 — see the four docs above)
+- [ ] Outreach live: Mark Brooks emailed (draft in
+      `marketing/outreach/2026-07-17-mark-brooks.md` + Gmail — founder
+      sends); GDI London tickets (15–16 Sep, launch week); CrakRevenue
+      advertiser conversation
+- [ ] Demand lane: approach order datinghelp.co.uk (Webels ApS) →
+      datingscout.co.uk → sugararrangement.net (uk-review-sites.md)
+- [ ] Supply lane: sugar-baby content sites (SugarDating101-class) +
+      decide the verification-gated supply-side CPL
+      (affiliate-program-terms.md, founder decision)
+- [ ] Founder sign-off on the program-terms menu before any partner
+      sees numbers
+- [ ] Tracking integration test with first partner during beta (spec 100)
+- [ ] Signed deal(s) by Fri 28 Aug; placements/campaigns scheduled for
+      14 Sep
+- Our own free machinery still runs regardless of partners: concierge
   onboarding of the first ~100 supply-side users, referral codes,
   navigational SERP pages, trust/safety guides, press kit (reactive only)
 
