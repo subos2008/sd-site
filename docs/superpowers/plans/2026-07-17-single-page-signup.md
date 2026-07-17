@@ -766,3 +766,13 @@ git commit -m "E2E: single-page signup through confirmation into shrunk wizard"
 ### Plan execution deviations
 
 _(The executor fills this in as the spec meets reality — one commit per logged deviation, before moving on.)_
+
+**Task 5 deviation:** the plan's bootstrap code used `p_*` keys and imported
+`setProfileDetails` from `onboarding/api`; the real `setProfileDetails` lives
+in `src/features/profile/api.ts` and takes friendly keys (mapped to `p_*` in
+`callRpc`). The hook was adapted accordingly. Its new `ethnicity` arg was made
+OPTIONAL (`ethnicity?: string | null`) rather than required, to mirror the DB
+`p_ethnicity … DEFAULT NULL` and avoid touching the two other callers
+(DetailsStep, DetailsSection) out of task scope — those are threaded in Task 6.
+Also: `signUp`'s signature became `(email, password, meta)`, and its existing
+SignupForm caller was updated to `{ role: roleHint }` to keep typecheck green.
