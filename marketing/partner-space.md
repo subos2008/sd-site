@@ -17,11 +17,15 @@
   at 80% lifetime; Seeking's in-house program allegedly $2 CPL + 45%
   revshare (unverified). **Secret Benefits offers no revshare at all**,
   so a ~50%+ lifetime-revshare offer is differentiated shelf space.
-- **Two gaps the research couldn't verify:** who owns the UK
-  review/listicle shelf space (three unverified candidates listed
-  below), and paid-placement norms. **And nothing addressed supply-side
-  (women's signup) traffic** — that's the first qualifying question in
-  every partner conversation.
+- **Both gaps now closed by follow-up research (2026-07-17):**
+  [uk-review-sites.md](uk-review-sites.md) maps who owns the UK review
+  shelf (top target: datinghelp.co.uk / Webels ApS, Denmark — verified
+  entity, named founders, already lists Seeking + Secret Benefits) and
+  [supply-side-channels.md](supply-side-channels.md) answers the
+  supply-side question: female signups ARE deliverable, but via the
+  niche sugar-baby content ecosystem and gender-split CPL (~$2/reg
+  market rate), NOT via mainstream CPA networks — so expect two deals
+  (demand + supply), not one both-sides partner.
 - **Founder actions now:** email Brooks; book GDI London. Then:
   CrakRevenue as an advertiser, verify the review-site candidates,
   TrafficPartner (caution: runs 50+ competing products), TES Prague

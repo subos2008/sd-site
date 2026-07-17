@@ -27,6 +27,16 @@ category, we treat that channel as closed and route around it.
   landscape mapped for the rev-share launch-partner search (spec 030):
   verified networks and rates, competitor program intel, named leads,
   September 2026 deal venues, and the ranked outreach shortlist.
+- [uk-review-sites.md](uk-review-sites.md) — who operates the UK
+  sugar-dating review/listicle shelf: verified entities, contacts,
+  revshare-appetite assessment, and the approach order.
+- [supply-side-channels.md](supply-side-channels.md) — how female
+  signups are actually delivered in this category (niche content
+  ecosystem + gender-split CPL; mainstream networks can't do it).
+- [affiliate-program-terms.md](affiliate-program-terms.md) — draft v0
+  of our own program terms (lifetime revshare, founding premium,
+  supply-side CPL option) with the sanity-check maths against
+  competitor benchmarks. Not offered to anyone until founder sign-off.
 - [founder-anonymity.md](founder-anonymity.md) — what Secret Benefits did to
   stay faceless, what UK law allows, and our position: pseudonymous in
   marketing, accountable on paper.

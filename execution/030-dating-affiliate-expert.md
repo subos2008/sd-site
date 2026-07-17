@@ -7,10 +7,13 @@ share on consumer-side spend.** There is no marketing budget before
 revenue, so partners are paid from revenue, not ahead of it — the deal
 structure IS the marketing budget. A hired/consulting affiliate manager is
 now the fallback shape, not the goal. Space-mapping research completed
-2026-07-17: see `marketing/partner-space.md` for the verified landscape,
-named leads, rate benchmarks, and the ranked outreach shortlist. Biggest
-remaining research gaps: UK review-site owners and paid-placement norms
-(partner-space.md section "Gaps").
+2026-07-17: see `marketing/partner-space.md` (landscape, rates, venues),
+`marketing/uk-review-sites.md` (who owns the UK review shelf, approach
+order), `marketing/supply-side-channels.md` (how female signups are
+delivered), and `marketing/affiliate-program-terms.md` (our draft terms).
+Key structural finding: a single both-sides partner is unlikely to exist —
+plan for separate demand-side (review shelf) and supply-side (sugar-baby
+content ecosystem) deals. Candidate list now exists; outreach is next.
 
 ## The deal we are offering
 
