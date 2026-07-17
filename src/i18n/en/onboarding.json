@@ -1,6 +1,7 @@
 {
   "shell.title": "Welcome",
   "role.title": "What brings you here?",
+  "role.settingUp": "Setting up your profile…",
   "role.benefactor": "I'm a benefactor",
   "role.baby": "I'm a baby",
   "role.continue": "Continue",

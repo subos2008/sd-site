@@ -11,7 +11,13 @@ const Schema = z.object({
 })
 type FormData = z.infer<typeof Schema>
 
-export function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
+export function SignupForm({
+  onSuccess,
+  roleHint,
+}: {
+  onSuccess?: () => void
+  roleHint?: 'benefactor' | 'baby'
+}) {
   const { t } = useTranslation('auth')
   const {
     register,
@@ -26,7 +32,7 @@ export function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
   async function onSubmit(values: FormData) {
     setServerError(null)
     try {
-      await signUp(values.email, values.password)
+      await signUp(values.email, values.password, roleHint)
       setDone(true)
       onSuccess?.()
     } catch (e) {

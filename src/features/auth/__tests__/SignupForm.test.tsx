@@ -26,6 +26,23 @@ describe('SignupForm', () => {
     expect(onSuccess).toHaveBeenCalled()
   })
 
+  it('sends the landing-page role hint as signup metadata', async () => {
+    let body: unknown = null
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/auth/v1/signup', async ({ request }) => {
+        body = await request.json()
+        return HttpResponse.json({ user: { id: 'u', email: 'a@b.test' }, session: null })
+      }),
+    )
+    render(<SignupForm onSuccess={vi.fn()} roleHint="baby" />)
+    await userEvent.type(screen.getByLabelText(/email/i), 'a@b.test')
+    await userEvent.type(screen.getByLabelText(/password/i), 'pw123456')
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
+
+    await screen.findByText(/check your email/i)
+    expect(body).toMatchObject({ data: { role_hint: 'baby' } })
+  })
+
   it('shows a server error when signup fails', async () => {
     mswServer.use(
       http.post('http://127.0.0.1:54321/auth/v1/signup', () =>

@@ -1,10 +1,19 @@
 import { supabase } from '@/lib/supabase'
 
-export async function signUp(email: string, password: string) {
+export async function signUp(
+  email: string,
+  password: string,
+  roleHint?: 'benefactor' | 'baby',
+) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${window.location.origin}/auth/confirm` },
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/confirm`,
+      // Rides on auth.users.raw_user_meta_data so it survives the email
+      // confirmation round trip even on a different device.
+      ...(roleHint ? { data: { role_hint: roleHint } } : {}),
+    },
   })
   if (error) throw error
   return data
