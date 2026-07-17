@@ -19,9 +19,10 @@ category, we treat that channel as closed and route around it.
   closed beta → quiet open launch via affiliates), including
   two-sided-marketplace seeding. The dated master schedule that puts these
   phases on a calendar is [`../LAUNCH.md`](../LAUNCH.md).
-- [brand-name.md](brand-name.md) — the naming workstream (spec 020): why
-  Secret Benefits is the benchmark, the formula and tests derived from it,
-  the candidate shortlist, and the knockout-screen process.
+- [brand-name.md](brand-name.md) — the naming brainstorm (spec 020): why
+  Secret Benefits is the benchmark, a large candidate list by theme with
+  .com availability checks and opinions. Ryan filters; nothing is
+  auto-discarded.
 - [founder-anonymity.md](founder-anonymity.md) — what Secret Benefits did to
   stay faceless, what UK law allows, and our position: pseudonymous in
   marketing, accountable on paper.
