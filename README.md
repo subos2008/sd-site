@@ -89,6 +89,12 @@ Supabase project from accidentally being used against another.
 
 The single source of truth for application configuration is `shared/app-config.ts`. The frontend imports it directly. The Postgres `app_config` table is seeded by a generated migration produced by `pnpm gen:config`. Edit `shared/app-config.ts`, run `pnpm gen:config`, restart Supabase.
 
+### Frontend env vars
+
+- `VITE_SENTRY_DSN` — Sentry DSN for frontend error reporting. **Unset ⇒ Sentry is off** (dev/tests/local). No default.
+- `VITE_SENTRY_ENVIRONMENT` — Sentry environment tag (e.g. `production`, `staging`). Unset ⇒ no environment tag; never assumed to be production.
+- `VITE_BUILD_ID` — build identifier (git commit sha) used as the Sentry release. Optional.
+
 ## Project layout
 
 See `docs/superpowers/specs/2026-05-09-sd-site-design.md` for the full design.
