@@ -12,7 +12,6 @@ import { createQueryClient } from './lib/query-client'
 import { AppErrorBoundary } from './lib/errors/AppErrorBoundary'
 import { ErrorToastHost } from './lib/errors/ErrorToastHost'
 import { initSentry } from './lib/errors/sentry'
-import { DevDiagnostics } from './lib/DevDiagnostics'
 
 initOtel()
 initSentry()
@@ -26,7 +25,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RouterProvider router={router} />
-          {import.meta.env.DEV ? <DevDiagnostics /> : null}
         </AuthProvider>
         <ErrorToastHost />
         {import.meta.env.DEV ? <ReactQueryDevtools initialIsOpen={false} /> : null}
