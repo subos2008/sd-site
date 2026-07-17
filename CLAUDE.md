@@ -19,12 +19,13 @@ Conventions, preferences, and gotchas that apply to anything Claude does in this
 ## Launch coordination
 
 - **`LAUNCH.md` (repo root) is the master launch schedule.** When Ryan asks
-  "what's next", "what do we do today", or anything about launch timing,
-  read `LAUNCH.md` (This week + timeline + gates) together with
-  `execution/README.md` and `docs/superpowers/plans/README.md`, and answer
-  from those — don't reconstruct the plan from scratch. Keep LAUNCH.md's
-  "This week" section and decisions log current as work completes; the
-  partner/market intelligence it points to lives in `marketing/`
+  "what's next", "what do we do today", or anything about launch timing or
+  status, invoke the **`launch-next` skill** (`.claude/skills/launch-next/`)
+  — it enforces answering from the files as they are now (multiple agents
+  work this repo; conversation memory is presumed stale), carries the
+  external lead-time reference, and defines the mini-project-plan output
+  shape. Keep LAUNCH.md's "This week" section and decisions log current as
+  work completes; the partner/market intelligence lives in `marketing/`
   (partner-space.md and its linked docs).
 
 ## Plan/execution workflow
