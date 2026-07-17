@@ -186,6 +186,30 @@ if we want a warmer, human-feeling brand (an "Emily Dates" done well).
 | Halcyon | in use/gated | Calm golden days; generic-luxury, crowded namespace. |
 | Confidante | registered, unchecked | The person you trust with secrets *and* keep company with. Long; confidant/confidante spelling split. |
 
+### The book & the list (riffing on Sugarbook → little black book)
+
+Ryan's spark (2026-07-17): Sugarbook reads as a play on the *little black
+book* — the pre-digital secret directory of lovers. The idiom family is
+rich: books, lists, diaries, what's written down and who's in it.
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Little Black Book** | parked lander | The source idiom — everyone over 25 knows exactly what's in one. Instantly legible, discreet by definition. Long (17 chars); existing "LBB" brands (ad-industry mag, Indian discovery app) need a look. |
+| **Black Book** | Cloudflare-gated | The tighter cut. Stylish, nightlife-cool, unisex; "you're in my black book" works in copy. Prior BlackBook magazine. |
+| **Closed Book** | parked/idle | "She's a closed book" — mystery and discretion in idiom form, and the domain looks dormant. Underrated; slight risk it reads standoffish. |
+| **Datebook** | in use (publisher) | A book full of dates — the pun is the product. Innocent to a fault (it's a stationery word). Domain in use; SF Chronicle's events section is also "Datebook". |
+| Book Club | in use (audiobook startup) | The classic alibi — "I'm at book club" — so the cover story *is* the name. Funny and ultra-deniable, but once the joke is explained in press it reads deception-coded. |
+| Cover Story | 403/unclear | The lie you tell + the magazine glamour — strong double meaning; explicitly deception-themed though. |
+| Off the Books | parked lander | Unrecorded + the book pun. Sharp wink; the black-market/tax connotation is probably the wrong side of the line for a business trying to look legitimate. |
+| Between the Lines | dead Shopify store | Where the real meaning lives — bridges the book theme and the Tacit/Unspoken family. Long. |
+| Fine Print | gated/unclear | Where the real terms hide. Clever transactional wink, but legal-coded and a bit cold. |
+| Wish List | in use | Live sugar-culture lexicon ("spoil my wishlist") — maximum insider legibility, money-forward flag, domain in use. |
+| Guest List / On the List | both in use | Exclusivity — "you're on the list". Club-door energy; both domains run live businesses. |
+| Little Black Dress | parked lander | The sibling idiom: glamour, date night, supply-side feminine. "LBD" abbreviates nicely. |
+| Secret Diary | parked/idle | Uses "secret" (allowed) — but "Secret Diary of a Call Girl" makes it escort-coded specifically in the UK. Strong flag. |
+| Booked | parked/idle | "Get booked" — but "booking" is escort code, and Booking.com looms. |
+| Novel | in use | New + exciting + book; generic startup vibe. |
+
 ### Company (the word that does double duty)
 
 | Name | .com | Opinion |
