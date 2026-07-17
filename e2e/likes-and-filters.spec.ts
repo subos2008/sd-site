@@ -10,7 +10,7 @@ test('like a fixture from search + see them in Likes tab', async ({ page }) => {
   await page.getByLabel(/password/i).fill(password)
   await page.getByRole('button', { name: /log in/i }).click()
 
-  // Walk through onboarding quickly: benefactor, identity, location, photo, skip details + interests
+  // Walk through the benefactor onboarding: role, identity, location, photo → search
   await page.waitForURL(/onboarding\/role/)
   await page.getByRole('button', { name: /benefactor/i }).click()
 
@@ -34,12 +34,7 @@ test('like a fixture from search + see them in Likes tab', async ({ page }) => {
   })
   await page.getByRole('button', { name: /continue/i }).click()
 
-  await page.waitForURL(/onboarding\/details/)
-  await page.getByRole('button', { name: /skip for now/i }).click()
-
-  await page.waitForURL(/onboarding\/interests/)
-  await page.getByRole('button', { name: /skip for now/i }).click()
-
+  // Benefactor path has no details/interests steps — completes straight to search.
   await page.waitForURL(/\/search/)
 
   // Find the first profile card and click its like button.
