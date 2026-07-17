@@ -32,7 +32,7 @@ describe('BioStep', () => {
             display_name: 'B', age: 25, date_of_birth: '1999-01-01',
             gender: 'female', looking_for: 'male', city_display_name: 'London',
             tagline: null, about: null, wants: null,
-            height_cm: null, body_type: null, hair_color: null, eye_color: null,
+            height_cm: null, body_type: null, ethnicity: null, hair_color: null, eye_color: null,
             has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
             education: null, yearly_income_band: null, net_worth_band: null,
             token_balance: 0, photos: [], interests: [],

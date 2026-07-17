@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(5);
+SELECT plan(7);
 
 INSERT INTO auth.users (id, instance_id, email, raw_app_meta_data, raw_user_meta_data,
                         aud, role, created_at, updated_at,
@@ -17,7 +17,7 @@ SELECT is(
     178, 'athletic'::body_type, 'brown'::hair_color, 'blue'::eye_color,
     false, true,
     'never'::smoking_habit, 'socially'::drinking_habit, 'bachelors'::education_level,
-    '100_250k'::income_band, '1m_5m'::net_worth_band))::text,
+    '100_250k'::income_band, '1m_5m'::net_worth_band, 'asian'::ethnicity))::text,
   '{"ok": true}',
   'set_profile_details ok'
 );
@@ -34,10 +34,22 @@ SELECT is(
   'body_type persisted'
 );
 
+SELECT is(
+  (SELECT ethnicity::text FROM public.profiles WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaad1'::uuid),
+  'asian',
+  'ethnicity persisted'
+);
+
+SELECT is(
+  ((public.view_my_profile())->'profile'->>'ethnicity'),
+  'asian',
+  'view_my_profile returns ethnicity'
+);
+
 -- Out-of-range height rejected (returns error code, doesn't persist)
 SELECT is(
   (SELECT public.set_profile_details(
-    50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL))::text,
+    50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL))::text,
   '{"ok": false, "error": "height_out_of_range"}',
   'height_cm 50 rejected with structured error'
 );
@@ -47,7 +59,7 @@ SET LOCAL "request.jwt.claim.sub" = '';
 SET LOCAL ROLE anon;
 SELECT throws_ok(
   $$ SELECT public.set_profile_details(180, NULL, NULL, NULL, NULL, NULL,
-                                        NULL, NULL, NULL, NULL, NULL) $$,
+                                        NULL, NULL, NULL, NULL, NULL, NULL) $$,
   'P0001', NULL,
   'unauthenticated raises P0001'
 );

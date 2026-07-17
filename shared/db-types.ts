@@ -275,6 +275,7 @@ export type Database = {
           display_name: string | null
           drinking: Database["public"]["Enums"]["drinking_habit"] | null
           education: Database["public"]["Enums"]["education_level"] | null
+          ethnicity: Database["public"]["Enums"]["ethnicity"] | null
           eye_color: Database["public"]["Enums"]["eye_color"] | null
           gender: Database["public"]["Enums"]["profile_gender"] | null
           hair_color: Database["public"]["Enums"]["hair_color"] | null
@@ -305,6 +306,7 @@ export type Database = {
           display_name?: string | null
           drinking?: Database["public"]["Enums"]["drinking_habit"] | null
           education?: Database["public"]["Enums"]["education_level"] | null
+          ethnicity?: Database["public"]["Enums"]["ethnicity"] | null
           eye_color?: Database["public"]["Enums"]["eye_color"] | null
           gender?: Database["public"]["Enums"]["profile_gender"] | null
           hair_color?: Database["public"]["Enums"]["hair_color"] | null
@@ -337,6 +339,7 @@ export type Database = {
           display_name?: string | null
           drinking?: Database["public"]["Enums"]["drinking_habit"] | null
           education?: Database["public"]["Enums"]["education_level"] | null
+          ethnicity?: Database["public"]["Enums"]["ethnicity"] | null
           eye_color?: Database["public"]["Enums"]["eye_color"] | null
           gender?: Database["public"]["Enums"]["profile_gender"] | null
           hair_color?: Database["public"]["Enums"]["hair_color"] | null
@@ -769,6 +772,7 @@ export type Database = {
           p_body_type: Database["public"]["Enums"]["body_type"]
           p_drinking: Database["public"]["Enums"]["drinking_habit"]
           p_education: Database["public"]["Enums"]["education_level"]
+          p_ethnicity: Database["public"]["Enums"]["ethnicity"]
           p_eye_color: Database["public"]["Enums"]["eye_color"]
           p_hair_color: Database["public"]["Enums"]["hair_color"]
           p_has_piercings: boolean
@@ -1420,6 +1424,7 @@ export type Database = {
         | "masters"
         | "doctorate"
         | "other"
+      ethnicity: "white" | "black" | "asian" | "hispanic" | "other"
       eye_color: "brown" | "blue" | "green" | "hazel" | "grey" | "other"
       hair_color: "black" | "brown" | "blonde" | "red" | "grey" | "other"
       income_band:
@@ -1608,6 +1613,7 @@ export const Constants = {
         "doctorate",
         "other",
       ],
+      ethnicity: ["white", "black", "asian", "hispanic", "other"],
       eye_color: ["brown", "blue", "green", "hazel", "grey", "other"],
       hair_color: ["black", "brown", "blonde", "red", "grey", "other"],
       income_band: [

@@ -32,7 +32,7 @@ describe('IdentityStep', () => {
             display_name: null, age: null, date_of_birth: null,
             gender: null, looking_for: null, city_display_name: null,
             tagline: null, about: null, wants: null,
-            height_cm: null, body_type: null, hair_color: null, eye_color: null,
+            height_cm: null, body_type: null, ethnicity: null, hair_color: null, eye_color: null,
             has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
             education: null, yearly_income_band: null, net_worth_band: null,
             token_balance: 0, photos: [], interests: [],

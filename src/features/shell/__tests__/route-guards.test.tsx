@@ -70,6 +70,7 @@ describe('RequireOnboarded', () => {
         wants: null,
         height_cm: null,
         body_type: null,
+        ethnicity: null,
         hair_color: null,
         eye_color: null,
         has_piercings: null,

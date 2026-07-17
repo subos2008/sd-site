@@ -155,6 +155,7 @@ export const Drinking        = z.enum(['never', 'socially', 'regularly', 'prefer
 export const Education       = z.enum(['high_school', 'some_college', 'bachelors', 'masters', 'doctorate', 'other'])
 export const IncomeBand      = z.enum(['under_50k', '50_100k', '100_250k', '250_500k', '500k_1m', 'over_1m', 'prefer_not_to_say'])
 export const NetWorthBand    = z.enum(['under_250k', '250k_1m', '1m_5m', '5m_25m', 'over_25m', 'prefer_not_to_say'])
+export const Ethnicity       = z.enum(['white', 'black', 'asian', 'hispanic', 'other'])
 
 // Bio + Details setters
 export const SetProfileBioInput = z.object({
@@ -176,6 +177,7 @@ export const SetProfileDetailsInput = z.object({
   p_education:          Education.nullable(),
   p_yearly_income_band: IncomeBand.nullable(),
   p_net_worth_band:     NetWorthBand.nullable(),
+  p_ethnicity:          Ethnicity.nullable(),
 })
 export const SetProfileDetailsResult = RpcResult(z.object({}))
 
@@ -253,6 +255,7 @@ export const ViewProfileResultV2 = RpcResult(z.object({
     wants:              z.string().nullable(),
     height_cm:          z.number().int().nullable(),
     body_type:          BodyType.nullable(),
+    ethnicity:          Ethnicity.nullable(),
     hair_color:         HairColor.nullable(),
     eye_color:          EyeColor.nullable(),
     has_piercings:      z.boolean().nullable(),
@@ -286,6 +289,7 @@ export const ViewMyProfileResultV2 = RpcResult(z.object({
     wants:              z.string().nullable(),
     height_cm:          z.number().int().nullable(),
     body_type:          BodyType.nullable(),
+    ethnicity:          Ethnicity.nullable(),
     hair_color:         HairColor.nullable(),
     eye_color:          EyeColor.nullable(),
     has_piercings:      z.boolean().nullable(),
