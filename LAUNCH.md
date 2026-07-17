@@ -304,12 +304,18 @@ Four working weeks to beta, eight to launch. The date holds; scope flexes.
   traffic on IF payments live (else the day they are); founding-member
   premium unlocks for waitlist converts
 - No press push, no Product Hunt/HN; press kit stays reactive
+- **Tue-Wed 15–16 Sep — GDI London Conference (Richmond)**: the dating
+  industry's UK event lands in launch week; attend with a live product
+  (see `marketing/partner-space.md`; book tickets in July)
 
 **W/C 14 – 28 Sep — freshers campaign window**
 - Partner campaigns running across both English arrival waves; partner
   creative audits + attribution integrity checks from day one
 - Consumer traffic throttled to whatever density supports; supply-side
   at full tilt — that is what the window is for
+- 25–28 Sep: TES Prague (the affiliate vertical's deal venue) — optional,
+  for widening the affiliate pipeline with launch numbers in hand; the
+  next TES is March 2027
 
 ## Gates
 
@@ -363,9 +369,12 @@ start date is set with the partner.
 2. Underwriting pack: drafted (`docs/payments/underwriting-pack.md`) —
    founder actions remaining: gather KYC docs (passport, proof of
    address), sanity-check the volume projections
-3. Spec 030: reframed to the launch-partner model (done 2026-07-17);
-   space-mapping research running; outreach starts when the leads list
-   lands
+3. Spec 030: reframed and space research done (2026-07-17) — see
+   `marketing/partner-space.md`. Outreach actions now live: email Mark
+   Brooks (mark@courtlandbrooks.com — revshare willingness, UK
+   shelf-space owners), book GDI London tickets (15–16 Sep, launch
+   week, re-verify dates), contact CrakRevenue as an advertiser, verify
+   the three UK review-site candidates
 4. Run the brand-name knockout screen (spec 020 workstream 1)
 5. Write + execute the 015 gazetteer plan
 6. Draft execution specs 050–100

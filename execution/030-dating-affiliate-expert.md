@@ -6,9 +6,11 @@ operating in the dating space, with traffic on both sides, paid a revenue
 share on consumer-side spend.** There is no marketing budget before
 revenue, so partners are paid from revenue, not ahead of it — the deal
 structure IS the marketing budget. A hired/consulting affiliate manager is
-now the fallback shape, not the goal. Space-mapping research (UK review-site
-owners, network programs, competitor affiliate terms) is running as of
-2026-07-17; results land in `marketing/` and feed the shortlist below.
+now the fallback shape, not the goal. Space-mapping research completed
+2026-07-17: see `marketing/partner-space.md` for the verified landscape,
+named leads, rate benchmarks, and the ranked outreach shortlist. Biggest
+remaining research gaps: UK review-site owners and paid-placement norms
+(partner-space.md section "Gaps").
 
 ## The deal we are offering
 

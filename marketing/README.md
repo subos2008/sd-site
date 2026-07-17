@@ -23,6 +23,10 @@ category, we treat that channel as closed and route around it.
   Secret Benefits is the benchmark, a large candidate list by theme with
   .com availability checks and opinions. Ryan filters; nothing is
   auto-discarded.
+- [partner-space.md](partner-space.md) — the dating-affiliate partner
+  landscape mapped for the rev-share launch-partner search (spec 030):
+  verified networks and rates, competitor program intel, named leads,
+  September 2026 deal venues, and the ranked outreach shortlist.
 - [founder-anonymity.md](founder-anonymity.md) — what Secret Benefits did to
   stay faceless, what UK law allows, and our position: pseudonymous in
   marketing, accountable on paper.
