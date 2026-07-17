@@ -19,6 +19,8 @@
     "seed:dev": "node scripts/seed-dev-users.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.2.9",
+    "@fontsource-variable/manrope": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.217.0",

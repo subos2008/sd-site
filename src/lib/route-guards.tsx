@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSession } from './auth-context'
 import { viewMyProfile } from '@/features/onboarding/api'
 import { useMyProfile } from '@/features/profile/hooks'
+import { LandingPage } from '@/features/landing/pages/LandingPage'
 
 /**
  * RequireAnonymous: blocks signed-in users from /signup, /login, /forgot-password.
@@ -67,7 +68,8 @@ export function RequireRoleChosen() {
 }
 
 /**
- * RootRedirect: index '/' redirects by state.
+ * RootRedirect: index '/' — anonymous visitors get the marketing landing page,
+ * signed-in users are redirected by onboarding state.
  */
 export function RootRedirect() {
   const { status } = useSession()
@@ -77,7 +79,7 @@ export function RootRedirect() {
     enabled: status === 'authenticated',
   })
   if (status === 'loading') return null
-  if (status === 'anonymous') return <Navigate to="/login" replace />
+  if (status === 'anonymous') return <LandingPage />
   if (!me.data) return null
   if (!me.data.ok) return <Navigate to="/login" replace />
   if (me.data.profile.status === 'pending_onboarding')

@@ -1,1 +1,19 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/manrope';
+
+@theme {
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Tacit brand palette — see landing page design plan */
+  --color-ink: #161320;
+  --color-dusk: #221e30;
+  --color-bone: #faf7f1;
+  --color-blush: #f7ecef;
+  --color-champagne: #ddbe8a;
+  --color-champagne-deep: #a9803f;
+  --color-rose: #e4899f;
+  --color-rose-deep: #a94961;
+  --color-smoke: #8b8496;
+}
