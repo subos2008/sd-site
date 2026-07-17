@@ -85,9 +85,100 @@ if we want a warmer, human-feeling brand (an "Emily Dates" done well).
 ## Available to hand-register today
 
 `secretterms.com` · `quietbenefits.com` · `quietterms.com` ·
-`finerterms.com` · `quietperks.com` · `finercompany.com`
+`finerterms.com` · `quietperks.com` · `finercompany.com` ·
+`benefitsincluded.com`
 
-## The list
+## Whose secret is it? (the positioning axis)
+
+Ryan's framing (2026-07-17): the gents want to feel they have something
+**special, easy, discreet**. The girls want it **secret because secret =
+safe** — the OnlyFans effect, where the container itself gives permission
+to be naughty. But: they don't always want the *relationship* secret —
+a couple might date openly, and it's **the benefits that are secret**.
+
+So "secret" can attach to three different things, and each is a different
+brand promise:
+
+- **(a) The relationship is secret** — Moonlight, Our Little Secret,
+  Secret Diary, Kept Secret. Strongest discretion, but implies hiding
+  *the person* — wrong for openly-dating couples, and drifts affair-ward.
+- **(b) The membership is secret** — the OnlyFans trick: a gated, safe
+  container that licenses participation. Secret Menu, Secret Handshake,
+  Speakeasy, Guest List. The site is the secret; what you do there is
+  your business.
+- **(c) The terms are secret** — the relationship can be public; the
+  benefits layer is private. Secret Terms, Undisclosed, Fine Print,
+  Between Us, Benefits Included. Matches the "date openly, arrangement
+  private" reality — and re-ranks **Secret Terms** (available today)
+  from filler to exact-concept.
+
+A name picks its axis. (b) and (c) age better than (a): they promise
+safety without promising concealment of a human being.
+
+### Terms-are-secret (axis c riff)
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Benefits Included** | **available** | "A relationship — benefits included." Cheeky, literal, registrable today, and lands exactly on axis c. Leans jokey; would need a grown-up visual identity to balance it. |
+| **On Your Terms** | parked/idle | Agency framing — and it's literally our ASA-safe copy line ("date on your terms"). Empowerment register instead of secrecy; the most compliance-proof name in the doc. |
+| **The Quiet Part** | parked/idle | "Say the quiet part out loud" — the name *is* the part you don't say. Very current; meme-adjacency may age. |
+| Something Extra | parked/idle | "A little something extra" — warm, deniable, gift-coded. |
+| Side Perks | parked/idle | Perks on the side; "side" flirts with "bit on the side" affair-coding. |
+| Private Terms | **for sale** (HugeDomains) | The axis stated plainly; a touch cold/legal. |
+| Upkeep | parked/idle | Allowance-coded maintenance of a person in one crisp word; money-forward flag; UpKeep CMMS software exists. |
+| All Inclusive | in use (travel) | "An all-inclusive relationship" — funny, holiday-coded. |
+| Our Terms | in use ("Relationship Operating System" — someone's near our patch) | Worth watching what that product is. |
+
+### Being provided for (the supply-side end-state, said warmly)
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Provided For** | parked/idle | "Well provided for" — the classic, warm, fully deniable phrase for financial care. Old-fashioned in the right way. |
+| **Sought After** | parked/idle | Two-sided like OnlyFans: she is sought after (desired), he does the seeking. Also echoes "Seeking" — feature or bug depending on taste. |
+| Well Provided | **for sale** (HugeDomains) | Same register, choppier phrase. |
+| Spoken For | **for sale** (HugeDomains) | "She's spoken for" — belonging and exclusivity; possessive tilt. |
+| Spoilt for Choice | parked/idle | Double meaning: she's spoilt, he has choice. Cheeky UK idiom; "spoilt" is category-adjacent — flag. |
+| Taken Care Of | in use | Warm — and also mob-coded ("he's been taken care of"). |
+| Looked After | in use (childcare software) | Sounds warm but hard UK flag: "looked-after children" is statutory care-system terminology. Effectively unusable here. |
+
+### Permission structure (axis b — the OnlyFans trick)
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Admirers** | **for sale** (listed) | The plural does what "fans" does for OnlyFans: she *has admirers* (flattery), he *is one* (generous by definition — admirers send gifts). Two-sided in one word. |
+| Indulgence | **for sale** (listed) | Permission to indulge — and a papal indulgence literally licensed sin. Deliciously apt; premium price likely. |
+| Guilty Pleasure | parked/idle | The permission phrase par excellence — but "guilty" imports the very shame the safety promise should remove. |
+| Allowed | parked/idle | Pure permission verb with "allowance" hiding inside it. Clever; possibly flat as a spoken brand. |
+| Private Life | gated | "My private life is private" — the product *is* your private life. Mild affair-flag. |
+| Secret Playground | **for sale** (HugeDomains) | Ryan's own riff, with his own caveat: too play/casual for what can be a serious arrangement. |
+| Secret Connections | parked/idle | Ryan's own riff; names the *relationship* secret (axis a), which the axis-c insight then questioned. "Connections" is dating-generic filler. |
+
+### The door (a real threshold between two worlds)
+
+Ryan's seed (2026-07-17): the door is *the product metaphor itself* — one
+real door; the gents open it and find young and beautiful on the other
+side, the ladies open it and find rich and interesting providers on the
+other side. Same door, two dreams. A door name also brings a whole visual
+identity for free: keyholes, knocks, door numbers, "see what's on the
+other side" copy.
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Stage Door** | gated (Stagedoor theatre app, London) | The stage-door johnny — the Edwardian wealthy admirer waiting with flowers — is the historical archetype of this exact market. She's the star, he's the devoted admirer: two-sided flattery like Admirers, plus theatrical glamour. Top of this theme; the London app collision needs a look. |
+| **Side Door** | parked/idle | The discreet entrance the VIPs actually use. Quiet, real-world discretion; "side" carries a whisper of "bit on the side", and US readers may recall the admissions-scandal "side door". |
+| **Blue Door** | parked/idle | Notting Hill's blue door — the most romantic door in British cinema. Warm, UK-coded; slight florist-shop energy. |
+| **Ajar** | parked/idle | The door left slightly open for you — a one-word invitation. Poetic; risks sounding like "a jar" when spoken. |
+| Doorman | parked lander | Sees everything, says nothing, decides who gets in — discretion and gatekeeping personified. Male-coded service register. |
+| The Other Side | otherside.com parked/idle | Literally the seed: what each side sees through the door. Slightly séance-coded. |
+| Suite | premium **for sale** | Hotel luxury + homophone of "sweet" — spoken, it's a deniable sugar nod; written, it's innocent. Flag: the homophone splits branded search (people will type "sweet"). |
+| Entrée | **for sale** | "An entrée into society" — access to a world. Accent hurts typing; foodie collision. |
+| Threshold | gated/error | Carried over the threshold — liminal romance; sounds like a B2B SaaS. |
+| Drawing Room | parked/idle | From "withdrawing room" — the room you withdraw to; the courtship venue of the parlour era without the massage-parlour problem. Long, a bit museum-y. |
+| Velvet Rope | parked/idle | Club-door exclusivity; nightlife-coded. |
+| Knock Twice | in use (arts org) | The secret-knock ritual — charming and cinematic. |
+| Green Door | parked/idle | Speakeasy folklore — unfortunately also a canonical 1972 adult film. Hard flag. |
+| Concierge | Condé Nast property | The "easy" promise for the gents (someone handles everything); crowded luxury namespace, domain unreachable. |
+| Secret Door | (cross-ref) | Already in the secrecy section; domain in use. |
 
 ### Kept (the category's oldest euphemism — predates "sugar")
 
@@ -295,5 +386,7 @@ rich: books, lists, diaries, what's written down and who's in it.
 - **Tacit** — kept (2026-07-17).
 
 Claude's top picks, for what they're worth: Kept Company, Best Kept,
-Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — and
-from the secrecy riff: Moonlight, Classified, Locket, Secret Keeper.
+Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — from
+the secrecy riff: Moonlight, Classified, Locket, Secret Keeper — and from
+the whose-secret axis: Secret Terms (available, exact axis-c concept),
+Sought After, Admirers, On Your Terms.
