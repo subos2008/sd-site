@@ -776,3 +776,13 @@ OPTIONAL (`ethnicity?: string | null`) rather than required, to mirror the DB
 (DetailsStep, DetailsSection) out of task scope — those are threaded in Task 6.
 Also: `signUp`'s signature became `(email, password, meta)`, and its existing
 SignupForm caller was updated to `{ role: roleHint }` to keep typecheck green.
+
+**Task 7 deviation:** the plan assumed the e2e would pull the confirmation
+link from Mailpit. Locally `enable_confirmations=false` and the Supabase
+client uses `persistSession:false`, so `signUp()` returns an in-memory
+session immediately and `RequireAnonymous` auto-navigates `/signup → / →
+/onboarding/identity` on the `onAuthStateChange` event — no Mailpit round
+trip or `page.goto` needed (a hard nav would drop the in-memory session).
+The new spec relies on that client-side redirect. Consequence: the
+SignupForm "Check your email…" copy has no e2e coverage on the local stack
+(the guard redirects out first) — noted, not covered.
