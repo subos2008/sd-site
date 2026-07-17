@@ -33,6 +33,7 @@ export const setProfileDetails = (args: {
   education: string | null
   yearly_income_band: string | null
   net_worth_band: string | null
+  ethnicity?: string | null
 }) =>
   callRpc(
     'set_profile_details',
@@ -48,6 +49,7 @@ export const setProfileDetails = (args: {
       p_education: args.education,
       p_yearly_income_band: args.yearly_income_band,
       p_net_worth_band: args.net_worth_band,
+      p_ethnicity: args.ethnicity ?? null,
     },
     SetProfileDetailsResult,
   )

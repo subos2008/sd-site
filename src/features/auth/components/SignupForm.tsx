@@ -33,7 +33,7 @@ export function SignupForm({
   async function onSubmit(values: FormData) {
     setServerError(null)
     try {
-      await signUp(values.email, values.password, roleHint)
+      await signUp(values.email, values.password, { role: roleHint })
       setDone(true)
       onSuccess?.()
     } catch (e) {
