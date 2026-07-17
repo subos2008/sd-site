@@ -97,6 +97,7 @@ The single source of truth for application configuration is `shared/app-config.t
 
 ## Project layout
 
+See `LAUNCH.md` for the September 2026 launch plan: the master schedule, critical path, and gates that coordinate the build plans, execution specs, and marketing phases. Ask "what's next for launch?" against it.
 See `docs/superpowers/specs/2026-05-09-sd-site-design.md` for the full design.
 See `docs/superpowers/plans/README.md` for the implementation plan series, including the status of each milestone and pointers to each plan file.
 See `marketing/README.md` for the marketing strategy: channel plan, phased launch plan, sourced competitor case studies, and the lessons-learned playbook (quiet growth via affiliates, brand-harvest SEO, and product-led trust — see `marketing/lessons-learned.md`). Marketing constraints also feed product decisions: web/PWA-only distribution, credits pricing, and verification-by-default all originate there.
