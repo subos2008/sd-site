@@ -48,11 +48,15 @@ links to `/legal/privacy` and `/legal/terms` (stub pages, this spec).
 
 ### Age vs date of birth (decided: age at signup, DOB in wizard)
 
-Signup asks **Age** (a number), used only client-side to gate ≥18 and back
-the certification. It is not stored. **Date of birth** remains the stored
-truth (schema keeps its ≥18 CHECK) and is collected once in the wizard.
-Accepted consequence: the DOB question appears in the funnel after signup;
-the signup age field is a friction-reducer and legal gate, not data.
+Signup asks **Age** (a number), used client-side to gate ≥18 and back the
+certification. It is **not** written to the profile — **date of birth**
+remains the stored truth (schema keeps its ≥18 CHECK), collected once in the
+wizard. But age is not thrown away: at submit it is handed to the
+attempt-capture pipeline (see below) as marketing data — the age someone
+*tried* to sign up at is a signal we want, including from people who never
+finish. Accepted consequence: the DOB question appears in the funnel after
+signup; the signup age field is a friction-reducer, legal gate, and
+marketing datum, not profile data.
 
 ### Gender and looking-for are derived from role (no longer asked)
 
@@ -138,6 +142,34 @@ that fails Zod validation on read is ignored and the corresponding step
 falls back to empty. The dead-session healing already in place covers the
 case where the confirmed session outlives its profile.
 
+## Attempt capture (separate spec — this form exposes the seam)
+
+The SB form is a data-capture funnel: the *attempt* is the signal, not just
+the completed account. That pipeline is its own workstream
+(`docs/superpowers/specs/…-signup-attempt-capture-design.md`, forthcoming),
+but this form defines where it plugs in.
+
+Decisions that constrain the seam:
+
+- **Non-sensitive attempt data — age, city, role, acquisition source
+  (UTM/ref) — is captured server-side on submit, even when the user
+  abandons before confirming.** This is the density/drop-off intelligence
+  worth having, and it finally lands the `acquisition_source` capture that
+  `marketing/channels.md` has wanted. Likely mechanism: a narrow
+  `signup_attempts` table with an anonymous-insert path, written from the
+  submit handler *before* the `signUp` call — so a bailed attempt still
+  records. Postgres-native, no new vendor.
+- **Sensitive fields — ethnicity, body type — are NOT captured on abandon.**
+  They are special-category data under UK GDPR (Art. 9); capturing them from
+  people who never created an account or consented is the legally exposed
+  move a UK operator must avoid. They land only on **completed** signup, via
+  the metadata→bootstrap path above, where an account and consent context
+  exist.
+- **The form's contract with the pipeline:** on submit the handler calls the
+  capture entry point with `{ role, city, age, acquisition_source }` (the
+  attempt-capture spec owns its shape), then proceeds with `signUp`. The
+  form does not block on capture succeeding.
+
 ## Legal stub pages
 
 `/legal/privacy` and `/legal/terms` — minimal `AuthShell`-framed pages with
@@ -161,6 +193,8 @@ work). Routes are public (no guard).
 
 ## Non-goals
 
+- The attempt-capture pipeline itself (table, anonymous-insert path,
+  attribution). Its own spec; this form only exposes the submit-time seam.
 - Folding the *entire* profile into one page (photos/bio stay in the
   wizard; the baby activation gate is deliberate).
 - Bootstrap-time geocoding (deferred to the confirm step by choice).
