@@ -1,9 +1,24 @@
+import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
+import { supabase } from './supabase'
 import { useSession } from './auth-context'
 import { viewMyProfile } from '@/features/onboarding/api'
 import { useMyProfile } from '@/features/profile/hooks'
 import { LandingPage } from '@/features/landing/pages/LandingPage'
+
+/**
+ * useSignOutDeadSession: an authenticated session whose profile is gone
+ * (e.g. after a local db reset) or suspended cannot use the app. Navigating
+ * it to /login loops — RequireAnonymous bounces authenticated sessions back
+ * to '/' — so sign it out; the auth state change re-renders the guard as
+ * anonymous.
+ */
+function useSignOutDeadSession(dead: boolean) {
+  useEffect(() => {
+    if (dead) void supabase.auth.signOut()
+  }, [dead])
+}
 
 /**
  * RequireAnonymous: blocks signed-in users from /signup, /login, /forgot-password.
@@ -26,13 +41,18 @@ export function RequireOnboarded() {
     queryFn: viewMyProfile,
     enabled: status === 'authenticated',
   })
+  const meData = me.data
+  const dead =
+    status === 'authenticated' &&
+    meData != null &&
+    (!meData.ok || meData.profile.status === 'suspended')
+  useSignOutDeadSession(dead)
   if (status === 'loading') return null
   if (status === 'anonymous') return <Navigate to="/login" replace />
   if (!me.data) return null
-  if (!me.data.ok) return null
+  if (dead || !me.data.ok) return null
   if (me.data.profile.status === 'pending_onboarding')
     return <Navigate to="/onboarding/role" replace />
-  if (me.data.profile.status === 'suspended') return <Navigate to="/login" replace />
   return <Outlet />
 }
 
@@ -46,10 +66,12 @@ export function RequirePendingOnboarding() {
     queryFn: viewMyProfile,
     enabled: status === 'authenticated',
   })
+  const dead = status === 'authenticated' && me.data != null && !me.data.ok
+  useSignOutDeadSession(dead)
   if (status === 'loading') return null
   if (status === 'anonymous') return <Navigate to="/login" replace />
   if (!me.data) return null
-  if (!me.data.ok) return null
+  if (dead || !me.data.ok) return null
   if (me.data.profile.status === 'active') return <Navigate to="/search" replace />
   return <Outlet />
 }
@@ -78,10 +100,18 @@ export function RootRedirect() {
     queryFn: viewMyProfile,
     enabled: status === 'authenticated',
   })
+
+  const meData = me.data
+  const deadSession =
+    status === 'authenticated' &&
+    meData != null &&
+    (!meData.ok || meData.profile.status === 'suspended')
+  useSignOutDeadSession(deadSession)
+
   if (status === 'loading') return null
   if (status === 'anonymous') return <LandingPage />
   if (!me.data) return null
-  if (!me.data.ok) return <Navigate to="/login" replace />
+  if (deadSession || !me.data.ok) return null
   if (me.data.profile.status === 'pending_onboarding')
     return <Navigate to="/onboarding/role" replace />
   return <Navigate to="/search" replace />
