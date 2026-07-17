@@ -44,10 +44,8 @@ async function seedActiveCounterpart(browser: Browser, role: 'benefactor' | 'bab
   await page.getByRole('button', { name: new RegExp(role, 'i') }).click()
 
   await page.waitForURL(/onboarding\/identity/)
-  await page.getByLabel(/display name/i).fill(name)
+  await page.getByLabel(/username/i).fill(name)
   await page.getByLabel(/date of birth/i).fill('1990-01-01')
-  await page.getByRole('combobox', { name: 'Gender' }).selectOption(role === 'baby' ? 'female' : 'male')
-  await page.getByRole('combobox', { name: 'Looking for' }).selectOption(role === 'baby' ? 'male' : 'female')
   await page.getByRole('button', { name: /continue/i }).click()
 
   await page.waitForURL(/onboarding\/location/)
@@ -94,10 +92,8 @@ test('benefactor onboarding: role → identity → location → skip photo → s
 
   // Step 2: identity
   await page.waitForURL(/onboarding\/identity/)
-  await page.getByLabel(/display name/i).fill('Rich')
+  await page.getByLabel(/username/i).fill('Rich')
   await page.getByLabel(/date of birth/i).fill('1980-01-01')
-  await page.getByRole('combobox', { name: 'Gender' }).selectOption('male')
-  await page.getByRole('combobox', { name: 'Looking for' }).selectOption('female')
   await page.getByRole('button', { name: /continue/i }).click()
 
   // Step 3: location
@@ -136,10 +132,8 @@ test('baby onboarding: role → identity → location → 3 photos → bio → s
 
   // Step 2: identity
   await page.waitForURL(/onboarding\/identity/)
-  await page.getByLabel(/display name/i).fill('Lex')
+  await page.getByLabel(/username/i).fill('Lex')
   await page.getByLabel(/date of birth/i).fill('1999-01-01')
-  await page.getByRole('combobox', { name: 'Gender' }).selectOption('female')
-  await page.getByRole('combobox', { name: 'Looking for' }).selectOption('male')
   await page.getByRole('button', { name: /continue/i }).click()
 
   // Step 3: location

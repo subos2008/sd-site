@@ -15,10 +15,8 @@ test('like a fixture from search + see them in Likes tab', async ({ page }) => {
   await page.getByRole('button', { name: /benefactor/i }).click()
 
   await page.waitForURL(/onboarding\/identity/)
-  await page.getByLabel(/display name/i).fill('Tester')
+  await page.getByLabel(/username/i).fill('Tester')
   await page.getByLabel(/date of birth/i).fill('1990-01-01')
-  await page.getByRole('combobox', { name: 'Gender' }).selectOption('male')
-  await page.getByRole('combobox', { name: 'Looking for' }).selectOption('female')
   await page.getByRole('button', { name: /continue/i }).click()
 
   await page.waitForURL(/onboarding\/location/)
