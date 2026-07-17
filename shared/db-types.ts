@@ -772,7 +772,7 @@ export type Database = {
           p_body_type: Database["public"]["Enums"]["body_type"]
           p_drinking: Database["public"]["Enums"]["drinking_habit"]
           p_education: Database["public"]["Enums"]["education_level"]
-          p_ethnicity?: Database["public"]["Enums"]["ethnicity"]
+          p_ethnicity: Database["public"]["Enums"]["ethnicity"]
           p_eye_color: Database["public"]["Enums"]["eye_color"]
           p_hair_color: Database["public"]["Enums"]["hair_color"]
           p_has_piercings: boolean
