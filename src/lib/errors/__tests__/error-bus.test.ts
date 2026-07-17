@@ -37,4 +37,12 @@ describe('error-bus', () => {
     dismiss(0) // removes newest ('b')
     expect(getSnapshot().map((e) => e.message)).toEqual(['a'])
   })
+
+  it('dismiss with an out-of-range index is a no-op (stable reference)', () => {
+    reportError(mk({ message: 'a' }))
+    const before = getSnapshot()
+    dismiss(5)
+    dismiss(-1)
+    expect(getSnapshot()).toBe(before)
+  })
 })

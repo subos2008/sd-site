@@ -19,6 +19,7 @@ export function reportError(e: AppError): void {
 }
 
 export function dismiss(index: number): void {
+  if (index < 0 || index >= queue.length) return
   queue = queue.filter((_, i) => i !== index)
   emit()
 }
