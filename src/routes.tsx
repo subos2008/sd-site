@@ -6,6 +6,7 @@ import {
   RequireRoleChosen,
   RootRedirect,
 } from './lib/route-guards'
+import { RootErrorBoundary } from './lib/errors/RootErrorBoundary'
 import { SignupPage } from './features/auth/pages/SignupPage'
 import { LoginPage } from './features/auth/pages/LoginPage'
 import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage'
@@ -81,4 +82,6 @@ export const routeConfig: RouteObject[] = [
   },
 ]
 
-export const router = createBrowserRouter(routeConfig)
+export const router = createBrowserRouter([
+  { errorElement: <RootErrorBoundary />, children: routeConfig },
+])
