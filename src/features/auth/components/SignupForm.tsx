@@ -49,12 +49,22 @@ export function SignupForm({
     <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <label className="flex flex-col gap-1.5">
         <span className={authLabel}>{t('signup.email')}</span>
-        <input className={authInput} type="email" {...register('email')} />
+        <input
+          className={authInput}
+          type="email"
+          placeholder={t('signup.emailPlaceholder')}
+          {...register('email')}
+        />
         {errors.email && <span className={authError}>{errors.email.message}</span>}
       </label>
       <label className="flex flex-col gap-1.5">
         <span className={authLabel}>{t('signup.password')}</span>
-        <input className={authInput} type="password" {...register('password')} />
+        <input
+          className={authInput}
+          type="password"
+          placeholder={t('signup.passwordPlaceholder')}
+          {...register('password')}
+        />
         {errors.password && <span className={authError}>{errors.password.message}</span>}
       </label>
       {serverError && (

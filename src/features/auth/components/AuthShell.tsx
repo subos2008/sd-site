@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 /** Shared field/button styles for auth forms on the ink background. */
 export const authInput =
   'rounded-xl border border-bone/20 bg-white/5 p-3 text-bone ' +
-  'focus:border-champagne focus:outline-none'
+  'placeholder:text-bone/35 focus:border-champagne focus:outline-none'
 export const authLabel = 'text-sm text-bone/80'
 export const authError = 'text-sm text-red-400'
 export const authSubmit =
