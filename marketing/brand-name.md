@@ -23,6 +23,45 @@ Rule of thumb: we can reuse **one** of "secret" or "benefits", just not
 both together. Closeness to the incumbent's construction is fine — this is
 a crowded space and gaps are hard to find anyway.
 
+## The namespace: brands already in the space
+
+What the incumbents called themselves, grouped by naming strategy (drawn
+from `case-studies/` plus the wider market). Useful as both a
+collision list and a map of which constructions are crowded vs open.
+
+**Category-keyword names — say the quiet part:**
+SugarDaddyMeet · SugarDaddie.com · Sugarbook · Sudy (a "sugar daddy"
+contraction) · SugarD · Spoil / SpoilMeDating · My Sugar Daddy.
+These inherited the platform risk by name: Google Play's 2021 ban keyed
+off an app's *stated purpose*, and this cohort was the most exposed
+(`case-studies/app-era-purge.md`).
+
+**Transaction-explicit names — the concept is the name:**
+SeekingArrangement · WhatsYourPrice (bid on first dates) · MissTravel
+(travel for company). Great for press, terrible for platform risk —
+Seeking spent real money rebranding *away* from "Arrangement" in 2022
+under regulatory pressure. The category leader paid to move into the
+deniable lane we're targeting from day one.
+
+**Wealth/status names — money-forward, keyword-free:**
+RichMeetBeautiful · EstablishedMen · MillionaireMatch · SeekingMillionaire
+· Luxy. No category keywords, but blunt about the exchange; reads dated
+(2000s millionaire-dating aesthetics) and RichMeetBeautiful still managed
+a criminal conviction on its *advertising*, name notwithstanding.
+
+**Deniable/innocuous names — our lane:**
+Secret Benefits · Seeking (post-rebrand) · OpenMinded · Emily Dates.
+Sparse company: besides the incumbent, almost nobody runs the
+two-innocuous-words formula. This is the whitespace.
+
+**Adjacent verticals, for construction ideas:**
+Affair sites name for discretion or use invented *people* — Ashley
+Madison, Victoria Milan, Gleeden, Illicit Encounters. Elite-dating apps
+name like members' clubs — The League, Raya, Inner Circle. Notable: the
+person-name strategy (a fictional woman as the brand) is proven twice in
+the affair vertical and completely unused in ours — an open construction
+if we want a warmer, human-feeling brand (an "Emily Dates" done well).
+
 ## Working notes on criteria
 
 - **SERP** = Search Engine Results Page (what Google shows for a query).
