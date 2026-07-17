@@ -1,5 +1,34 @@
 # Partner space map: dating-vertical affiliates and launch partners
 
+## Summary
+
+- **The best find is a date: GDI London, 15–16 Sep 2026, Richmond —
+  launch week, in London.** Launch Mon 14 Sep, walk into the UK dating
+  industry's conference on the 16th with a live product. Book tickets in
+  July (re-verify dates first).
+- **Best-named human lead: Mark Brooks, Courtland Brooks**
+  (mark@courtlandbrooks.com) — the dating industry's one dedicated
+  consultancy, GDI partnerships manager, speaking at GDI London. His
+  $3.5k/fortnight retainer may be the cheapest way to buy the answers
+  the research couldn't verify. Rev-share willingness unknown — first
+  question.
+- **Rate benchmarks to beat:** Seeking pays affiliates a flat $140/sale
+  via CrakRevenue (UK tier-1); LoveRevenue's public revshare card tops
+  at 80% lifetime; Seeking's in-house program allegedly $2 CPL + 45%
+  revshare (unverified). **Secret Benefits offers no revshare at all**,
+  so a ~50%+ lifetime-revshare offer is differentiated shelf space.
+- **Two gaps the research couldn't verify:** who owns the UK
+  review/listicle shelf space (three unverified candidates listed
+  below), and paid-placement norms. **And nothing addressed supply-side
+  (women's signup) traffic** — that's the first qualifying question in
+  every partner conversation.
+- **Founder actions now:** email Brooks; book GDI London. Then:
+  CrakRevenue as an advertiser, verify the review-site candidates,
+  TrafficPartner (caution: runs 50+ competing products), TES Prague
+  (25–28 Sep) post-launch.
+
+## Provenance and how to read this
+
 Output of the deep-research sweep run 2026-07-17 for spec 030 (rev-share
 launch partner search). Method: 5 search angles, 22 sources fetched, 102
 claims extracted, top 25 adversarially verified (23 confirmed, 1 refuted,
