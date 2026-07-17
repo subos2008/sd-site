@@ -402,7 +402,9 @@ start date is set with the partner.
   supply-side CPL dropped; "launch free" fallback replaced by supply-first
   launch (free side on 14 Sep, consumer side the day payments are live).
   `marketing/launch-plan.md` and `marketing/channels.md` still describe
-  the CPA/CPL model and need a revision pass.
+  the CPA/CPL model and need a revision pass. (Revision pass done later
+  the same day — both now reference the revenue-funded menu, the two deal
+  lanes, and the calendar-gated dates.)
 - 2026-07-17 (later) — Founder called out the rev-share anchoring after
   the space research showed the market runs on payout menus. Model
   refined: the principle is payouts-funded-from-realized-revenue with

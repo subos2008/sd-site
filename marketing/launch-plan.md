@@ -2,11 +2,23 @@
 
 Phased launch for a two-sided dating marketplace, UK-first, following the
 quiet-growth playbook in [lessons-learned.md](lessons-learned.md): the launch
-mechanism is affiliate listings, waitlist conversion, and product-led trust —
+mechanism is partner listings, waitlist conversion, and product-led trust —
 not a PR moment. The hard problem at launch is not attention — it's density:
 a new user in the first week must see enough active, credible profiles on
 the other side to come back. Every phase below is really about manufacturing
 that density honestly.
+
+**Dates and gating (revised 2026-07-17):** the dated master schedule is
+[`../LAUNCH.md`](../LAUNCH.md) — beta Mon 17 Aug, partner-ready Fri 28 Aug,
+open launch Mon 14 Sep, fixed to the freshers window. That makes the open
+launch **calendar-gated, not metrics-gated** (superseding the gating
+language this document originally used): beta metrics now decide how hard
+demand-side partner traffic runs at launch, not whether launch happens.
+Partner deals are **revenue-funded** (menu of revshare / hybrid / capped
+CPA — [affiliate-program-terms.md](affiliate-program-terms.md)), in two
+lanes: demand-side review shelf ([uk-review-sites.md](uk-review-sites.md))
+and supply-side content ecosystem
+([supply-side-channels.md](supply-side-channels.md)).
 
 ## Marketplace physics (read first)
 
@@ -46,12 +58,14 @@ attribution plumbing in place, before messaging/payments ship.
   concrete, costs nothing now, and gives the supply side a reason to be first.
 - `acquisition_source` captured at signup (UTM/ref → Postgres); the same
   rails carry affiliate ref codes later.
-- Affiliate groundwork (channel #1): attribution design, payout terms for
-  both sides (demand-side CPA on credit purchases; gated supply-side CPL on
-  verified, active profiles), the UK review-site shortlist, and the
-  affiliate agreement with its approved-creatives clause and payout gates —
-  drafted now so listings can switch on at open launch without a legal
-  scramble.
+- Partner groundwork (channel #1) — status 2026-07-17: the UK review-site
+  shortlist and space research are DONE (uk-review-sites.md,
+  partner-space.md), the payout menu is drafted
+  (affiliate-program-terms.md, founder sign-off pending), and outreach is
+  starting (Mark Brooks, GDI London, CrakRevenue). Remaining: attribution
+  build (spec 100) and the partner agreement with its approved-creatives
+  clause and payout gates — so listings can switch on at open launch
+  without a legal scramble.
 - Navigational SERP pages (channel #9): brand, "brand review", "is brand
   legit" — live before any affiliate or scraper writes them for us. Trust
   and safety guides (channel #6) and the city-page template ready. Baseline
@@ -61,9 +75,11 @@ attribution plumbing in place, before messaging/payments ship.
   [founder-anonymity.md](founder-anonymity.md) — with prepared lines.
   Drafted, not pitched.
 - Resolve the payments question (high-risk processor — see
-  [README.md](README.md)). This now formally blocks the token-economy plan:
-  credits pricing is a strategic commitment, so the processor decision comes
-  first.
+  [README.md](README.md)). Now launch-blocking beyond the token-economy
+  plan: revenue-funded partner deals mean no consumer-side partner
+  traffic until checkout works. Underwriting pack is drafted
+  (`../docs/payments/underwriting-pack.md`); the entity → bank → acquirer
+  chain is LAUNCH.md chain 1 and its dates govern.
 
 ## Phase 1 — closed beta (London), invite-only
 
@@ -83,8 +99,9 @@ impression before anyone pays.
   the existing notifications infrastructure — beta users must have a reason
   to return before messaging ships.
 - Measure: activation (photo + verified + complete profile), D7 return,
-  first-search results count, supply/demand ratio. These numbers decide when
-  Phase 2 opens, not the calendar.
+  first-search results count, supply/demand ratio. These numbers decide
+  how hard demand-side partner traffic runs at open launch — the date
+  itself is fixed to the freshers window (LAUNCH.md).
 
 ## Phase 2 — quiet open launch (London)
 
@@ -93,10 +110,12 @@ quiet machine start compounding. No press push.
 
 - Open self-serve signup for London; founding-member premium unlocks for
   waitlist converts.
-- Affiliate listings go live (#1) — the actual launch lever, serving both
-  sides: demand-side placement in the listicles, plus supply-side presence
-  in their "for sugar babies" sections with our creatives. Supply-side CPL
-  starts gated and capped from day one.
+- Partner listings go live (#1) — the actual launch lever, in two lanes:
+  demand-side placement on the review shelf (approach order in
+  uk-review-sites.md, revenue-funded menu terms), plus supply-side
+  presence via the sugar-baby content ecosystem and the listicles' "for
+  sugar babies" sections with our creatives. If the supply-side CPL is
+  adopted (founder decision), it starts gated and capped from day one.
 - Comparison/alternatives pages (#2) published — switcher recruitment is
   the demand-side tactic most tolerant of launch-stage density.
 - Navigational SERPs (#9) updated from "coming soon" to live product; city
@@ -135,9 +154,9 @@ first credit purchase. The deciding metrics, per side (lessons-learned.md
 and [channels.md](channels.md)):
 
 1. **Supply side:** cost per activated, verified supply-side profile in a
-   target city — not clicks, not raw signups. This is also the event the
-   affiliate supply-side CPL pays on, so the metric and the payout gate are
-   the same measurement.
+   target city — not clicks, not raw signups. If the supply-side CPL is
+   adopted (pending founder decision), it pays on this same event, so the
+   metric and the payout gate are the same measurement.
 2. **Demand side:** cost per activated demand-side profile and per first
    credit purchase.
 3. **Brand:** monthly branded search volume for our name — the proof that

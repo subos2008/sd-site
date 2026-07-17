@@ -18,21 +18,35 @@ active? The traffic skews male (audience panels for the category leader
 suggest roughly 75/25), but the female quarter of several million monthly
 visits is a serious supply channel in its own right.
 
-What differs per side is the economics, not the funnel:
+What differs per side is the economics, not the funnel (deal structures
+researched 2026-07-17 — see [partner-space.md](partner-space.md) for the
+incumbent-terms table this is anchored to):
 
-- **Demand side:** CPA on credit purchases — affiliate incentives aligned
-  with real revenue.
+- **Demand side:** a payout MENU funded from attributed realized revenue —
+  lifetime revshare, hybrid CPL+revshare, or capped per-sale CPA — per
+  [affiliate-program-terms.md](affiliate-program-terms.md). Menus are the
+  market norm (LoveRevenue, MySugarDaddy); big prepaid bounties
+  ($140-class) are off the table until beta LTV data exists.
 - **Supply side:** supply-side profiles are free, but realistically we must
   pay for them too — verified female activations are the scarce resource,
-  and dating-vertical affiliates expect per-lead rates for them (gender- and
-  geo-tiered CPL is industry standard). The danger is that paying per free
+  and the market's gender-split programs price a confirmed female
+  registration at roughly $2–4 (SugarDaddyMeet, Seeking — see
+  [supply-side-channels.md](supply-side-channels.md)), which makes the
+  cash exposure small and cappable. The danger is that paying per free
   signup is the strongest possible incentive for affiliates to manufacture
   fake women, so the payout is gated, not withheld: payable only on video
   verification plus an activity window (e.g. still active at day 30),
   delayed payout, clawbacks, per-affiliate caps, and manual sampling.
-  Verification-by-default (#10) is the payment gate. Price the bounty from
-  demand-side math: if an active verified London profile drives £X of
-  credit purchases over six months, a defensible CPL is a fraction of £X.
+  Verification-by-default (#10) is the payment gate. (Adopting the
+  supply-side CPL at all is a pending founder decision — it is the one
+  upfront cash outlay in the model.)
+
+One structural finding to carry into every deal: the demand-side shelf
+(review listicles) and the female-intent traffic (sugar-baby advice
+content, "how to find a sugar daddy" SEO) are largely **different sites
+with different owners** — expect two deal lanes, not one both-sides
+partner. Demand lane: [uk-review-sites.md](uk-review-sites.md). Supply
+lane: [supply-side-channels.md](supply-side-channels.md).
 
 The dedicated supply-side channels below are not there because listicles
 can't deliver women — they can — but because they are **city-targetable**
@@ -53,8 +67,14 @@ We buy distribution here rather than fighting for it ourselves.
   Benefits rides, so early placements are winnable.
 - Run the programme direct/invite-only, not on public CPA network rate
   cards; manual approval, small first cohort (3-5 partners), expand slowly.
-- Payouts per "One funnel, two audiences": demand-side CPA on credit
-  purchases plus gated supply-side CPL on verified, active female profiles.
+  (Research confirmed this is how the category actually recruits: in-house
+  programs behind application forms, terms private by default — Secret
+  Benefits is the template. Publishing a clear menu is itself mildly
+  differentiated.)
+- Payouts per "One funnel, two audiences": the revenue-funded menu
+  ([affiliate-program-terms.md](affiliate-program-terms.md)) on the demand
+  side, plus the gated supply-side CPL on verified, active female profiles
+  (pending founder decision).
 - Equip affiliates for the supply-side audience explicitly: creatives and
   talking points for their "for sugar babies" sections, and a listing that
   answers supply-side questions (free membership, video verification,
@@ -62,21 +82,28 @@ We buy distribution here rather than fighting for it ourselves.
   affiliate — a partner delivering real verified women earns placement
   upgrades and better terms; one delivering unverifiable signups gets
   clawbacks and the door.
-- Finding quality partners: reverse-engineer rather than cold-search — run
-  the money keywords and treat every ranking page as a candidate; pull
-  competitors' referring domains (Ahrefs/Semrush) and see who carries their
-  tracking links. Quality signals: real organic rankings, meaningful UK
+- Finding quality partners: the money-keyword sweep is DONE (2026-07-17)
+  — [uk-review-sites.md](uk-review-sites.md) has the shelf map and
+  approach order (datinghelp.co.uk / Webels ApS first: verified entity,
+  named founders, already lists Seeking + Secret Benefits). Still open:
+  competitors' referring domains via Ahrefs/Semrush for partners the SERP
+  sweep missed. Quality signals: real organic rankings, meaningful UK
   traffic share, ASA-compliant ad disclosure, willingness to sign the
-  creatives clause, no fake-review farming. This is a relationship
-  business: an experienced dating-vertical affiliate manager is the
-  highest-leverage marketing hire in the plan, and deal flow happens at the
-  industry's events (Affiliate World, TES).
+  creatives clause, no fake-review farming, and a verifiable legal entity
+  (half this shelf is anonymous US-addressed operations — contracts
+  favour the verifiable ones). This is a relationship business: spec 030
+  (revenue-funded launch-partner search) owns it, Mark Brooks / Courtland
+  Brooks is the named connector lead, and the 2026 deal venues land
+  perfectly — GDI London 15–16 Sep (launch week) and TES Prague 25–28 Sep
+  ([partner-space.md](partner-space.md)).
 - Approved-creatives clause, actively enforced — rogue affiliate copy is an
   ASA liability that attaches to us, and this vertical's affiliates keep
   publishing fake-fresh reviews of dead brands. Police it continuously.
-- First steps: ref-code attribution into Postgres, payout terms defined
-  (both sides), top-10 UK review-site shortlist, affiliate agreement
-  drafted with the creatives clause and the supply-side payout gates.
+- First steps (status 2026-07-17): UK review-site shortlist done
+  (uk-review-sites.md); payout menu drafted (affiliate-program-terms.md,
+  founder sign-off pending); still to do: ref-code attribution into
+  Postgres (spec 100), affiliate agreement drafted with the creatives
+  clause and payout gates.
 
 ## Demand-side channels
 
@@ -148,6 +175,13 @@ never goes near debt-relief framing.
   several, expect refusals and the occasional ASA complaint (priced in).
 - Time pushes to term rhythm (freshers period, January); layer student-city
   geo onto ad-network tests (#3) and podcast picks (#8).
+- Research caveat (2026-07-17, [supply-side-channels.md](supply-side-channels.md)):
+  no agency, ambassador network, or partner has documented history running
+  this category's student channel — the proven volume plays (Seeking's
+  "Sugar Baby University") were in-house corporate PR, UK student press
+  covers the topic hostilely, and TikTok bans the category in organic
+  content, not just ads. This channel is run in-house, reactive lines
+  ready, never delegated to a partner.
 
 ### 8. Podcast and newsletter sponsorships (borrowed; pick shows per side)
 
@@ -228,7 +262,8 @@ Whatever the channel, the destination is owned:
 Metrics, per side (per lessons-learned.md):
 
 1. **Supply side:** cost per activated, verified supply-side profile in a
-   target city (the same event the affiliate CPL pays on).
+   target city (the same event the supply-side CPL would pay on, if
+   adopted — pending founder decision).
 2. **Demand side:** cost per activated demand-side profile and per first
    credit purchase.
 3. **Brand:** monthly branded search volume for our name.
