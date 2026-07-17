@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(16);
+SELECT plan(17);
 
 -- Fixture: insert auth.users row; the handle_new_user trigger from Plan 02
 -- auto-creates a matching public.profiles row.
@@ -15,6 +15,7 @@ SELECT has_column('public', 'profiles', 'about',               'about column');
 SELECT has_column('public', 'profiles', 'wants',               'wants column');
 SELECT has_column('public', 'profiles', 'height_cm',           'height_cm column');
 SELECT has_column('public', 'profiles', 'body_type',           'body_type column');
+SELECT has_column('public', 'profiles', 'ethnicity',           'ethnicity column');
 SELECT has_column('public', 'profiles', 'hair_color',          'hair_color column');
 SELECT has_column('public', 'profiles', 'eye_color',           'eye_color column');
 SELECT has_column('public', 'profiles', 'has_piercings',       'has_piercings column');

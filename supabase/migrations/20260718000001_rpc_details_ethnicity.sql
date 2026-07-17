@@ -18,7 +18,7 @@ CREATE FUNCTION public.set_profile_details(
   p_education          education_level,
   p_yearly_income_band income_band,
   p_net_worth_band     net_worth_band,
-  p_ethnicity          ethnicity
+  p_ethnicity          ethnicity DEFAULT NULL
 ) RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
