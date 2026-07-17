@@ -23,14 +23,17 @@ freshers window, which is external and does not move:
 - Scottish universities: welcome weeks from ~7 Sep
 - Most English universities: students arrive w/c 14 Sep and 21 Sep
 
-**The partner model (decided 2026-07-17):** there is no marketing budget
-until there is revenue, so partners are paid from revenue, not ahead of it.
-The launch deal is a **revenue share on the consumer (paying) side** with
-one or more partners already operating in the dating space who bring
-traffic on **both** sides — supply-side audiences and paying consumers.
-This is the vertical's standard structure (lifetime or time-boxed revshare,
-typically 25–50% of referred spend) — we are picking the established
-no-cash-upfront deal, not inventing one. Consequences:
+**The partner model (decided 2026-07-17, refined same day):** there is
+no marketing budget until there is revenue, so the governing principle
+is **partner payouts funded from attributed realized revenue, with cash
+exposure capped** — not any single payout instrument. The program offers
+the market's standard menu (revshare / hybrid CPL+revshare / capped CPA
+per sale — see `marketing/affiliate-program-terms.md`); big prepaid
+bounties are the only thing off the table until beta LTV data exists.
+Research also showed a single both-sides partner is unlikely to exist:
+plan for separate demand-side deals (UK review-shelf sites) and
+supply-side deals (sugar-baby content ecosystem + small
+verification-gated CPL). Consequences:
 
 - **Payments are launch-blocking.** A revshare partner will not send
   consumer traffic until checkout works; there is no revenue to share
@@ -395,3 +398,11 @@ start date is set with the partner.
   launch (free side on 14 Sep, consumer side the day payments are live).
   `marketing/launch-plan.md` and `marketing/channels.md` still describe
   the CPA/CPL model and need a revision pass.
+- 2026-07-17 (later) — Founder called out the rev-share anchoring after
+  the space research showed the market runs on payout menus. Model
+  refined: the principle is payouts-funded-from-realized-revenue with
+  capped cash exposure; the instrument is per-partner (menu in
+  `marketing/affiliate-program-terms.md`). Supply-side CPL reinstated as
+  an option (small, verification-gated, capped — market rate ~£2–4).
+  Expect two deal lanes (demand-side review shelf, supply-side content
+  ecosystem) rather than one both-sides partner.

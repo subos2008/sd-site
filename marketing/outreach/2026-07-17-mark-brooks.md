@@ -31,12 +31,13 @@ category), differentiated by identity verification on every profile by
 default. I've followed Courtland Brooks for a while, and I saw you're
 speaking at GDI London, which happens to fall in our launch week.
 
-We're going to market through revenue-share partnerships rather than
-upfront spend, and I'm looking for help in three areas where your network
-seems uniquely relevant:
+We're going to market through partnerships paid out of the revenue they
+generate — revshare, hybrid, or capped per-sale, whatever fits the
+partner — rather than upfront spend, and I'm looking for help in three
+areas where your network seems uniquely relevant:
 
 1. Who actually owns the UK review/listicle shelf space in this category,
-   and which of them would take a lifetime revshare deal from a new
+   and which of them would take a revenue-funded deal from a new
    program.
 2. Whether any partners can deliver supply-side (female signup) traffic,
    not just paying members.

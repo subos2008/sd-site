@@ -1,4 +1,4 @@
-# 030: Dating-vertical launch partner (rev-share)
+# 030: Dating-vertical launch partner (revenue-funded deals)
 
 Status: in progress. Reframed 2026-07-17 from "find an affiliate expert
 (hire or partner)" to its resolved form: **find a launch partner already
@@ -17,13 +17,18 @@ content ecosystem) deals. Candidate list now exists; outreach is next.
 
 ## The deal we are offering
 
-- **Revenue share on consumer-side spend** from partner-attributed users:
-  the vertical's standard no-cash-upfront structure (lifetime or
-  time-boxed revshare; the industry range to be confirmed by the space
-  research, working assumption 25–50% of referred spend).
-- **Net of refunds and chargebacks** — dating chargeback rates make this
-  clause non-optional, and stating it up front signals we know the
-  vertical.
+Revised 2026-07-17 (was rev-share-only; the market runs on payout menus
+and our real constraint is "payouts funded from realized revenue, cash
+exposure capped", not any single instrument):
+
+- **A menu, per `marketing/affiliate-program-terms.md`:** lifetime
+  revshare (50%, 65% founding premium) for SEO/content owners; hybrid
+  small-CPL + revshare tail (the Seeking shape); or capped CPA per sale
+  with a milestone ladder that releases behind realized spend. Not
+  offered: $140-class big bounties until beta LTV data exists.
+- **All payouts net of refunds and chargebacks** — dating chargeback
+  rates make this clause non-optional, and stating it up front signals
+  we know the vertical.
 - Partner brings **both sides**: supply-side audience reach (women
   signing up — the differentiator; consumer traffic alone is the easy
   half) and consumer traffic (paying men).
@@ -66,9 +71,10 @@ In descending order of value:
    serious dating affiliate in Europe. More a route to 1–2 than partners
    themselves.
 
-Must-haves: UK reach; revshare appetite (someone who insists on upfront
-CPL is the wrong partner for this launch); supply-side audience access;
-clean methods (see vetting).
+Must-haves: UK reach; willingness to work within revenue-funded
+structures (someone who insists on big prepaid bounties or upfront
+budgets is the wrong partner for this launch); supply-side audience
+access; clean methods (see vetting).
 
 ## Where these people are
 
