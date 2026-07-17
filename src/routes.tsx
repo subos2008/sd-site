@@ -11,6 +11,7 @@ import { SignupPage } from './features/auth/pages/SignupPage'
 import { LoginPage } from './features/auth/pages/LoginPage'
 import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage'
 import { AuthConfirmPage } from './features/auth/pages/AuthConfirmPage'
+import { LegalPage } from './features/legal/pages/LegalPage'
 import { OnboardingLayout } from './features/onboarding/pages/OnboardingLayout'
 import { RoleStep } from './features/onboarding/components/RoleStep'
 import { IdentityStep } from './features/onboarding/components/IdentityStep'
@@ -39,6 +40,8 @@ export const routeConfig: RouteObject[] = [
   },
 
   { path: '/auth/confirm', element: <AuthConfirmPage /> },
+  { path: '/legal/privacy', element: <LegalPage doc="privacy" /> },
+  { path: '/legal/terms', element: <LegalPage doc="terms" /> },
 
   {
     element: <RequirePendingOnboarding />,

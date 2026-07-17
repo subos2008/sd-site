@@ -12,6 +12,7 @@ import enLikes from '../i18n/en/likes.json'
 import enNotifications from '../i18n/en/notifications.json'
 import enErrors from '../i18n/en/errors.json'
 import enLanding from '../i18n/en/landing.json'
+import enLegal from '../i18n/en/legal.json'
 
 export function initI18n(): Promise<unknown> {
   return i18next
@@ -31,6 +32,7 @@ export function initI18n(): Promise<unknown> {
           notifications: enNotifications,
           errors: enErrors,
           landing: enLanding,
+          legal: enLegal,
         },
       },
       fallbackLng: 'en',
