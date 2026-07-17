@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { logIn } from '../api'
+import { authError, authInput, authLabel, authSubmit } from './AuthShell'
 
 const Schema = z.object({ email: z.string().email(), password: z.string().min(1) })
 type FormData = z.infer<typeof Schema>
@@ -30,25 +31,25 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   }
 
   return (
-    <form className="flex flex-col gap-3 p-4 max-w-sm" onSubmit={handleSubmit(onSubmit)}>
-      <label className="flex flex-col gap-1">
-        <span>{t('login.email')}</span>
-        <input className="border p-2 rounded" type="email" {...register('email')} />
-        {errors.email && <span className="text-sm text-red-700">{errors.email.message}</span>}
+    <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <label className="flex flex-col gap-1.5">
+        <span className={authLabel}>{t('login.email')}</span>
+        <input className={authInput} type="email" {...register('email')} />
+        {errors.email && <span className={authError}>{errors.email.message}</span>}
       </label>
-      <label className="flex flex-col gap-1">
-        <span>{t('login.password')}</span>
-        <input className="border p-2 rounded" type="password" {...register('password')} />
+      <label className="flex flex-col gap-1.5">
+        <span className={authLabel}>{t('login.password')}</span>
+        <input className={authInput} type="password" {...register('password')} />
       </label>
       {serverError && (
-        <div role="alert" className="text-red-700">
+        <div role="alert" className={authError}>
           {serverError}
         </div>
       )}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-slate-800 text-white py-2 rounded"
+        className={`${authSubmit} mt-2 bg-champagne hover:bg-bone`}
       >
         {t('login.submit')}
       </button>

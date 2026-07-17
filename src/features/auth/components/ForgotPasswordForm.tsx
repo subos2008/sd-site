@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { sendPasswordReset } from '../api'
+import { authInput, authLabel, authSubmit } from './AuthShell'
 
 const Schema = z.object({ email: z.string().email() })
 type FormData = z.infer<typeof Schema>
@@ -28,18 +29,18 @@ export function ForgotPasswordForm() {
     setSent(true)
   }
 
-  if (sent) return <p className="p-4">{t('forgot.sent')}</p>
+  if (sent) return <p className="mt-6 text-bone/80">{t('forgot.sent')}</p>
 
   return (
-    <form className="flex flex-col gap-3 p-4 max-w-sm" onSubmit={handleSubmit(onSubmit)}>
-      <label className="flex flex-col gap-1">
-        <span>{t('forgot.email')}</span>
-        <input className="border p-2 rounded" type="email" {...register('email')} />
+    <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <label className="flex flex-col gap-1.5">
+        <span className={authLabel}>{t('forgot.email')}</span>
+        <input className={authInput} type="email" {...register('email')} />
       </label>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-slate-800 text-white py-2 rounded"
+        className={`${authSubmit} mt-2 bg-champagne hover:bg-bone`}
       >
         {t('forgot.submit')}
       </button>

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { signUp } from '../api'
+import { authError, authInput, authLabel, authSubmit } from './AuthShell'
 
 const Schema = z.object({
   email: z.string().email(),
@@ -40,32 +41,28 @@ export function SignupForm({
     }
   }
 
-  if (done) return <p className="p-4">{t('signup.checkEmail')}</p>
+  if (done) return <p className="mt-6 text-bone/80">{t('signup.checkEmail')}</p>
+
+  const submitAccent = roleHint === 'baby' ? 'bg-rose hover:bg-bone' : 'bg-champagne hover:bg-bone'
 
   return (
-    <form className="flex flex-col gap-3 p-4 max-w-sm" onSubmit={handleSubmit(onSubmit)}>
-      <label className="flex flex-col gap-1">
-        <span>{t('signup.email')}</span>
-        <input className="border p-2 rounded" type="email" {...register('email')} />
-        {errors.email && <span className="text-sm text-red-700">{errors.email.message}</span>}
+    <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <label className="flex flex-col gap-1.5">
+        <span className={authLabel}>{t('signup.email')}</span>
+        <input className={authInput} type="email" {...register('email')} />
+        {errors.email && <span className={authError}>{errors.email.message}</span>}
       </label>
-      <label className="flex flex-col gap-1">
-        <span>{t('signup.password')}</span>
-        <input className="border p-2 rounded" type="password" {...register('password')} />
-        {errors.password && (
-          <span className="text-sm text-red-700">{errors.password.message}</span>
-        )}
+      <label className="flex flex-col gap-1.5">
+        <span className={authLabel}>{t('signup.password')}</span>
+        <input className={authInput} type="password" {...register('password')} />
+        {errors.password && <span className={authError}>{errors.password.message}</span>}
       </label>
       {serverError && (
-        <div role="alert" className="text-red-700">
+        <div role="alert" className={authError}>
           {serverError}
         </div>
       )}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-slate-800 text-white py-2 rounded"
-      >
+      <button type="submit" disabled={isSubmitting} className={`${authSubmit} ${submitAccent} mt-2`}>
         {t('signup.submit')}
       </button>
     </form>

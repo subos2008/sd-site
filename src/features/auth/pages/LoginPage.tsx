@@ -1,23 +1,24 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { LoginForm } from '../components/LoginForm'
+import { AuthShell } from '../components/AuthShell'
 
 export function LoginPage() {
   const { t } = useTranslation('auth')
   return (
-    <main className="max-w-md mx-auto py-12">
-      <h1 className="text-2xl font-semibold px-4">{t('login.title')}</h1>
+    <AuthShell>
+      <h1 className="font-display text-3xl font-semibold">{t('login.title')}</h1>
       <LoginForm />
-      <p className="px-4 mt-2">
-        <Link to="/forgot-password" className="underline">
+      <p className="mt-6 text-sm text-bone/70">
+        <Link to="/forgot-password" className="underline hover:text-bone">
           {t('login.forgot')}
         </Link>
       </p>
-      <p className="px-4 mt-2">
-        <Link to="/signup" className="underline">
+      <p className="mt-2 text-sm text-bone/70">
+        <Link to="/signup" className="underline hover:text-bone">
           {t('login.needAccount')}
         </Link>
       </p>
-    </main>
+    </AuthShell>
   )
 }
