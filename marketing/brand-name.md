@@ -109,6 +109,62 @@ if we want a warmer, human-feeling brand (an "Emily Dates" done well).
 | Open Secret | parked/idle | Playful, but the idiom means "everyone actually knows" — arguably the *opposite* promise. |
 | Secret Company | registered, unchecked | Flat; "company" does double duty but the pair doesn't sing. |
 
+### The secrecy universe (deep riff on "secret" as the core)
+
+Ryan's steer (2026-07-17): go back to secrets as the core. Four veins:
+literal Secret-compounds, keeping-secrets idioms, the vocabulary of the
+discreet life, and objects that hold secrets.
+
+**Secret ___ compounds**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Our Little Secret** | parked | *The* complicity phrase — the warmest discretion promise in English. Real flag: the phrase also has a groomer register in abuse reporting; press could weaponise it. |
+| **Secret Menu** | parked/idle | Insiders know to ask — playful, modern (In-N-Out folklore), fully deniable. Younger-skewing in a good way. |
+| **Secret Handshake** | parked/idle | Insider recognition, clubby and friendly; the wink is about belonging, not transaction. |
+| **Secret Keeper** | parked/idle | The safety promise personified — "we keep your secret." Does what the incumbent's "secret" does, but as a service promise. |
+| Secret Garden | in use (hotel) | Hidden place of beauty; famous novel; feminine and romantic. Crowded namespace (spas, florists). |
+| Secret Hour | **for sale** (HugeDomains) | The hour that isn't in your calendar; moody, cinematic. |
+| Secret Life | parked/idle | Double-life coded — drifts affair-ward ("The Secret Life of…"). |
+| Secret Door | in use | Speakeasy energy; domain live. |
+| Secret Society | in use | Clubby but conspiratorial. |
+| Trade Secret | parked/idle | Common idiom; "trade" carries transactional (and slang) registers — flag. |
+
+**Keeping-secrets idioms**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Classified** | parked/idle | Double meaning: state-secret *and* classified ads — the personals-page heritage of this entire category. Punchy, unisex, spellable. My favourite of this group. |
+| **Mum's the Word** | parked/idle | Gloriously British secrecy pledge — perfect UK-first texture. Flag: "Mum" reads as mother; baby-brand adjacency is odd for us. |
+| **Undisclosed** | gated/unclear | "An undisclosed sum" — the money wink hides *inside* the privacy word. Underrated. |
+| Under Wraps | parked/idle | "Keep it under wraps" — playful, spellable, light. |
+| Pillow Talk | in use (bedding) | Intimate confidences in bed; mainstream idiom, slightly racy. Domain runs a retailer. |
+| Sweet Nothings | in use (snacks) | Whispered intimacies + a deniable sugar nod. Lovely; keyword-adjacent flag and domain in use. |
+| Eyes Only | in use (LASIK clinic, amusingly) | "For your eyes only" — Bond-romantic. |
+| Hush Hush | gated | The whispered phrase itself; an existing luxury marketplace uses it. |
+| Whispered | parked/idle | Soft sibling of Unspoken. |
+
+**The discreet life (how affluent discretion actually talks)**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Moonlight / Moonlighting** | **both parked/idle** | "Moonlighting" = a discreet thing on the side, plus literal romantic moonlight — the double register is perfect for the supply side, and the word is warm, not sordid. Both .coms dormant. A top pick. |
+| **Unlisted** | parked/idle | The unlisted number — old-money privacy tech, now real-estate cool. One word, modern, quietly premium. |
+| **Ex Directory** | parked/idle | The British version of Unlisted — charmingly UK, older-skewing (as is the demand side). |
+| **Nightcap** | in use (ATM holding co) | "Come up for a nightcap" — the classic deniable invitation; it's just a drink. Adult-legible, playful. Domain held by an ATM company — enquiry-worthy. |
+| Speakeasy | in use | Know-the-password romance; crowded brand space. |
+| Masquerade | in use (costumes) | Masks + romance; reads costume-shop. |
+| Behind Closed Doors | unchecked | Fits perfectly but long, and tilts salacious. |
+
+**Secret tokens (objects that hold secrets)**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Locket** | parked/idle | A locket exists to hold the hidden picture of someone dear — jewellery, gift, romance, and concealment in one object. Gorgeous. Flag: the Locket photo-widget app (big since 2022). |
+| **Keepsake** | parked/idle | A treasured private gift — and it smuggles in the "kept" family. Soft, giftable, feminine. |
+| Hidden Gem | parked/idle | "You're a hidden gem" — supply-side compliment built in; a bit travel-blog. |
+| Intrigue | parked/idle | The archaic meaning is literally *a secret love affair*; the modern one is fascination. Sophisticated double register; slightly chilly. |
+
 ### ___ Benefits
 
 | Name | .com | Opinion |
@@ -239,4 +295,5 @@ rich: books, lists, diaries, what's written down and who's in it.
 - **Tacit** — kept (2026-07-17).
 
 Claude's top picks, for what they're worth: Kept Company, Best Kept,
-Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere.
+Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — and
+from the secrecy riff: Moonlight, Classified, Locket, Secret Keeper.
