@@ -11,6 +11,7 @@
   "section.details.title": "Details",
   "section.details.height": "Height (cm)",
   "section.details.body_type": "Body type",
+  "section.details.ethnicity": "Ethnicity",
   "section.details.hair_color": "Hair colour",
   "section.details.eye_color": "Eye colour",
   "section.details.piercings": "Piercings",
@@ -33,5 +34,16 @@
   "edit.error": "Couldn't save — please retry.",
   "nudge.completeProfile.title": "Finish your profile",
   "nudge.completeProfile.body": "Add your details and interests below to get better matches.",
-  "nudge.completeProfile.dismiss": "Dismiss"
+  "nudge.completeProfile.dismiss": "Dismiss",
+  "option.body_type.slim": "Slim",
+  "option.body_type.athletic": "Fit",
+  "option.body_type.average": "Average",
+  "option.body_type.curvy": "Curvy",
+  "option.body_type.plus_size": "Full figured",
+  "option.body_type.muscular": "Muscular",
+  "option.ethnicity.white": "White",
+  "option.ethnicity.black": "Black",
+  "option.ethnicity.asian": "Asian",
+  "option.ethnicity.hispanic": "Hispanic",
+  "option.ethnicity.other": "Other"
 }

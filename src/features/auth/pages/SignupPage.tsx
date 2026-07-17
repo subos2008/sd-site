@@ -9,6 +9,7 @@ export function SignupPage() {
   const [searchParams] = useSearchParams()
   const parsed = ProfileRole.safeParse(searchParams.get('role'))
   const roleHint = parsed.success ? parsed.data : undefined
+  const acquisitionSource = searchParams.get('ref') ?? searchParams.get('utm_source')
   const accent =
     roleHint === 'baby' ? 'text-rose' : roleHint === 'benefactor' ? 'text-champagne' : 'text-bone'
   return (
@@ -22,7 +23,7 @@ export function SignupPage() {
       {roleHint ? (
         <p className="mt-3 leading-relaxed text-bone/70">{t(`signup.sub.${roleHint}`)}</p>
       ) : null}
-      <SignupForm roleHint={roleHint} />
+      <SignupForm roleHint={roleHint} acquisitionSource={acquisitionSource} />
       <p className="mt-6 text-sm text-bone/70">
         <Link to="/login" className="underline hover:text-bone">
           {t('signup.haveAccount')}

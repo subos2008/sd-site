@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { isAdult } from '@/lib/dob'
+import { useSession } from '@/lib/auth-context'
+import { identityForRole } from '@/features/auth/roleDerivation'
 import { useSetIdentity, useMyProfile } from '../hooks'
 import { nextStepPath } from '../steps'
 
 type FormData = {
   display_name: string
   date_of_birth: string
-  gender: 'male' | 'female' | 'nonbinary' | 'other'
-  looking_for: 'male' | 'female' | 'any'
 }
 
 export function IdentityStep() {
@@ -19,6 +19,11 @@ export function IdentityStep() {
   const setIdentity = useSetIdentity()
   const { data: me } = useMyProfile()
   const role = me?.ok ? me.profile.role : null
+  const { session } = useSession()
+  const metadataUsername =
+    typeof session?.user?.user_metadata?.username === 'string'
+      ? (session.user.user_metadata.username as string)
+      : ''
   const [serverError, setServerError] = useState<string | null>(null)
   const {
     register,
@@ -27,10 +32,8 @@ export function IdentityStep() {
     formState: { isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      display_name: '',
+      display_name: metadataUsername,
       date_of_birth: '',
-      gender: 'male',
-      looking_for: 'any',
     },
   })
 
@@ -44,7 +47,11 @@ export function IdentityStep() {
     setServerError(null)
     if (!isAdult(new Date(values.date_of_birth))) return
     try {
-      const res = await setIdentity.mutateAsync(values)
+      const res = await setIdentity.mutateAsync({
+        display_name: values.display_name,
+        date_of_birth: values.date_of_birth,
+        ...identityForRole(role ?? 'benefactor'),
+      })
       if (!res.ok) {
         setServerError(res.error)
         return
@@ -62,7 +69,7 @@ export function IdentityStep() {
     >
       <h2 className="text-xl">{t('identity.title')}</h2>
       <label className="flex flex-col gap-1">
-        <span>{t('identity.displayName')}</span>
+        <span>{t('identity.username')}</span>
         <input
           className="border p-2 rounded"
           type="text"
@@ -79,23 +86,6 @@ export function IdentityStep() {
         {showUnder18 && (
           <span className="text-sm text-red-700">{t('identity.dobUnder18')}</span>
         )}
-      </label>
-      <label className="flex flex-col gap-1">
-        <span>{t('identity.gender')}</span>
-        <select className="border p-2 rounded" {...register('gender')}>
-          <option value="male">{t('identity.gender.male')}</option>
-          <option value="female">{t('identity.gender.female')}</option>
-          <option value="nonbinary">{t('identity.gender.nonbinary')}</option>
-          <option value="other">{t('identity.gender.other')}</option>
-        </select>
-      </label>
-      <label className="flex flex-col gap-1">
-        <span>{t('identity.lookingFor')}</span>
-        <select className="border p-2 rounded" {...register('looking_for')}>
-          <option value="male">{t('identity.lookingFor.male')}</option>
-          <option value="female">{t('identity.lookingFor.female')}</option>
-          <option value="any">{t('identity.lookingFor.any')}</option>
-        </select>
       </label>
       {serverError && (
         <div role="alert" className="text-red-700">

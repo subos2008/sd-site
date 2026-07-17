@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { geocodeCity } from '../geocode'
 import { useSetLocation, useMyProfile } from '../hooks'
+import { useSession } from '@/lib/auth-context'
 import { nextStepPath } from '../steps'
 
 type Resolved = { display_name: string; lat: number; lng: number }
@@ -13,7 +14,12 @@ export function LocationStep() {
   const setLocation = useSetLocation()
   const { data: me } = useMyProfile()
   const role = me?.ok ? me.profile.role : null
-  const [input, setInput] = useState('')
+  const { session } = useSession()
+  const metadataCity =
+    typeof session?.user?.user_metadata?.city === 'string'
+      ? (session.user.user_metadata.city as string)
+      : ''
+  const [input, setInput] = useState(metadataCity)
   const [resolved, setResolved] = useState<Resolved | null>(null)
   const [lookupError, setLookupError] = useState<string | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)

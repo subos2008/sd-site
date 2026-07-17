@@ -7,6 +7,7 @@
   "role.continue": "Continue",
   "identity.title": "Tell us about you",
   "identity.displayName": "Display name",
+  "identity.username": "Username",
   "identity.dob": "Date of birth",
   "identity.gender": "Gender",
   "identity.lookingFor": "Looking for",
