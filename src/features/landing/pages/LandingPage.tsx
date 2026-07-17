@@ -42,8 +42,7 @@ export function LandingPage() {
           &amp;
         </span>
         <div className="relative mx-auto max-w-6xl px-5 pt-14 pb-16 md:px-8 md:pt-24 md:pb-24">
-          <p className="text-sm tracking-[0.25em] text-smoke uppercase">{t('hero.eyebrow')}</p>
-          <h1 className="font-display mt-5 max-w-3xl text-4xl leading-tight font-semibold md:text-6xl">
+          <h1 className="font-display max-w-3xl text-4xl leading-tight font-semibold md:text-6xl">
             <span className="whitespace-nowrap">{t('hero.h1.lead')}</span> <Amp />{' '}
             <span className="whitespace-nowrap">{t('hero.h1.tail')}</span>
             <br />
