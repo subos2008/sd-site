@@ -1,0 +1,6 @@
+{
+  "toast.dismiss": "Dismiss",
+  "boundary.title": "Something went wrong",
+  "boundary.body": "An unexpected error occurred. You can try reloading the page.",
+  "boundary.reload": "Reload"
+}
