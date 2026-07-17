@@ -45,18 +45,19 @@ export function IdentityStep() {
 
   async function onSubmit(values: FormData) {
     setServerError(null)
+    if (!role) return
     if (!isAdult(new Date(values.date_of_birth))) return
     try {
       const res = await setIdentity.mutateAsync({
         display_name: values.display_name,
         date_of_birth: values.date_of_birth,
-        ...identityForRole(role ?? 'benefactor'),
+        ...identityForRole(role),
       })
       if (!res.ok) {
         setServerError(res.error)
         return
       }
-      navigate(nextStepPath(role ?? 'benefactor', 'identity'))
+      navigate(nextStepPath(role, 'identity'))
     } catch (e) {
       setServerError(e instanceof Error ? e.message : 'unknown')
     }
@@ -94,7 +95,7 @@ export function IdentityStep() {
       )}
       <button
         type="submit"
-        disabled={isSubmitting || !dobValid || !adult}
+        disabled={isSubmitting || !role || !dobValid || !adult}
         className="bg-slate-800 text-white py-2 rounded disabled:opacity-50"
       >
         {t('identity.continue')}

@@ -20,7 +20,7 @@ function wrap(ui: ReactNode) {
   )
 }
 
-function mockProfile(role: 'benefactor' | 'baby') {
+function mockProfile(role: 'benefactor' | 'baby' | null) {
   return {
     ok: true,
     profile: {
@@ -53,6 +53,30 @@ describe('IdentityStep', () => {
     await userEvent.clear(dobInput)
     await userEvent.type(dobInput, iso)
     expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+  })
+
+  it('keeps Continue disabled until the role is known', async () => {
+    let identityCalled = false
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/view_my_profile', () =>
+        HttpResponse.json(mockProfile(null)),
+      ),
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_identity', () => {
+        identityCalled = true
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    render(wrap(<IdentityStep />))
+    await userEvent.type(screen.getByLabelText(/username/i), 'Lex')
+    const dob = new Date()
+    dob.setFullYear(dob.getFullYear() - 25)
+    const iso = dob.toISOString().slice(0, 10)
+    const dobInput = screen.getByLabelText(/date of birth/i) as HTMLInputElement
+    await userEvent.clear(dobInput)
+    await userEvent.type(dobInput, iso)
+    // Role is null → Continue stays disabled and no identity request fires.
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+    expect(identityCalled).toBe(false)
   })
 
   it('submits role-derived gender and looking-for (no gender/looking-for selects)', async () => {
