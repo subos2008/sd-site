@@ -155,10 +155,11 @@ Checklist (jurisdiction-independent items can start immediately):
 
 ### B. Payments (launch-blocking — gates revenue and the partner deal)
 
-- [ ] Underwriting pack prepared NOW, before the entity exists: business
-      description, projected volumes, chargeback controls, ToS/privacy
-      drafts, KYC docs — so the application goes in the day the bank
-      account opens
+- [x] Underwriting pack drafted (2026-07-17):
+      `docs/payments/underwriting-pack.md` — application-ready text for
+      business description, processing profile, chargeback controls, and
+      compliance posture. Open inputs: entity/brand/domain (spec 020),
+      founder KYC docs + volume sanity-check, final price points (Plan 04)
 - [ ] Shortlist high-risk processors (Segpay, CCBill, Verotel; ask
       candidate partners which acquirers they see work in this vertical —
       partner knowledge de-risks this pick)
@@ -359,9 +360,12 @@ start date is set with the partner.
 
 1. Book the accountant/solicitor consultation with the speed-vs-anonymity
    question on the agenda (founder action — only you can do this)
-2. Start the payments underwriting pack (no entity needed; unblocks the
-   ~7 Aug application)
-3. Reframe spec 030 to the launch-partner model and start outreach
+2. Underwriting pack: drafted (`docs/payments/underwriting-pack.md`) —
+   founder actions remaining: gather KYC docs (passport, proof of
+   address), sanity-check the volume projections
+3. Spec 030: reframed to the launch-partner model (done 2026-07-17);
+   space-mapping research running; outreach starts when the leads list
+   lands
 4. Run the brand-name knockout screen (spec 020 workstream 1)
 5. Write + execute the 015 gazetteer plan
 6. Draft execution specs 050–100
