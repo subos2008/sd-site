@@ -16,18 +16,40 @@ Authored 2026-07-17. Dates below are week-commencing (Mondays).
 
 ## What "September launch" means
 
-Working definition (assumption — adjust if wrong):
+Founder's definition (2026-07-17): **everything in place to go live with
+marketing partners when students get to uni.** That fixes the date to the
+freshers window, which is external and does not move:
 
-- **Mon 31 Aug — closed beta opens (Phase 1).** Invite-only, London,
-  supply-side first, concierge onboarding, free. No payments needed.
-- **W/C 28 Sep — quiet open launch (Phase 2), London.** Self-serve signup,
-  affiliate listings switch on, founding-member premium unlocks. Timed to
-  the UK university term start (freshers), which `marketing/channels.md`
-  identifies as the supply-side rhythm window.
-- Phase 2 remains **metrics-gated, not calendar-gated** (per
-  `marketing/launch-plan.md`): if beta density or payments aren't ready,
-  open launch slips to October and the beta extends. The calendar target
-  exists to force the pre-work; the gate decides the day.
+- Scottish universities: welcome weeks from ~7 Sep
+- Most English universities: students arrive w/c 14 Sep and 21 Sep
+
+Therefore:
+
+- **Mon 14 Sep — open launch (Phase 2), London.** Affiliate listings live,
+  supply-side channels on (student media, referral codes, trust/safety
+  guides), self-serve signup open, founding-member premium unlocks.
+- **Fri 28 Aug — partner-ready gate.** Review sites need lead time to slot
+  us into listicles and student media has booking deadlines, so partners
+  must be signed, creatives approved, and placements booked by end of
+  August. "Live with partners on the 14th" is won or lost here.
+- **Mon 17 Aug — closed beta opens (Phase 1).** Four weeks of invite-only,
+  London, supply-side-first, concierge-onboarded density building before
+  the doors open.
+
+**The date is calendar-gated, not metrics-gated.** This inverts the posture
+in `marketing/launch-plan.md`: missing the freshers window means waiting
+until January (or next September) for a comparable supply-side moment, so
+the date holds and *scope* flexes instead. Beta metrics inform what we
+throttle at launch (e.g. hold demand-side affiliate spend until density
+supports it), not whether we launch.
+
+**The calendar-critical half of the launch is the free half.** Freshers is
+a supply-side window; students are the supply side, and every channel that
+must hit the window (student media, supply-side affiliate CPL, referral
+codes) is free-side machinery. The paying demand side is not term-gated —
+so if payments underwriting slips past 14 Sep, we launch anyway on the
+founding-member free period and flip payments on when approved. Payments
+timing is a revenue risk, not a launch-date risk.
 
 ## Critical path
 
@@ -37,23 +59,25 @@ Three chains run in parallel. The longest one is not code.
 brand + corporate-structure decision (spec 020, needs professional advice)
 → incorporate + open bank account → high-risk acquirer application (Segpay /
 CCBill / Verotel class, MCC 7273) → underwriting (typically 4–8 weeks,
-wants to see a live site, ToS, privacy policy) → live payments. Working
-backwards from a 28 Sep open launch, the acquirer application must be in by
-mid-August, which means the entity must exist by mid-August, which means the
-structure decision (and the professional advice behind it) must happen by
-end of July. **Spec 020 is the single most urgent item in this plan.**
+wants to see a live site, ToS, privacy policy) → live payments. Application
+in by ~7 Aug gives a coin-flip chance of approval by 14 Sep; the free-launch
+fallback above absorbs a miss. The entity must exist by early August, which
+means the structure decision (and the professional advice behind it) must
+happen **by end of July**. **Spec 020 is the single most urgent item.**
 
-**Chain 2 — brand → domain → waitlist:** brand name knockout screen (020
-workstream 1) → domain purchased (corporate registrar, registrant withheld,
-Cloudflare) → production infrastructure deployed → waitlist landing page
-live → 4+ weeks of waitlist building → beta invites on 31 Aug. Working
-backwards: the waitlist page must be live by W/C 3 Aug, so the name must be
-decided by end of July. Same deadline as chain 1, same spec.
+**Chain 2 — brand → domain → waitlist → partners:** brand name knockout
+screen (020 workstream 1) → domain purchased (corporate registrar,
+registrant withheld, Cloudflare) → production infrastructure deployed →
+waitlist landing page live (no later than W/C 3 Aug) → 2+ weeks of waitlist
+building → beta invites 17 Aug. In parallel: affiliate-expert engagement
+(spec 030) → review-site negotiations → partner-ready 28 Aug → placements
+live 14 Sep. Partner relationships have the longest human lead time in this
+chain — outreach starts this week.
 
-**Chain 3 — product build:** the remaining code, sequenced below. Roughly
-9 build items in 6 weeks to beta. Feasible with the subagent workflow but
-tight; the sequencing below front-loads what beta strictly needs and lets
-the rest ship during beta.
+**Chain 3 — product build:** the remaining code, sequenced below. The
+beta-entry set must land in 4 working weeks (by 14 Aug). Feasible with the
+subagent workflow only because the gate is deliberately smaller than the
+full list; everything else ships during beta.
 
 ## Workstreams
 
@@ -81,7 +105,9 @@ only the *address*?
   colocated. Costs: setup/maintenance fees, professional intermediaries,
   and no change to UK obligations — OSA/ICO/ASA follow the users, and a
   UK-managed company is generally UK tax-resident regardless (privacy
-  structuring is legitimate; hiding from HMRC is not).
+  structuring is legitimate; hiding from HMRC is not). Offshore setup also
+  takes longer — if this route is chosen, it starts immediately or it
+  threatens the early-August entity deadline.
 
 Checklist (jurisdiction-independent items can start immediately):
 
@@ -101,16 +127,18 @@ Checklist (jurisdiction-independent items can start immediately):
 - [ ] Trademark filed by the company, not the individual
 - [ ] Generic support/press identities ("the [brand] team", media@)
 
-### B. Payments (blocks Plan 04's real mode + open launch revenue)
+### B. Payments (revenue risk, not launch-date risk)
 
 - [ ] Shortlist high-risk processors (Segpay, CCBill, Verotel, plus any the
       affiliate-expert search surfaces); note integration and payout models
-- [ ] Application submitted as soon as entity + bank exist (target mid-Aug)
+- [ ] Application submitted as soon as entity + bank exist (target ~7 Aug)
 - [ ] ToS, privacy policy, and a live site exist before underwriting review
 - [ ] Real-provider integration behind `APP_CONFIG.payments.provider`
       (Plan 04 ships FauxProvider first, so code is not blocked on this)
-- Fallback if underwriting slips past open launch: launch with
-  founding-member free premium only, flip payments on when approved
+- Committed fallback: if approval misses 14 Sep, launch on the
+  founding-member free period and flip payments on when approved. The
+  freshers window is supply-side; demand-side monetisation is not
+  term-gated.
 
 ### C. Product build (chain 3)
 
@@ -145,127 +173,158 @@ New build items with no spec yet — write as execution specs 050–090:
       live deployment (flagged in the global-error-surface design doc)
 - [ ] Security review / pen test before open launch
 - [ ] ASA/CAP check on all launch copy (agency framing, "dating" not
-      "income", 18+ placements only)
+      "income", 18+ placements only) — student-media creatives especially
 
-### E. Marketing (Phase 0 → Phase 1, from `marketing/launch-plan.md`)
+### E. Marketing partners (the launch definition — Phase 0 → 2)
 
 - [ ] Brand name decided (spec 020 workstream 1 — shortlist exists in
       `marketing/brand-name.md`, knockout screen not yet run)
+- [ ] Spec 030: dating-vertical affiliate expert — outreach starts this
+      week; this person's relationships are what "live with marketing
+      partners" means in practice. Consider launch-partner economics
+      (rev share / advisor) per the spec, not just a hire.
+- [ ] Affiliate agreement drafted: approved-creatives clause, payout gates,
+      demand-side CPA + gated supply-side CPL terms
+- [ ] UK review-site shortlist → negotiations → signed by 28 Aug
+- [ ] Student media booked (booking deadlines are August; placements run
+      in the freshers window; ASA-cleared creatives; 18+ placements only)
 - [ ] Waitlist live + founding-member offer (spec 080)
 - [ ] Navigational SERP pages (brand, "brand review", "is brand legit")
       live before affiliates/scrapers write them for us
-- [ ] Affiliate groundwork: agreement drafted (approved-creatives clause,
-      payout gates), UK review-site shortlist, CPA/CPL terms
-- [ ] Spec 030: dating-vertical affiliate expert search — start outreach
-      now; relationship lead times are long and this person materially
-      de-risks the Phase 2 switch-on
+- [ ] Comparison/alternatives pages ready to publish at launch
 - [ ] Press kit + media@ + prepared reactive lines (spokesperson question
-      from workstream A)
+      from workstream A) — reactive only, no pitching
 - [ ] Concierge onboarding prep: photo guidance, verification walkthrough
       script, the first ~100 supply-side invite list
 - [ ] Trust/safety guides + city page template ready
 
 ## Timeline
 
-Six working weeks to beta. Code items assume the subagent-driven workflow;
-external items (advice, incorporation, underwriting) are the schedule risks.
+Four working weeks to beta, eight to launch. The date holds; scope flexes.
 
 **W/C 20 Jul — decisions week**
-- Spec 020: run the brand-name knockout screen; engage accountant/solicitor
-  (the booking is this week even if the meeting is next)
+- Book the accountant/solicitor consultation (founder action; the
+  jurisdiction decision must land by end of July)
+- Spec 020: run the brand-name knockout screen — name decided this week
+  or early next
 - Write + start executing the Plan 015 gazetteer plan (beta-blocking schema)
 - Draft execution specs 050–090 (an afternoon of Claude work)
-- Start spec 030 affiliate-expert outreach
+- Start spec 030 affiliate-expert outreach (longest human lead time in
+  the partner chain)
 
 **W/C 27 Jul — entity week**
-- Decide: brand name + jurisdiction/structure (with the professional advice)
+- Decide jurisdiction/structure (with the professional advice); begin
+  incorporation + bank account
 - Buy the domain (corporate registrar, withheld, Cloudflare)
-- Begin incorporation + bank account
+- Spec 070 started: production infra build
 - Execute Plan 04 (tokens + FauxProvider); finish 015
 - Shortlist age-assurance provider and payments processors
+- Draft affiliate agreement + review-site shortlist
 
 **W/C 3 Aug — production week**
-- Spec 070: production infra live (AWS + prod Supabase + Sentry scrubbed)
-- Spec 080: waitlist landing page live on the real domain — waitlist
-  building starts (hard date: every week late = a week less waitlist)
-- Execute Plan 05 (messaging)
-- ToS + privacy policy drafted
+- Spec 070 done: AWS + prod Supabase + Sentry (scrubbed) live
+- Spec 080: waitlist landing page live on the real domain (hard date —
+  every day late is a day less waitlist before beta)
+- Acquirer application submitted (~7 Aug target)
+- Execute Plan 05 (messaging); spec 050 build starts (age assurance +
+  verification)
+- ToS + privacy policy up; student media bookings enquired
 
-**W/C 10 Aug — payments week**
-- Acquirer application submitted (entity + bank + live site + ToS ready)
-- Spec 050: age assurance + verification flow build
-- Finish Plan 05; write Plan 06
-- SERP pages live; affiliate agreement drafted
+**W/C 10 Aug — beta-readiness week**
+- Finish spec 050; spec 060 basic report/block; spec 040 PWA update path;
+  spec 090 digest email
+- E2E pass on production infra; backup verification
+- Concierge prep: invite list, photo guidance, verification script
+- Beta go/no-go Fri 14 Aug against the beta-entry gate below
 
-**W/C 17 Aug — safety week**
-- Spec 060: reporting/blocking + basic moderation
-- Spec 040: PWA update path
-- Spec 090: digest email
-- Execute Plan 06 (secret album) — can slip into beta without moving beta
-
-**W/C 24 Aug — hardening week**
-- E2E pass on production infra, security review, backup verification
-- Seed/concierge prep: invite list, photo guidance, verification script
-- Beta go/no-go on Fri 28 Aug against the beta-entry gate below
-
-**Mon 31 Aug — closed beta opens (Phase 1)**
+**Mon 17 Aug — closed beta opens (Phase 1)**
 - Supply-side invites first (2–3:1 before demand side), concierge
   onboarding of the first ~100, weekly digest running
 - Measure: activation (photo + verified + complete), D7 return,
   first-search result count, supply/demand ratio
 
-**September — beta iterates**
-- Ship anything that slipped (06, moderation dashboard); fix what beta
-  users hit; chase acquirer underwriting weekly
-- W/C 14 Sep: open-launch go/no-go review against the Phase 2 gate
+**W/C 17 + 24 Aug — beta iterates, partners close**
+- Execute Plan 06 (secret album); moderation dashboard (060 remainder)
+- Affiliate agreements signed, creatives ASA-checked and approved,
+  review-site placements and student media booked
+- **Fri 28 Aug — partner-ready gate** (see Gates)
 
-**W/C 28 Sep — quiet open launch (Phase 2), if gates pass**
-- Self-serve signup (London), affiliate listings on, comparison pages
-  live, founding-member premium unlocks, student media in the freshers
-  window. No press push, no Product Hunt/HN (per marketing plan).
+**W/C 31 Aug + 7 Sep — launch-readiness**
+- Fix what beta users hit; density push via concierge referrals (#5)
+- SERP + comparison pages final; city pages ready
+- Security review; chase acquirer underwriting weekly; free-launch
+  fallback decision if approval hasn't landed by Fri 4 Sep
+- Launch freeze W/C 7 Sep; final go/no-go Fri 11 Sep
+
+**Mon 14 Sep — open launch (Phase 2), London**
+- Self-serve signup on; affiliate listings live (demand CPA + gated
+  supply CPL); student media running through both freshers waves;
+  referral codes for the concierge cohort; founding-member premium
+  unlocks for waitlist converts
+- No press push, no Product Hunt/HN (per marketing plan); press kit
+  stays reactive
+
+**W/C 14 – 28 Sep — freshers campaign window**
+- Placements running across both English arrival waves; affiliate
+  policing starts (creative audits, payout integrity)
+- Throttle demand-side spend to whatever density supports; supply-side
+  channels run at full tilt — that is what the window is for
 
 ## Gates
 
-**Beta entry (31 Aug):** production deploy + domain live; 015 gazetteer in;
-age assurance + verification flow working; report/block exists; ToS/privacy
-up; PWA update path tested; invite gating works; digest email sends.
-Payments NOT required (beta is free).
+**Beta entry (Fri 14 Aug for Mon 17 Aug):** production deploy + domain
+live; 015 gazetteer in; age assurance + verification flow working;
+report/block exists; ToS/privacy up; PWA update path tested; invite gating
+works; digest email sends. Payments NOT required (beta is free).
 
-**Open launch (28 Sep):** beta density metrics healthy (a new user's first
-search looks alive; supply/demand ratio holding); messaging + tokens live
-end-to-end; real payments approved and tested — or the explicit fallback
-(free founding period, payments to follow) is chosen; moderation queue
-operational; affiliate agreements signed and creatives approved; SERP +
-comparison pages live.
+**Partner-ready (Fri 28 Aug):** affiliate agreements signed; creatives
+approved and ASA-checked; review-site placements committed for w/c 14 Sep;
+student media booked; supply-side CPL gates and tracking (acquisition_source
+→ activated-verified-profile event) proven end-to-end in beta.
+
+**Open launch (Mon 14 Sep — date holds, scope flexes):** messaging + tokens
+live end-to-end; moderation queue operational; SERP + comparison pages
+live; payments live OR the free-launch fallback explicitly invoked. Beta
+density decides how hard we run demand-side spend, not whether we launch.
 
 ## Top risks
 
-1. **Acquirer underwriting timing** — external, 4–8 weeks, and the
-   application can't start until the entity exists. Mitigation: spec 020
-   this week; fallback: launch free, charge later.
-2. **Jurisdiction decision stalls** — everything in chain 1 and 2 queues
-   behind it. Mitigation: the accountant/solicitor engagement is this
-   week's #1 action; the decision needs days of advice, not weeks.
-3. **Build crunch** — 9 items in 6 weeks. Mitigation: beta-entry gate is
-   deliberately smaller than the full list; 06 and the moderation
-   dashboard may ship during beta.
-4. **Waitlist too small by 31 Aug** — beta with nobody to invite.
-   Mitigation: waitlist page W/C 3 Aug is a hard date; concierge
-   recruitment (direct, personal) does not depend on waitlist volume.
+1. **Partner lead times** — review sites and student media move on their
+   own schedules; if agreements aren't signed by 28 Aug, the 14 Sep
+   go-live has nothing to switch on. Mitigation: spec 030 outreach starts
+   this week; the affiliate expert exists precisely to compress this.
+2. **Jurisdiction decision stalls** — chains 1 and 2 queue behind it, and
+   the offshore route (if chosen) has the longer setup. Mitigation: the
+   consultation is this week's #1 action.
+3. **Build crunch** — the beta-entry set in 4 working weeks. Mitigation:
+   the gate is deliberately minimal; 06 + moderation dashboard ship during
+   beta; if needed, beta slips a week (to 24 Aug) without moving 14 Sep.
+4. **Acquirer underwriting misses 14 Sep** — likely a coin flip from a
+   ~7 Aug application. Mitigation: committed free-launch fallback; the
+   freshers window is supply-side, monetisation is not term-gated.
 5. **Age-assurance provider acceptance** — some providers are picky about
    category. Vet acceptable-use policies during selection, have a second
    choice.
+6. **Thin beta density at launch** — 4 weeks of beta is short. Mitigation:
+   concierge onboarding is the density engine and starts before beta via
+   the invite list; "new in your city" honest framing; throttle demand
+   spend rather than fake liquidity.
 
 ## This week (W/C 20 Jul)
 
 1. Book the accountant/solicitor consultation (founder action — the one
-   thing only you can do this week)
+   thing only you can do this week; the decision must land by end of July)
 2. Run the brand-name knockout screen (spec 020 workstream 1)
-3. Write + execute the 015 gazetteer plan
-4. Draft execution specs 050–090
-5. Start affiliate-expert outreach (spec 030)
+3. Start spec 030 affiliate-expert outreach (longest partner lead time)
+4. Write + execute the 015 gazetteer plan
+5. Draft execution specs 050–090
 
 ## Decisions log
 
-- 2026-07-17 — Plan authored. Assumed "September launch" = beta 31 Aug +
-  metrics-gated quiet open launch W/C 28 Sep (freshers window). Confirm.
+- 2026-07-17 — Plan authored. Initially assumed metrics-gated open launch
+  W/C 28 Sep.
+- 2026-07-17 — Founder defined the target: everything in place to go live
+  with marketing partners when students get to uni. Re-planned as
+  calendar-gated: beta Mon 17 Aug, partner-ready Fri 28 Aug, open launch
+  Mon 14 Sep (freshers window). Date holds, scope flexes; committed
+  free-launch fallback if payments underwriting misses the date.
