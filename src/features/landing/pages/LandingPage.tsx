@@ -52,8 +52,7 @@ export function LandingPage() {
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone/80">{t('hero.sub')}</p>
 
           {/* Role fork */}
-          <p className="font-display mt-12 text-sm text-champagne italic">{t('hero.forkLabel')}</p>
-          <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-2">
+          <div className="mt-12 grid max-w-3xl gap-4 md:grid-cols-2">
             <Link
               to="/signup?role=baby"
               className="group rounded-3xl border border-rose/40 bg-dusk p-6 transition-colors hover:border-rose focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose"
