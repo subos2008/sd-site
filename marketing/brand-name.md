@@ -377,6 +377,30 @@ coded. That may be exactly right, or too tame.
 | Rapport | registered, unchecked | Chemistry + accord in one word; a bit corporate-training. |
 | Low Key | linktree squat | "Lowkey seeing someone" — extremely current slang for discreet dating. Risk: meme-adjacent, may age fast. |
 
+### Connection (Ryan's seed, 2026-07-18: words around connect/connection)
+
+"Connection" itself is what every dating app already claims — filler. But
+the family has four valuable veins: the bond double-meaning, the posh
+*introductions* register, the site-as-discreet-intermediary, and the
+us-words.
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Bond** | parked/idle | The find: an emotional bond, a financial bond (it *pays interest*), and a James Bond glint of suave wealth — three registers in one syllable. Bond Street adds London luxury for free. Flag: 4-letter dictionary .com will be expensive even dormant. |
+| **Private Introductions** | parked/idle | The exact phrase Mayfair matchmakers use — "a private introductions service". Positioning-discipline perfect: sounds like an agency, not an app. Long, but the classiest construction in the doc. |
+| **Mutual Friend** | premium lander | "We met through a mutual friend" — the cover story for how every couple met, and the site *is* the mutual friend. Fuses connection with discretion; the door metaphor with a face. |
+| **Go-Between** | parked/idle | The intermediary personified — and L.P. Hartley's *The Go-Between* is literally about carrying messages between secret lovers. Literary, British; mild procurer-adjacency flag, and the novel ends badly. |
+| **Yours** | parked/idle | The letter signoff ("Yours, truly…") + belonging, two-sided by grammar like Between Us. One warm word, dormant .com. Yours Truly (yourstruly.com) is separately for sale. |
+| Acquainted / Well Acquainted | both parked/idle | "I'd like to get acquainted" — formal-flirty; "well acquainted" carries a knowing double (intimately familiar). |
+| Introduced / Introductions | idle / parked-ish | The verb form is quieter than the agency phrase; both dormant. |
+| Crossed Paths / Paths Crossed | both parked/idle | Romantic fate — though Happn built its whole mechanic on "crossed paths"; check. |
+| Only Us | parked lander | "It's only us" + an unavoidable OnlyFans echo — permission-structure association as feature or bug. |
+| We Met | parked/idle | "How we met" — the story every couple performs; sweet, app-y. |
+| Click | parked/idle | "We just clicked" — instant-connection idiom; premium dictionary domain. |
+| Entwined | parked-ish | Romantic intertwining; a little romance-novel. |
+| Together | in use — an actual dating site | Dead on collision. |
+| The right circles (Circles, Smart Set, Society, High Society, Milieu, Coterie) | all in use/collided | The social-access register — highsociety.com is age-gated adult, Coterie is a diaper brand, Smart Set a print shop. Keep "moving in the right circles" as copy, not name. |
+
 ### Courtship & admiration (supply-side flattering)
 
 | Name | .com | Opinion |
@@ -543,4 +567,5 @@ Claude's top picks, for what they're worth: Kept Company, Best Kept,
 Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — from
 the secrecy riff: Moonlight, Classified, Locket, Secret Keeper — and from
 the whose-secret axis: Secret Terms (available, exact axis-c concept),
-Sought After, Admirers, On Your Terms.
+Sought After, Admirers, On Your Terms — and from the connection riff:
+Bond, Private Introductions, Mutual Friend.
