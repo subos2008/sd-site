@@ -24,7 +24,9 @@
       "Bash(curl *)",
       "Bash(npx *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git fetch *)",
+      "Bash(pnpm vitest *)"
     ]
   },
   "hooks": {
