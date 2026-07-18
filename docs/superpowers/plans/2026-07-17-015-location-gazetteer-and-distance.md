@@ -2404,3 +2404,6 @@ git commit -m "Add GeoNames attribution and close out spec 015"
 ### Plan 015 execution deviations
 
 (Log each deviation here as a separate commit, before moving on.)
+
+- **Task 3 — similarity threshold 0.4, not 0.3.** With the real GB seed loaded, `similarity > 0.3` produced false positives (e.g. `similarity('Fleetville','Testville') = 0.3125`), while genuine misspellings score well above 0.4 (`similarity('Manchester','Manchest') = 0.67`). The RPC ships with `> 0.4`; a regression test pins the fuzzy branch (`Blipford` → `Blibford`, similarity 0.5).
+- **Task 3 — pgTAP 36 fixtures renamed and coverage extended.** The brief's `Testchester`/`Richmondtest`/`Testville` fixture names collided (prefix/trigram) with real seeded GeoNames rows, so fixtures use invented names (`Blib*`/`Blob*`/`Blustertown`) verified collision-free against the seed. Review added three assertions beyond the brief: an independent country-filter check, a fuzzy-match check, and a fail-closed `location_config_missing` check (plan had left the last two untested). File is `plan(11)`.
