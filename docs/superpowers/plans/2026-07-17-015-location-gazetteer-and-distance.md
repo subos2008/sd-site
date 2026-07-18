@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the postcodes.io geocoding dependency with a local GeoNames-seeded `places` gazetteer, make city selection a pick-from-list typeahead everywhere it happens (signup page, onboarding fallback, profile edit), move profiles to a canonical `place_id`, and switch distance to a population-radius disc model so same-metro users stop seeing "0 mi" false precision.
+**Goal:** Replace the postcodes.io geocoding dependency with a local GeoNames-seeded `places` gazetteer, make city selection a pick-from-list typeahead where it happens (signup page and profile edit — a valid place pick is required to sign up), move profiles to a canonical `place_id`, and switch distance to a population-radius disc model so same-metro users stop seeing "0 mi" false precision.
 
-**Architecture:** A `places` table (GeoNames cities500, GB subset committed as a generated seed migration) is public reference data. Autocomplete is a `search_places` RPC (pg_trgm prefix + similarity, ranked by population, country-filtered via `app_config`) callable by `anon` because the primary pick happens on the pre-auth signup page; the picked `place_id` rides in auth metadata and is auto-committed by the onboarding LocationStep (which doubles as a picker fallback). A shared `PlaceCombobox` component serves signup, the wizard fallback, and a new profile-edit section. `profiles.place_id` replaces the three denormalised city columns; view RPCs join `places` and report effective distance `max(0, centroid_distance − r_a − r_b)`. The `geocode-city` edge function is deleted; no request leaves our infrastructure.
+**Architecture:** A `places` table (GeoNames cities500, GB subset committed as a generated seed migration) is public reference data. Autocomplete is a `search_places` RPC (pg_trgm prefix + similarity, ranked by population, country-filtered via `app_config`) callable by `anon` because the pick happens on the pre-auth signup page — selecting a valid place is REQUIRED to submit signup, so raw typed text never becomes a location. The picked `place_id` rides in auth metadata and is committed by the signup bootstrap on first wizard entry; the wizard has NO location step (`complete_onboarding` backstops with `location_missing`). A shared `PlaceCombobox` component serves signup and a new profile-edit section. `profiles.place_id` replaces the three denormalised city columns; view RPCs join `places` and report effective distance `max(0, centroid_distance − r_a − r_b)`. The `geocode-city` edge function is deleted; no request leaves our infrastructure.
 
 **Tech Stack:** Postgres (PostGIS, pg_trgm, pgTAP), Supabase RPCs (plpgsql, SECURITY DEFINER, jsonb envelope), React + react-query + zod contracts, MSW unit tests, Playwright e2e, Node seed-generation script (curl+unzip, gen-config pattern).
 
@@ -20,7 +20,7 @@
 - Frontend errors must be surfaced: any query/mutation handled inline sets `meta: { suppressGlobalError: true }` AND renders the error (name + message) itself.
 - Never excuse a failing check as pre-existing; fix it in the task where it surfaces.
 - `pnpm test:db` requires local Supabase running (`supabase status` to check; `supabase start` if not).
-- Signup metadata (auth `user_metadata`) is the bridge between the pre-auth signup page and the post-confirm wizard: `role_hint`, `username`, `city`, `age`, `body_type`, `ethnicity` already ride there (`src/features/auth/api.ts`); this plan adds `place_id`.
+- Signup metadata (auth `user_metadata`) is the bridge between the pre-auth signup page and the post-confirm wizard: `role_hint`, `username`, `city`, `age`, `body_type`, `ethnicity` already ride there (`src/features/auth/api.ts`); this plan adds `place_id` (always present for new signups) and redefines `city` as the picked place's short name — never raw typed text.
 
 ---
 
@@ -614,7 +614,7 @@ git commit -m "Add profiles.place_id and place-based set_profile_location overlo
   - `PlaceSuggestion` zod schema `{id: number, name: string, display_name: string}`, type `PlaceSuggestionT`.
   - `searchPlaces(query: string)`, `setProfileLocation(placeId: number)` in `places/api.ts`.
   - `useSearchPlaces(query: string)` (enabled at `query.length >= 2`, `suppressGlobalError`), `useSetLocation()` mutation taking `{ place_id: number }`, invalidating `['my-profile']`.
-  - `<PlaceCombobox label value onChange initialText? onTextChange? labelClassName? inputClassName? listClassName? optionClassName? />` — debounced (250ms) pick-only combobox; typing clears the selection (`onChange(null)`); renders no-results and inline error states itself.
+  - `<PlaceCombobox label value onChange initialText? labelClassName? inputClassName? listClassName? optionClassName? />` — debounced (250ms) pick-only combobox; typing clears the selection (`onChange(null)`); renders no-results and inline error states itself. There is deliberately NO way to read raw typed text out of it — callers only ever see a valid picked place or `null`.
 
 - [ ] **Step 1: Write the failing component test**
 
@@ -774,8 +774,6 @@ export function useSetLocation() {
 }
 ```
 
-(Note: `src/features/onboarding/hooks.ts` also exports a `useSetLocation` until Task 6 — different module, no conflict.)
-
 - [ ] **Step 5: Write the component**
 
 Create `src/features/places/components/PlaceCombobox.tsx`:
@@ -790,10 +788,8 @@ interface Props {
   label: string
   value: PlaceSuggestionT | null
   onChange: (place: PlaceSuggestionT | null) => void
-  /** Free text to seed the input with (e.g. a signup-metadata city string). */
+  /** Free text to seed the input with (e.g. the current profile city name). */
   initialText?: string
-  /** Reports the raw typed text (e.g. for the signup-attempt capture). */
-  onTextChange?: (text: string) => void
   labelClassName?: string
   inputClassName?: string
   listClassName?: string
@@ -805,7 +801,6 @@ export function PlaceCombobox({
   value,
   onChange,
   initialText,
-  onTextChange,
   labelClassName = '',
   inputClassName = 'border p-2 rounded',
   listClassName = 'border rounded divide-y bg-white',
@@ -838,7 +833,6 @@ export function PlaceCombobox({
         value={input}
         onChange={(e) => {
           setInput(e.target.value)
-          onTextChange?.(e.target.value)
           onChange(null)
         }}
       />
@@ -901,328 +895,19 @@ git commit -m "Add shared places feature with PlaceCombobox typeahead"
 
 ---
 
-### Task 6: Wizard LocationStep — auto-commit signup place, picker fallback; delete geocode
-
-**Files:**
-- Rewrite: `src/features/onboarding/components/LocationStep.tsx`
-- Modify: `src/features/onboarding/hooks.ts` (drop local `useSetLocation`, re-export from places)
-- Modify: `src/features/onboarding/api.ts` (drop `setProfileLocation`)
-- Modify: `src/i18n/en/onboarding.json`
-- Delete: `src/features/onboarding/geocode.ts`, `supabase/functions/geocode-city/` (whole directory)
-- Modify: `shared/rpc-contracts.ts` (delete Geocode contracts)
-- Modify: `e2e/onboarding.spec.ts` (3 location blocks), `e2e/likes-and-filters.spec.ts` (1 block), `e2e/single-page-signup.spec.ts` (location block)
-- Test: `src/features/onboarding/__tests__/LocationStep.test.tsx` (new)
-
-**Interfaces:**
-- Consumes: `PlaceCombobox`, `useSetLocation` (Task 5); auth metadata `place_id` (number, absent until Task 7) and `city` (string, already set by signup today).
-- Produces: LocationStep behaviour relied on by e2e: if `user_metadata.place_id` is a number, the step auto-commits it via `set_profile_location` and navigates on, showing only a progress line (RoleStep auto-commit pattern); otherwise it renders `PlaceCombobox` seeded with `user_metadata.city` and a Continue button enabled only after a pick. On auto-commit failure it falls back to the picker with the error shown.
-
-- [ ] **Step 1: Write the failing component test**
-
-Create `src/features/onboarding/__tests__/LocationStep.test.tsx`:
-
-```tsx
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { createMemoryRouter, RouterProvider } from 'react-router'
-import { http, HttpResponse } from 'msw'
-import type { Session } from '@supabase/supabase-js'
-import { mswServer } from '../../../test-setup'
-import { LocationStep } from '../components/LocationStep'
-import { AuthContext } from '@/lib/auth-context'
-import { createQueryClient } from '@/lib/query-client'
-import { initI18n } from '@/lib/i18n'
-
-await initI18n()
-
-const RPC = 'http://127.0.0.1:54321/rest/v1/rpc'
-const LONDON = { id: 2643743, name: 'London', display_name: 'London, Greater London' }
-
-function myProfileHandler() {
-  return http.post(`${RPC}/view_my_profile`, () =>
-    HttpResponse.json({
-      ok: true,
-      profile: {
-        profile_id: '00000000-0000-4000-8000-000000000003',
-        role: 'benefactor', status: 'pending_onboarding',
-        display_name: 'B', age: 30, date_of_birth: '1994-01-01',
-        gender: 'male', looking_for: 'female', city_display_name: null,
-        tagline: null, about: null, wants: null,
-        height_cm: null, body_type: null, ethnicity: null, hair_color: null, eye_color: null,
-        has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
-        education: null, yearly_income_band: null, net_worth_band: null,
-        token_balance: 0, photos: [], interests: [],
-      },
-    }),
-  )
-}
-
-function sessionWith(meta: Record<string, unknown>): Session {
-  return { user: { id: 'u1', user_metadata: meta } } as unknown as Session
-}
-
-function renderStep(meta: Record<string, unknown>) {
-  const router = createMemoryRouter(
-    [
-      { path: '/onboarding/location', element: <LocationStep /> },
-      { path: '/onboarding/photo', element: <p>photo step</p> },
-    ],
-    { initialEntries: ['/onboarding/location'] },
-  )
-  render(
-    <QueryClientProvider client={createQueryClient()}>
-      <AuthContext.Provider value={{ status: 'authenticated', session: sessionWith(meta) }}>
-        <RouterProvider router={router} />
-      </AuthContext.Provider>
-    </QueryClientProvider>,
-  )
-}
-
-describe('LocationStep', () => {
-  it('auto-commits a signup place_id and skips to the next step', async () => {
-    let calledWith: unknown = null
-    mswServer.use(
-      myProfileHandler(),
-      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
-        calledWith = await request.json()
-        return HttpResponse.json({ ok: true })
-      }),
-    )
-    renderStep({ place_id: 2643743, city: 'London, Greater London' })
-    expect(await screen.findByText(/photo step/i)).toBeInTheDocument()
-    expect(calledWith).toEqual({ p_place_id: 2643743 })
-  })
-
-  it('shows the picker when no place_id rode in metadata, seeded with the city text', async () => {
-    let calledWith: unknown = null
-    mswServer.use(
-      myProfileHandler(),
-      http.post(`${RPC}/search_places`, () =>
-        HttpResponse.json({ ok: true, places: [LONDON] }),
-      ),
-      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
-        calledWith = await request.json()
-        return HttpResponse.json({ ok: true })
-      }),
-    )
-    renderStep({ city: 'London' })
-    // Seeded text fires the debounced search on mount — options appear unprompted.
-    expect(await screen.findByRole('combobox')).toHaveValue('London')
-    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
-    await userEvent.click(
-      await screen.findByRole('option', { name: /London, Greater London/i }),
-    )
-    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
-    expect(await screen.findByText(/photo step/i)).toBeInTheDocument()
-    expect(calledWith).toEqual({ p_place_id: 2643743 })
-  })
-
-  it('falls back to the picker with an alert when the auto-commit fails', async () => {
-    mswServer.use(
-      myProfileHandler(),
-      http.post(`${RPC}/set_profile_location`, () =>
-        HttpResponse.json({ ok: false, error: 'place_not_found' }),
-      ),
-      http.post(`${RPC}/search_places`, () =>
-        HttpResponse.json({ ok: true, places: [LONDON] }),
-      ),
-    )
-    renderStep({ place_id: 999, city: 'Atlantis' })
-    expect(await screen.findByRole('combobox')).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveTextContent(/place_not_found/)
-  })
-})
-```
-
-- [ ] **Step 2: Run it to verify it fails**
-
-Run: `pnpm vitest run src/features/onboarding/__tests__/LocationStep.test.tsx`
-Expected: FAIL (component still has the lookup-button flow).
-
-- [ ] **Step 3: Rewrite LocationStep**
-
-Replace `src/features/onboarding/components/LocationStep.tsx` entirely:
-
-```tsx
-import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
-import type { PlaceSuggestionT } from '@shared/rpc-contracts'
-import { PlaceCombobox } from '@/features/places/components/PlaceCombobox'
-import { useSetLocation, useMyProfile } from '../hooks'
-import { useSession } from '@/lib/auth-context'
-import { nextStepPath } from '../steps'
-
-export function LocationStep() {
-  const { t } = useTranslation('onboarding')
-  const navigate = useNavigate()
-  const setLocation = useSetLocation()
-  const { data: me } = useMyProfile()
-  const role = me?.ok ? me.profile.role : null
-  const { session } = useSession()
-  const meta = session?.user?.user_metadata ?? {}
-  const metadataPlaceId = typeof meta.place_id === 'number' ? meta.place_id : null
-  const metadataCity = typeof meta.city === 'string' ? meta.city : ''
-
-  const [selected, setSelected] = useState<PlaceSuggestionT | null>(null)
-  const [serverError, setServerError] = useState<string | null>(null)
-  const [hintFailed, setHintFailed] = useState(false)
-  const attempted = useRef(false)
-
-  // Both roles' step after 'location' is 'photo', so a not-yet-loaded role
-  // cannot misroute; the fallback only affects which sequence is consulted.
-  async function commit(placeId: number) {
-    const res = await setLocation.mutateAsync({ place_id: placeId })
-    if (!res.ok) throw new Error(res.error)
-    navigate(nextStepPath(role ?? 'benefactor', 'location'))
-  }
-
-  // Auto-commit the place picked at signup (rides in auth metadata), once.
-  useEffect(() => {
-    if (attempted.current || metadataPlaceId == null) return
-    attempted.current = true
-    commit(metadataPlaceId).catch((e) => {
-      setServerError(e instanceof Error ? e.message : 'unknown')
-      setHintFailed(true)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metadataPlaceId])
-
-  if (metadataPlaceId != null && !hintFailed) {
-    return <p className="p-4">{t('location.settingUp')}</p>
-  }
-
-  async function onContinue() {
-    if (!selected) return
-    setServerError(null)
-    try {
-      await commit(selected.id)
-    } catch (e) {
-      setServerError(e instanceof Error ? e.message : 'unknown')
-    }
-  }
-
-  return (
-    <section className="flex flex-col gap-3 p-4 max-w-sm">
-      <h2 className="text-xl">{t('location.title')}</h2>
-      <PlaceCombobox
-        label={t('location.placeName')}
-        value={selected}
-        onChange={setSelected}
-        initialText={metadataCity}
-      />
-      <button
-        type="button"
-        className="bg-slate-800 text-white py-2 rounded"
-        onClick={onContinue}
-        disabled={!selected || setLocation.isPending}
-      >
-        {t('location.continue')}
-      </button>
-      {serverError && (
-        <div role="alert" className="text-red-700">
-          {serverError}
-        </div>
-      )}
-    </section>
-  )
-}
-```
-
-- [ ] **Step 4: Rewire hooks/api and delete the geocode path**
-
-In `src/features/onboarding/hooks.ts`: delete the local `useSetLocation` function and add to the re-export block at the top:
-
-```ts
-export { useSetLocation } from '@/features/places/hooks'
-```
-
-Remove `setProfileLocation` from the `./api` import list.
-
-In `src/features/onboarding/api.ts`: delete the `setProfileLocation` export and remove `SetProfileLocationResult` from the contracts import.
-
-In `shared/rpc-contracts.ts`: delete the `---- Geocode Edge Function ----` section (`GeocodeCityInput`, `GeocodeCityResult`).
-
-```bash
-git rm src/features/onboarding/geocode.ts
-git rm -r supabase/functions/geocode-city
-```
-
-- [ ] **Step 5: Update i18n**
-
-In `src/i18n/en/onboarding.json`, replace the `location.*` keys with:
-
-```json
-  "location.title": "Where are you based?",
-  "location.placeName": "City or town",
-  "location.settingUp": "Saving your location…",
-  "location.continue": "Continue",
-```
-
-(`location.lookup` and `location.notFound` are removed; no-results/error copy lives in `common.json` via PlaceCombobox.)
-
-- [ ] **Step 6: Run unit tests + typecheck**
-
-Run: `pnpm vitest run src/features/onboarding src/features/places` then `pnpm typecheck`
-Expected: all PASS; typecheck confirms nothing references `geocodeCity`/`GeocodeCityResult` anymore.
-
-- [ ] **Step 7: Update the e2e location interactions**
-
-All four blocks currently read:
-
-```ts
-  await page.getByLabel(/city or town/i).fill('<city>')
-  await page.getByRole('button', { name: /look up/i }).click()
-  await page.getByRole('button', { name: /continue/i }).click()
-```
-
-- `e2e/onboarding.spec.ts` (3 blocks, city `Manchester`) and `e2e/likes-and-filters.spec.ts` (1 block, city `Manchester`) — replace each with:
-
-```ts
-  await page.getByLabel(/city or town/i).fill('Manchester')
-  await page.getByRole('option', { name: /^Manchester,/ }).first().click()
-  await page.getByRole('button', { name: /continue/i }).click()
-```
-
-- `e2e/single-page-signup.spec.ts` — signup metadata still carries only the free-text city (place_id arrives in Task 7), so the wizard shows the seeded picker. Replace the step-5 block with:
-
-```ts
-  // Step 5: location — picker seeded from signup metadata; pick from the list.
-  await page.waitForURL(/onboarding\/location/)
-  await expect(page.getByLabel(/city or town/i)).toHaveValue(city)
-  await page.getByRole('option', { name: /^London,/ }).first().click()
-  await page.getByRole('button', { name: /continue/i }).click()
-```
-
-- [ ] **Step 8: Run e2e**
-
-Run: `pnpm test:e2e`
-Expected: all specs PASS with zero external network (postcodes.io is gone from the stack).
-
-- [ ] **Step 9: Commit**
-
-```bash
-git add -A shared/rpc-contracts.ts src/features/onboarding src/i18n/en/onboarding.json e2e
-git commit -m "Wizard location step: auto-commit signup place, picker fallback, geocode removed"
-```
-
----
-
-### Task 7: Signup page — city becomes the place typeahead
+### Task 6: Signup page — city becomes a REQUIRED place typeahead
 
 **Files:**
 - Modify: `src/features/auth/components/SignupForm.tsx`
 - Modify: `src/features/auth/api.ts` (`SignupMeta.place_id`)
 - Modify: `src/features/auth/__tests__/SignupForm.test.tsx`
-- Modify: `e2e/single-page-signup.spec.ts`
+- Modify: `e2e/single-page-signup.spec.ts` (signup step only)
 
 **Interfaces:**
 - Consumes: `PlaceCombobox`, `PlaceSuggestionT` (Task 5); anon-callable `search_places` (Task 3).
-- Produces: signup metadata now carries `place_id` (number) when the user picks, plus `city` as the picked `display_name` (or the raw typed text if nothing was picked — the wizard fallback then collects the real place). `recordSignupAttempt` keeps receiving a city string (picked display name, else raw text) — the marketing signal survives.
+- Produces: signup submit is DISABLED until a valid place is picked — every new signup's metadata carries `place_id` (number) and `city` = the picked place's SHORT name (`place.name`, e.g. "London"). Raw typed text never reaches metadata or the attempt capture. `recordSignupAttempt` receives `city: place.name`. (The short name — not `display_name` — keeps the still-present wizard LocationStep's prefill+lookup working until Task 7 removes it.)
 
-- [ ] **Step 1: Extend the failing form test**
+- [ ] **Step 1: Update the form tests (failing)**
 
 In `src/features/auth/__tests__/SignupForm.test.tsx`:
 
@@ -1242,76 +927,64 @@ function render(ui: ReactElement) {
   )
   return {
     ...utils,
-    rerender: (next: ReactElement) =>
-      utils.rerender(
-        <QueryClientProvider client={createQueryClient()}>
-          <MemoryRouter>{next}</MemoryRouter>
-        </QueryClientProvider>,
-      ),
+    rerender: (next: ReactElement) => utils.rerender(<MemoryRouter>{next}</MemoryRouter>),
   }
 }
 ```
 
-Update the metadata test (`sends captured fields as signup metadata and records the attempt`): add a `search_places` handler to its `mswServer.use(...)`:
+Add module-level helpers after the `render` helper:
 
 ```tsx
-      http.post('http://127.0.0.1:54321/rest/v1/rpc/search_places', () =>
-        HttpResponse.json({
-          ok: true,
-          places: [{ id: 2643743, name: 'London', display_name: 'London, Greater London' }],
-        }),
-      ),
+const LONDON = { id: 2643743, name: 'London', display_name: 'London, Greater London' }
+const searchPlacesHandler = http.post(
+  'http://127.0.0.1:54321/rest/v1/rpc/search_places',
+  () => HttpResponse.json({ ok: true, places: [LONDON] }),
+)
+
+async function pickLondon() {
+  await userEvent.type(screen.getByLabelText(/location/i), 'Lond')
+  await userEvent.click(
+    await screen.findByRole('option', { name: /London, Greater London/i }),
+  )
+}
 ```
 
-and after `await userEvent.type(screen.getByLabelText(/location/i), 'London')` add:
+A place pick is now required to submit, so EVERY test that clicks "sign up" needs the handler and the pick. Update all four submitting tests (`submits email + password…`, `sends the landing-page role hint…`, `sends captured fields…`, `shows a server error…`): add `searchPlacesHandler` as the first argument of that test's `mswServer.use(...)` call, and insert `await pickLondon()` before the sign-up click.
 
-```tsx
-    await userEvent.click(
-      await screen.findByRole('option', { name: /London, Greater London/i }),
-    )
-```
-
-then change the expectation to:
+In the `sends captured fields as signup metadata` test, DELETE the old `await userEvent.type(screen.getByLabelText(/location/i), 'London')` line (pickLondon replaces it) and change the expectation to:
 
 ```tsx
     expect(body).toMatchObject({
       data: {
         role_hint: 'baby', username: 'Lex',
-        city: 'London, Greater London', place_id: 2643743,
+        city: 'London', place_id: 2643743,
         age: 22, body_type: 'curvy', ethnicity: 'asian',
       },
     })
 ```
 
-Add one new test for the unpicked-text fallback:
+Add one new test for the required pick:
 
 ```tsx
-  it('sends raw city text without place_id when nothing is picked', async () => {
-    let body: Record<string, unknown> | null = null
+  it('blocks submission until a valid place is picked', async () => {
     mswServer.use(
       http.post('http://127.0.0.1:54321/rest/v1/rpc/search_places', () =>
         HttpResponse.json({ ok: true, places: [] }),
       ),
-      http.post('http://127.0.0.1:54321/auth/v1/signup', async ({ request }) => {
-        body = (await request.json()) as Record<string, unknown>
-        return HttpResponse.json({ user: { id: 'u', email: 'a@b.test' }, session: null })
-      }),
     )
     render(<SignupForm roleHint="baby" />)
     await userEvent.type(screen.getByLabelText(/email/i), 'a@b.test')
     await userEvent.type(screen.getByLabelText(/password/i), 'pw123456')
+    // Raw text is not a location: typing without picking keeps submit disabled.
     await userEvent.type(screen.getByLabelText(/location/i), 'Atlantis')
-    await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
-    await screen.findByText(/check your email/i)
-    expect(body).toMatchObject({ data: { city: 'Atlantis' } })
-    expect((body as { data?: Record<string, unknown> })?.data?.place_id).toBeUndefined()
+    expect(screen.getByRole('button', { name: /sign up/i })).toBeDisabled()
   })
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [ ] **Step 2: Run to verify failures**
 
 Run: `pnpm vitest run src/features/auth`
-Expected: the updated/added tests FAIL (no combobox options; no place_id in metadata).
+Expected: updated/added tests FAIL (no combobox options, submit not gated on a pick).
 
 - [ ] **Step 3: Extend the auth api metadata**
 
@@ -1327,7 +1000,7 @@ and in `signUp`, after the `city` line:
   if (meta.place_id != null) data.place_id = meta.place_id
 ```
 
-- [ ] **Step 4: Swap the city input for PlaceCombobox**
+- [ ] **Step 4: Swap the city input for a required PlaceCombobox**
 
 In `src/features/auth/components/SignupForm.tsx`:
 
@@ -1342,7 +1015,6 @@ Replace `const [city, setCity] = useState('')` with:
 
 ```tsx
   const [place, setPlace] = useState<PlaceSuggestionT | null>(null)
-  const [cityText, setCityText] = useState('')
 ```
 
 Replace the city `<label>…</label>` block with:
@@ -1352,7 +1024,6 @@ Replace the city `<label>…</label>` block with:
         label={t('signup.city')}
         value={place}
         onChange={setPlace}
-        onTextChange={setCityText}
         labelClassName={authLabel}
         inputClassName={authInput}
         listClassName="rounded-xl border border-bone/20 bg-ink/95 divide-y divide-bone/10"
@@ -1362,27 +1033,49 @@ Replace the city `<label>…</label>` block with:
 
 (Style note: match the surrounding AuthShell dark palette; adjust utility classes to taste if `authInput`'s look differs — visual only, no behaviour.)
 
-In `onSubmit`, the attempt record and metadata become:
+In `onSubmit`, guard and use the picked place only:
 
 ```tsx
+  async function onSubmit(values: FormData) {
+    setServerError(null)
+    if (under18 || !place) return
+    try {
+      if (roleHint) {
+        // Non-sensitive marketing signal — never ethnicity/body_type here.
         recordSignupAttempt({
           role: roleHint,
-          city: place?.display_name ?? cityText.trim(),
+          city: place.name,
           age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : null,
           acquisition_source: acquisitionSource ?? null,
         })
-```
-
-```tsx
+      }
       await signUp(values.email, values.password, {
         role: roleHint,
         username: username.trim() || undefined,
-        city: (place?.display_name ?? cityText.trim()) || undefined,
-        place_id: place?.id,
+        city: place.name,
+        place_id: place.id,
         age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : undefined,
         body_type: bodyType ?? undefined,
         ethnicity: ethnicity ?? undefined,
       })
+      setDone(true)
+      onSuccess?.()
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : 'unknown')
+    }
+  }
+```
+
+and gate the submit button:
+
+```tsx
+      <button
+        type="submit"
+        disabled={isSubmitting || under18 || !place}
+        className={`${authSubmit} ${submitAccent} mt-2`}
+      >
+        {t('signup.submit')}
+      </button>
 ```
 
 - [ ] **Step 5: Run unit tests**
@@ -1390,36 +1083,290 @@ In `onSubmit`, the attempt record and metadata become:
 Run: `pnpm vitest run src/features/auth` then `pnpm typecheck`
 Expected: all PASS.
 
-- [ ] **Step 6: Update the signup e2e**
+- [ ] **Step 6: Update the signup e2e (signup step only)**
 
-In `e2e/single-page-signup.spec.ts`:
-
-Step 2 — replace `await page.getByLabel(/location/i).fill(city)` with:
+In `e2e/single-page-signup.spec.ts` step 2, replace `await page.getByLabel(/location/i).fill(city)` with:
 
 ```ts
   await page.getByLabel(/location/i).fill(city)
   await page.getByRole('option', { name: /^London,/ }).first().click()
 ```
 
-Step 5 — the wizard now auto-commits the metadata place and never shows the location UI. Delete the whole step-5 block (`waitForURL location`, `toHaveValue`, option click, continue) and replace with:
-
-```ts
-  // Step 5: location — auto-committed from the place picked at signup; the
-  // wizard skips straight to photos.
-```
-
-(the existing `await page.waitForURL(/onboarding\/photo/)` in step 6 is the assertion).
+Step 5 (the wizard location step) is UNCHANGED in this task: metadata `city` is the short name `'London'`, so the existing prefill assertion and postcodes.io lookup still work until Task 7 removes the step.
 
 - [ ] **Step 7: Run e2e**
 
 Run: `pnpm test:e2e`
-Expected: all PASS — signup picks the place, wizard skips location, remaining specs unaffected.
+Expected: all PASS.
 
 - [ ] **Step 8: Commit**
 
 ```bash
 git add src/features/auth e2e/single-page-signup.spec.ts
-git commit -m "Signup city field becomes place typeahead; place_id rides in metadata"
+git commit -m "Require a valid place pick at signup; place_id rides in metadata"
+```
+
+---
+
+### Task 7: Remove the wizard location step; bootstrap commits the signup place; delete geocode
+
+**Files:**
+- Modify: `src/features/onboarding/steps.ts` (drop `'location'` from the step type and both sequences)
+- Modify: `src/features/onboarding/__tests__/steps.test.ts`
+- Modify: `src/routes.tsx` (remove the location route + `LocationStep` import)
+- Delete: `src/features/onboarding/components/LocationStep.tsx`, `src/features/onboarding/pages/LocationPage.tsx`, `src/features/onboarding/geocode.ts`, `supabase/functions/geocode-city/` (whole directory)
+- Modify: `src/features/onboarding/useSignupBootstrap.ts` (add the location commit)
+- Modify: `src/features/onboarding/__tests__/useSignupBootstrap.test.tsx`
+- Modify: `src/features/onboarding/api.ts` (drop `setProfileLocation`), `src/features/onboarding/hooks.ts` (drop `useSetLocation`)
+- Modify: `src/i18n/en/onboarding.json` (drop `location.*` keys)
+- Modify: `shared/rpc-contracts.ts` (delete Geocode contracts)
+- Modify: `e2e/helpers/admin-signup.ts` (created users carry place metadata), `e2e/onboarding.spec.ts`, `e2e/likes-and-filters.spec.ts`, `e2e/single-page-signup.spec.ts` (delete location-step blocks)
+
+**Interfaces:**
+- Consumes: `setProfileLocation` from `places/api.ts` (Task 5); metadata `place_id` guaranteed by Task 6 for all signups.
+- Produces: wizard sequences `role → identity → photo → …` (no location step anywhere); `useSignupBootstrap` commits `user_metadata.place_id` via `set_profile_location` on first wizard entry, gated on the profile not already having a location, best-effort with retry-on-remount; `complete_onboarding`'s `location_missing` remains the backstop. E2e admin-created users carry `user_metadata: { place_id, city }` — mirroring production, where every user comes through the signup form.
+
+- [ ] **Step 1: Update steps tests (failing)**
+
+In `src/features/onboarding/__tests__/steps.test.ts`, update the two sequence assertions and add a routing check:
+
+```ts
+  it('benefactor path skips bio/details/interests', () => {
+    expect(stepsForRole('benefactor')).toEqual([
+      'role', 'identity', 'photo', 'complete',
+    ])
+  })
+
+  it('baby path includes bio/details/interests', () => {
+    expect(stepsForRole('baby')).toEqual([
+      'role', 'identity', 'photo', 'bio', 'details', 'interests', 'complete',
+    ])
+  })
+
+  it('routes identity straight to photo (location is captured at signup)', () => {
+    expect(nextStepPath('baby', 'identity')).toBe('/onboarding/photo')
+  })
+```
+
+(The other existing assertions are unchanged and must keep passing.)
+
+- [ ] **Step 2: Extend the bootstrap test (failing)**
+
+In `src/features/onboarding/__tests__/useSignupBootstrap.test.tsx`:
+
+Give `baseProfile` a city parameter — change its signature and the one field:
+
+```tsx
+function baseProfile(overrides: {
+  body_type: string | null
+  ethnicity: string | null
+  city_display_name?: string | null
+}) {
+  return {
+    // ... unchanged fields ...
+    city_display_name: overrides.city_display_name === undefined ? 'London' : overrides.city_display_name,
+    // ... unchanged fields ...
+  }
+}
+```
+
+(`mockViewMyProfile` passes its argument through unchanged — widen its parameter type the same way.)
+
+Add two tests:
+
+```tsx
+  it('commits the signup place_id via set_profile_location when the profile has no location', async () => {
+    let body: unknown = null
+    mockViewMyProfile({ body_type: null, ethnicity: null, city_display_name: null })
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_location', async ({ request }) => {
+        body = await request.json()
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    renderHook(() => useSignupBootstrap(), { wrapper: wrap({ place_id: 2643743, city: 'London' }) })
+    await waitFor(() => expect(body).not.toBeNull())
+    expect(body).toEqual({ p_place_id: 2643743 })
+  })
+
+  it('skips the location commit when the profile already has a location', async () => {
+    let called = false
+    mockViewMyProfile({ body_type: null, ethnicity: null, city_display_name: 'Manchester' })
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/set_profile_location', () => {
+        called = true
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    renderHook(() => useSignupBootstrap(), { wrapper: wrap({ place_id: 2643743, city: 'London' }) })
+    await new Promise((r) => setTimeout(r, 50))
+    expect(called).toBe(false)
+  })
+```
+
+- [ ] **Step 3: Run to verify failures**
+
+Run: `pnpm vitest run src/features/onboarding/__tests__/steps.test.ts src/features/onboarding/__tests__/useSignupBootstrap.test.tsx`
+Expected: the updated sequence assertions and both new bootstrap tests FAIL.
+
+- [ ] **Step 4: Update steps.ts**
+
+Replace the type and sequences in `src/features/onboarding/steps.ts`:
+
+```ts
+export type OnboardingStep =
+  | 'role' | 'identity' | 'photo' | 'bio' | 'details' | 'interests' | 'complete'
+```
+
+```ts
+const BENEFACTOR_STEPS: OnboardingStep[] = ['role', 'identity', 'photo', 'complete']
+const BABY_STEPS: OnboardingStep[] = [
+  'role', 'identity', 'photo', 'bio', 'details', 'interests', 'complete',
+]
+```
+
+(`stepsForRole`/`nextStepPath` bodies are unchanged.)
+
+- [ ] **Step 5: Extend useSignupBootstrap**
+
+Replace `src/features/onboarding/useSignupBootstrap.ts` with:
+
+```ts
+import { useEffect, useRef } from 'react'
+import { useSession } from '@/lib/auth-context'
+import { BodyType, Ethnicity } from '@shared/rpc-contracts'
+import { setProfileDetails } from '@/features/profile/api'
+import { setProfileLocation } from '@/features/places/api'
+import { useMyProfile } from './hooks'
+
+/**
+ * On first authenticated entry after the single-page signup, commit the
+ * profile fields that rode in auth metadata:
+ * - body_type/ethnicity via set_profile_details (sensitive fields)
+ * - place_id via set_profile_location (the signup form requires a picked
+ *   place, so every new signup carries one; the wizard has no location step)
+ * Role rides too but is committed by RoleStep's existing auto-commit;
+ * identity needs DOB and stays in the wizard.
+ *
+ * Both commits are run-once, best-effort, and gated on the profile not
+ * already having the fields set (not just a per-mount ref): if
+ * OnboardingLayout remounts (e.g. a page refresh mid-onboarding), a bare
+ * ref would re-fire and could clobber values the user changed in the
+ * meantime. On failure the ref resets so a remount retries;
+ * complete_onboarding remains the backstop (location_missing) if the
+ * location commit never lands.
+ */
+export function useSignupBootstrap(): void {
+  const { session } = useSession()
+  const { data: me } = useMyProfile()
+  const detailsDone = useRef(false)
+  const locationDone = useRef(false)
+
+  useEffect(() => {
+    if (detailsDone.current) return
+    if (!me?.ok) return
+    if (me.profile.body_type != null || me.profile.ethnicity != null) return
+    const meta = session?.user?.user_metadata ?? {}
+    const body_type = BodyType.safeParse(meta.body_type)
+    const ethnicity = Ethnicity.safeParse(meta.ethnicity)
+    if (!body_type.success && !ethnicity.success) return
+    detailsDone.current = true
+    void setProfileDetails({
+      height_cm: null,
+      body_type: body_type.success ? body_type.data : null,
+      hair_color: null,
+      eye_color: null,
+      has_piercings: null,
+      has_tattoos: null,
+      smoking: null,
+      drinking: null,
+      education: null,
+      yearly_income_band: null,
+      net_worth_band: null,
+      ethnicity: ethnicity.success ? ethnicity.data : null,
+    }).catch(() => {
+      // best-effort; details step will collect on failure
+      detailsDone.current = false
+    })
+  }, [session, me])
+
+  useEffect(() => {
+    if (locationDone.current) return
+    if (!me?.ok) return
+    if (me.profile.city_display_name != null) return
+    const placeId = session?.user?.user_metadata?.place_id
+    if (typeof placeId !== 'number') return
+    locationDone.current = true
+    void setProfileLocation(placeId).catch(() => {
+      // best-effort; complete_onboarding backstops with location_missing
+      locationDone.current = false
+    })
+  }, [session, me])
+}
+```
+
+(Note: the gate reads `city_display_name` because `view_my_profile` does not expose `place_id`; the field is non-null exactly when a location is set, both before and after the views-v3 migration.)
+
+- [ ] **Step 6: Remove the step, route, and geocode path**
+
+In `src/routes.tsx`: delete the `LocationStep` import line and the `{ path: 'location', element: <LocationStep /> },` route line.
+
+In `src/features/onboarding/api.ts`: delete the `setProfileLocation` export and remove `SetProfileLocationResult` from the contracts import.
+
+In `src/features/onboarding/hooks.ts`: delete the `useSetLocation` function and remove `setProfileLocation` from the `./api` import list.
+
+In `shared/rpc-contracts.ts`: delete the `---- Geocode Edge Function ----` section (`GeocodeCityInput`, `GeocodeCityResult`).
+
+In `src/i18n/en/onboarding.json`: delete all five `location.*` keys.
+
+```bash
+git rm src/features/onboarding/components/LocationStep.tsx
+git rm src/features/onboarding/pages/LocationPage.tsx
+git rm src/features/onboarding/geocode.ts
+git rm -r supabase/functions/geocode-city
+```
+
+- [ ] **Step 7: Run unit tests + typecheck**
+
+Run: `pnpm vitest run src/features/onboarding src/features/places` then `pnpm typecheck`
+Expected: all PASS; typecheck confirms nothing references `LocationStep`, `geocodeCity`, or `GeocodeCityResult` anymore.
+
+- [ ] **Step 8: Update the e2e helper and specs**
+
+`e2e/helpers/admin-signup.ts` — production users always sign up through the form, so admin-created test users mirror that by carrying place metadata (London, geonameid 2643743, exists in the GB seed). In `createConfirmedUser`, extend the `admin.createUser` call:
+
+```ts
+  const { error } = await supabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { place_id: 2643743, city: 'London' },
+  })
+```
+
+`e2e/onboarding.spec.ts` — delete all three location-step blocks (the `waitForURL(/onboarding\/location/)` line plus the fill/look-up/continue lines that follow each). After identity's Continue, the wizard goes straight to photo — the existing `waitForURL(/onboarding\/photo/)` / `uploadBabyPhotos` lines that follow are the next assertion. Also delete the two `// Step 3: location` comments and renumber nothing (comments may simply be removed).
+
+`e2e/likes-and-filters.spec.ts` — same: delete its single location block (fill 'Manchester' / look up / continue and the surrounding `waitForURL` if present).
+
+`e2e/single-page-signup.spec.ts` — delete the whole step-5 location block and replace with:
+
+```ts
+  // Step 5: location — committed by the signup bootstrap from the place
+  // picked at signup; the wizard has no location step.
+```
+
+(the existing `await page.waitForURL(/onboarding\/photo/)` in step 6 is the assertion).
+
+- [ ] **Step 9: Run e2e**
+
+Run: `pnpm test:e2e`
+Expected: all specs PASS with zero external network (postcodes.io is gone from the stack). Note the wizard-walking specs now implicitly test the bootstrap location commit — if profiles ended up without a location, `complete_onboarding` would return `location_missing` and the specs would fail at the final `waitForURL(/\/search/)`.
+
+- [ ] **Step 10: Commit**
+
+```bash
+git add -A shared/rpc-contracts.ts src/routes.tsx src/features/onboarding src/i18n/en/onboarding.json e2e
+git commit -m "Remove wizard location step; signup bootstrap commits the picked place"
 ```
 
 ---
@@ -2096,7 +2043,7 @@ and replace London-coordinate fragments with `place_id=900000030`, Edinburgh's w
 - [ ] **Step 5: Apply and verify db tests pass**
 
 Run: `supabase db reset`, then `pnpm test:db`
-Expected: ALL tests pass — 18/19/29/31 with migrated fixtures, 38 disc-model 5/5. (15/17/33 still pass: legacy columns still exist and the transitional RPC still writes them.)
+Expected: ALL tests pass — 18/19/29/31 with migrated fixtures, 38 disc-model 5/5. (17/33/37 still pass: legacy columns still exist and the transitional RPC still writes them.)
 
 - [ ] **Step 6: Write the failing frontend format test**
 
@@ -2171,8 +2118,9 @@ git commit -m "Switch view RPCs to places join with disc-model distance"
 - Modify: `scripts/seed-dev-users.mjs`
 
 **Interfaces:**
-- Consumes: everything above; the frontend no longer references the legacy RPC signature (Task 6).
+- Consumes: everything above; the frontend no longer references the legacy RPC signature (Tasks 6–7).
 - Produces: `profiles` without `city_display_name`/`city_lat`/`city_lng`; `set_profile_location(bigint)` no longer writes legacy columns; `complete_onboarding` checks `place_id IS NULL` for `location_missing`; legacy `set_profile_location(text, double precision, double precision)` dropped. `places` is the single source of truth.
+- NOTE: the bootstrap gate in `useSignupBootstrap` reads `city_display_name` from `view_my_profile` — after this task that payload field is fed from the places join (Task 9), so the gate's semantics are unchanged (non-null exactly when a location is set).
 
 - [ ] **Step 1: Update the schema pgTAP test to the desired end state (failing)**
 
@@ -2446,11 +2394,12 @@ git commit -m "Add GeoNames attribution and close out spec 015"
 
 ## Notes for the executor
 
-- **Task order matters for green commits:** the wizard picker (Task 6) lands BEFORE the signup typeahead (Task 7) — until Task 7, signup metadata has `city` text but no `place_id`, so the wizard fallback carries the e2e; Task 7 then flips single-page-signup to auto-skip.
+- **Required pick is a founder decision (2026-07-18):** a signup cannot be submitted without a valid `place_id`; raw typed text never becomes a location, in metadata or in the signup-attempt capture. The wizard has no location step and no fallback picker — do not reintroduce either.
+- **Task order matters for green commits:** the signup typeahead (Task 6) lands BEFORE the wizard step removal (Task 7). Task 6 keeps metadata `city` as the SHORT place name so the still-present old LocationStep prefill+lookup keeps the e2e green for one task; Task 7 then deletes the step, the geocode path, and the e2e location blocks.
+- **Legacy-user edge:** profiles created before this plan (dev seeds, old admin-created test users) have no `place_id` metadata. The signup bootstrap simply does nothing for them and `complete_onboarding` returns `location_missing` (surfaced by the complete step's generic error copy). This is dev/test-only by construction — every production user comes through the signup form — so no remediation UI is built; the e2e helper (`admin-signup.ts`) mints users WITH place metadata to mirror production.
 - **Legacy v1 zod schemas** (`ProfileCard`, `ViewProfileResult`, `ViewMyProfileResult` in `shared/rpc-contracts.ts`) still mention `city_display_name` — leave them; the key is unchanged in v2/v3 payloads and those schemas are inert. Do NOT rename payload keys; that was considered and rejected (churn without user value).
-- **Spec open questions resolved with defaults:** radius buckets as in Task 2; committed GB seed as a generated migration (gen-config precedent); denormalised columns dropped; distance display `~N mi` with blank-at-0 banding; default UI search radius untouched (FilterSheet has a free number input, no preset to widen — flag in review if beta density suggests adding one). Additional default taken with the signup integration: picking a place at signup is OPTIONAL (matches the current form, keeps signup friction low); the wizard fallback guarantees `complete_onboarding` still gets a real `place_id`. If Ryan prefers a mandatory pick at signup, that is a `disabled` condition on the submit button plus dropping the wizard fallback path — decide before Task 7 executes.
+- **Spec open questions resolved with defaults:** radius buckets as in Task 2; committed GB seed as a generated migration (gen-config precedent); denormalised columns dropped; distance display `~N mi` with blank-at-0 banding; default UI search radius untouched (FilterSheet has a free number input, no preset to widen — flag in review if beta density suggests adding one).
 - **Anon-callable `search_places`** is deliberate (pre-auth signup page). It exposes only public GeoNames data already readable by `anon` under RLS. If abuse appears later, rate limiting belongs at the edge, not in the RPC.
-- **Signup-attempt capture:** `recordSignupAttempt` keeps receiving a plain city string — the picked `display_name`, or the raw typed text when nothing was picked — so the marketing funnel signal is preserved either way.
 
 ### Plan 015 execution deviations
 
