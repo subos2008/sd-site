@@ -58,10 +58,7 @@ SUPABASE_URL=http://127.0.0.1:54321 \
 SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep SERVICE_ROLE_KEY | cut -d= -f2- | tr -d '"') \
 pnpm seed:dev
 
-# 6. (Onboarding location step calls this) Serve the geocode-city Edge Function
-supabase functions serve geocode-city --no-verify-jwt &
-
-# 7. Run the dev server
+# 6. Run the dev server
 pnpm dev
 ```
 
@@ -70,7 +67,7 @@ pnpm dev
 ```bash
 pnpm test          # vitest unit + component tests
 pnpm test:db       # pgTAP database tests (requires supabase running)
-pnpm test:e2e      # Playwright E2E (requires supabase + geocode-city function + seed)
+pnpm test:e2e      # Playwright E2E (requires supabase + seed)
 pnpm typecheck     # tsc -b
 pnpm lint
 pnpm build
