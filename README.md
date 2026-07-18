@@ -17,7 +17,7 @@ Plan 03 complete: auth, onboarding (now 6 steps), search with filters, full prof
 ## Features (Plan 02)
 
 - **Auth.** Email + password signup with email confirmation, login, forgot password, and sign-out.
-- **Onboarding wizard.** Four steps — role, identity, location, photo — ending at `/onboarding/complete`, which flips profile status to `active` and lands the user on `/search`.
+- **Onboarding wizard.** Role and identity steps for everyone, then photo (plus bio, details, and interests for babies), ending at `/onboarding/complete`, which flips profile status to `active` and lands the user on `/search`. Location is picked on the signup page itself, not in the wizard.
 - **Search.** `/search` lists active opposite-role profiles ordered by `last_active_at`. Each card opens `/profile/:id`.
 - **Profile views.** `/profile/:id` for other people and `/me` for the signed-in user.
 - **App shell.** Bottom tab bar plus a hamburger menu containing sign-out.
