@@ -182,7 +182,7 @@ Existing planned work, in execution order:
 
 | Item | What | Needed by | Status |
 |---|---|---|---|
-| Spec 015 | Location gazetteer + autocomplete + metro distance | Beta (schema must precede real users) | Not started |
+| Spec 015 | Location gazetteer + autocomplete + metro distance | Beta (schema must precede real users) | Done (merged 2026-07-18) |
 | Plan 04 | Token economy + FauxProvider | Beta (admin grants for testers) | To be written |
 | Plan 05 | Messaging (text + photo) | During beta, before launch | To be written |
 | Plan 06 | Secret album + read receipts | During beta, before launch | To be written |
@@ -384,7 +384,7 @@ start date is set with the partner.
    week, re-verify dates), contact CrakRevenue as an advertiser, verify
    the three UK review-site candidates
 4. Run the brand-name knockout screen (spec 020 workstream 1)
-5. Write + execute the 015 gazetteer plan
+5. Write + execute the 015 gazetteer plan — DONE (merged to main 2026-07-18; one pre-deploy gate logged in the plan: decide the gen-config delta-migration story before the first remote `supabase db push`)
 6. Draft execution specs 050–100
 
 ## Decisions log
