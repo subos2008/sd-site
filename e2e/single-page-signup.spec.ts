@@ -32,6 +32,7 @@ test('single-page signup: landing fork → captured metadata pre-fills the shrun
   await page.getByLabel(/username/i).fill(username)
   await page.getByLabel(/^password$/i).fill(password)
   await page.getByLabel(/location/i).fill(city)
+  await page.getByRole('option', { name: /^London,/ }).first().click()
   await page.getByLabel(/age/i).fill(age)
   await page.getByRole('button', { name: 'Fit' }).click()
   await page.getByRole('button', { name: 'Asian' }).click()
