@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 
@@ -14,7 +14,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    exclude: ['node_modules', 'dist', 'e2e'],
+    // configDefaults.exclude carries '**/node_modules/**' and '**/dist/**';
+    // '.claude/**' keeps agent worktrees nested under .claude/worktrees/ out
+    // of a run started at the repo root.
+    exclude: [...configDefaults.exclude, 'e2e/**', '.claude/**'],
     env: {
       VITE_SUPABASE_URL: 'http://127.0.0.1:54321',
       VITE_SUPABASE_ANON_KEY:
