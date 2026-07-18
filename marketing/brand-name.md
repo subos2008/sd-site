@@ -519,6 +519,44 @@ Struck: ~~Bond~~ ("too heavy for dating").
 
 ## Deep dives
 
+### Head-to-head: the shortlist researched (2026-07-18)
+
+Nine parallel research passes (collisions, trademark signals, SERP
+reality, UK specifics) on the shortlist, plus the earlier Between Us
+dive. Ownability: 5 = easy to own, 1 = unownable.
+
+| Name | Score | Key collision | SERP fight | Biggest risk |
+|---|---|---|---|---|
+| **Tacit** | 2.5 | A defunct same-name dating app (tacitness.com, c. 2020, DNS-dead); Aesop's "Tacit" perfume owns consumer mindshare (same understated-luxury aesthetic); tacit.io SaaS holds the alt domain | Dictionary-owned; "Tacit dating" winnable but surfaces the dead predecessor | Dormant rights/residue from the defunct app — needs formal clearance, likely fine |
+| **Between Us** | 2.5 | Between (VCNC) couples app with 35M couples *at between.us*; Little Mix album | Album + generic phrase; hardest fight for a warm name | One preposition from a giant app in the adjacent class |
+| **Finer Things** | 2 | The Office's Finer Things Club merch empire; Steve Winwood; live US marks in lifestyle classes; the phrase is *stock sugar-site copy* (Seeking profile templates, luxurydatematch.com's literal tagline) | Winwood + The Office own it; "finer things dating" open | Category wallpaper — everyone's tagline, nobody's brand; weakly protectable |
+| **Butterflies** | 2 | **butterfly.dating** — live UK trans dating app, same class, same market (passing-off risk); UK butterfly motif also = bereavement/hospice charities | Insects + songs; unwinnable bare | The UK name-twin in the identical category |
+| **Black Book** | 2 | Multiple *live* BlackBook dating apps (Google Play + useblackbook.app + others); cap hpi "Black Book" = the UK car-valuation standard; escort directories use the idiom (littleblackbook.ca) | UK SERP belongs to car values | Dating prior art both ways + escort adjacency turns "discreet" seedy |
+| **Book Club** | 2 | bookclub.com = $26M-funded audiobook startup; two Hollywood *Book Club* films (older-women romcoms); The Book Club Shoreditch (17 yrs of UK listings, closed 2026) | Mega-generic (Oprah/Reese/Goodreads); never winnable | Un-searchable; brand you'd rent, not own — though no dating product uses it and class-45 filing is viable |
+| **Confidante** | 2 | Confidate.online ("The Private Dating Experience") — near-identical name *and* positioning; Confidant AI dating coach; UK lingerie brand + Confidantes.uk | ~90% dictionary/grammar pages; the confidant/-e spelling split is severe | Users who hear it can't reliably type or find it |
+| **Cherished** | 2 | **"Cherish: Date Freely" (Ruby Labs)** — live dating app explicitly positioned for *discreet dating*, one letter away; UK "cherished number plates" trade term; UK funeral-sector usage | Dictionary + number-plate dealers | Confusingly similar incumbent in the identical niche |
+| **Click** | 2 | Dense dating prior art: CLiKD (UK, dissolved Jan 2026, rights orphaned), **"Clicked" — live pre-launch UK dating app**, Clicked Connections, Click Dating, Clickd.ai, Clic, Klick | Hyper-generic web word; "Clicked" more ownable but claimed | Half the industry already uses some spelling of it; narrow mark at best |
+| **Wish List** | 1.5 | Amazon defines the word; wishlist.com live since 1998; registered US "WISHLIST" marks; Throne owns creator/sugar wishlist gifting | Wall-to-wall Amazon; unwinnable | Generic mechanic, not a name. **Keep "wishlist" as a product feature** (gifting), not the brand |
+
+**The structural lesson.** Nothing scored above 2.5, and the reason is
+the same everywhere: every shortlist name is a real English idiom or
+dictionary word, so every namespace is already crowded and every bare
+SERP is owned by someone bigger. The incumbent's trick is now obvious in
+hindsight: "Secret Benefits" is not an idiom — it's a **coined pairing of
+two generic words**. Each word is unownable; the *pairing* is unique,
+trademarkable, and wins its SERP instantly. The same is true of
+SeekingArrangement, WhatsYourPrice, RichMeetBeautiful — every durable
+name in the category is a constructed pairing, not a found phrase.
+
+**Where that points:** the longlist's constructed pairings, which nobody
+else uses: **Kept Company · Secret Keeper · Best Kept · Secret Terms
+(available today) · Quiet Benefits (available today) · Private
+Introductions · Mutual Friend · Sought After · Secret Menu · Secret
+Handshake**. Recommended round two: run this same research pass on the
+constructed pairings before falling further for any idiom.
+
+
+
 ### Between Us (dug 2026-07-18)
 
 **What the name does.** The only candidate whose subject is *both people*:
