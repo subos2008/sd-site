@@ -10,18 +10,13 @@ test('like a fixture from search + see them in Likes tab', async ({ page }) => {
   await page.getByLabel(/password/i).fill(password)
   await page.getByRole('button', { name: /log in/i }).click()
 
-  // Walk through the benefactor onboarding: role, identity, location, photo → search
+  // Walk through the benefactor onboarding: role, identity, photo → search
   await page.waitForURL(/onboarding\/role/)
   await page.getByRole('button', { name: /benefactor/i }).click()
 
   await page.waitForURL(/onboarding\/identity/)
   await page.getByLabel(/username/i).fill('Tester')
   await page.getByLabel(/date of birth/i).fill('1990-01-01')
-  await page.getByRole('button', { name: /continue/i }).click()
-
-  await page.waitForURL(/onboarding\/location/)
-  await page.getByLabel(/city or town/i).fill('Manchester')
-  await page.getByRole('button', { name: /look up/i }).click()
   await page.getByRole('button', { name: /continue/i }).click()
 
   await page.waitForURL(/onboarding\/photo/)

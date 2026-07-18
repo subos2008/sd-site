@@ -15,7 +15,6 @@ import { LegalPage } from './features/legal/pages/LegalPage'
 import { OnboardingLayout } from './features/onboarding/pages/OnboardingLayout'
 import { RoleStep } from './features/onboarding/components/RoleStep'
 import { IdentityStep } from './features/onboarding/components/IdentityStep'
-import { LocationStep } from './features/onboarding/components/LocationStep'
 import { PhotoStep } from './features/onboarding/components/PhotoStep'
 import { BioStep } from './features/onboarding/components/BioStep'
 import { DetailsStep } from './features/onboarding/components/DetailsStep'
@@ -55,7 +54,6 @@ export const routeConfig: RouteObject[] = [
             element: <RequireRoleChosen />,
             children: [
               { path: 'identity', element: <IdentityStep /> },
-              { path: 'location', element: <LocationStep /> },
               { path: 'photo', element: <PhotoStep /> },
               { path: 'bio', element: <BioStep /> },
               { path: 'details', element: <DetailsStep /> },

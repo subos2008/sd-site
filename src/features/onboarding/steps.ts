@@ -2,13 +2,13 @@ import type { z } from 'zod'
 import type { ProfileRole } from '@shared/rpc-contracts'
 
 export type OnboardingStep =
-  | 'role' | 'identity' | 'location' | 'photo' | 'bio' | 'details' | 'interests' | 'complete'
+  | 'role' | 'identity' | 'photo' | 'bio' | 'details' | 'interests' | 'complete'
 
 type Role = z.infer<typeof ProfileRole>
 
-const BENEFACTOR_STEPS: OnboardingStep[] = ['role', 'identity', 'location', 'photo', 'complete']
+const BENEFACTOR_STEPS: OnboardingStep[] = ['role', 'identity', 'photo', 'complete']
 const BABY_STEPS: OnboardingStep[] = [
-  'role', 'identity', 'location', 'photo', 'bio', 'details', 'interests', 'complete',
+  'role', 'identity', 'photo', 'bio', 'details', 'interests', 'complete',
 ]
 
 export function stepsForRole(role: Role): OnboardingStep[] {

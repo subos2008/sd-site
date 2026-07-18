@@ -34,9 +34,7 @@ export const SetProfileIdentityInput = z.object({
 export const SetProfileIdentityResult = RpcResult(z.object({}))
 
 export const SetProfileLocationInput = z.object({
-  p_display_name: z.string().min(1).max(120),
-  p_lat:          z.number().min(-90).max(90),
-  p_lng:          z.number().min(-180).max(180),
+  p_place_id: z.number().int().positive(),
 })
 export const SetProfileLocationResult = RpcResult(z.object({}))
 
@@ -129,14 +127,6 @@ export const ViewMyProfileResult = RpcResult(z.object({
     photos:            z.array(ProfilePhoto),
   }),
 }))
-
-// ---- Geocode Edge Function (HTTP, not RPC, but parsed the same way) ----
-
-export const GeocodeCityInput  = z.object({ place_name: z.string().min(2) })
-export const GeocodeCityResult = z.union([
-  z.object({ ok: z.literal(true),  display_name: z.string(), lat: z.number(), lng: z.number() }),
-  z.object({ ok: z.literal(false), error: z.string() }),
-])
 
 // Types
 export type ProfileCardT       = z.infer<typeof ProfileCard>
@@ -334,3 +324,19 @@ export type ProfileCardV2T        = z.infer<typeof ProfileCardV2>
 export type ViewSearchResultV2T   = z.infer<typeof ViewSearchResultV2>
 export type ViewProfileResultV2T  = z.infer<typeof ViewProfileResultV2>
 export type ViewMyProfileResultV2T = z.infer<typeof ViewMyProfileResultV2>
+
+// ---- 015: places autocomplete ----
+
+export const PlaceSuggestion = z.object({
+  id:           z.number().int(),
+  name:         z.string(),
+  display_name: z.string(),
+})
+export const SearchPlacesInput = z.object({
+  p_query: z.string(),
+  p_limit: z.number().int().optional(),
+})
+export const SearchPlacesResult = RpcResult(z.object({
+  places: z.array(PlaceSuggestion),
+}))
+export type PlaceSuggestionT = z.infer<typeof PlaceSuggestion>

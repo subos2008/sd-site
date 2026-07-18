@@ -9,12 +9,15 @@ VALUES ('33333333-3333-3333-3333-333333333333', '00000000-0000-0000-0000-0000000
         'baby-gate@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated',
         now(), now(), '', '', '');
 
+INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
+  (900000040, 'Gateville', 'Gateville, England', 'GB', 'England', 51.5074, -0.1278, 100000, 'P', 'PPL', 3);
+
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = '33333333-3333-3333-3333-333333333333';
 
 SELECT public.set_profile_role('baby');
 SELECT public.set_profile_identity('Baby Gate', '1998-05-05'::date, 'female', 'male');
-SELECT public.set_profile_location('London', 51.5074, -0.1278);
+SELECT public.set_profile_location(900000040::bigint);
 
 -- 1. No photos yet -> photos_required, status unchanged.
 SELECT is(

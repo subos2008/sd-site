@@ -214,6 +214,16 @@ export function LandingPage() {
           </div>
           <p className="mt-8 text-xs text-smoke">{t('footer.adults')}</p>
           <p className="mt-2 text-xs text-smoke">{t('footer.copyright')}</p>
+          <p className="mt-2 text-xs text-smoke">
+            <a
+              href="https://www.geonames.org/"
+              target="_blank"
+              rel="noopener noreferrer license"
+              className="underline hover:text-bone"
+            >
+              {t('footer.geonames')}
+            </a>
+          </p>
         </div>
       </footer>
     </main>

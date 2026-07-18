@@ -6,6 +6,7 @@ export interface SignupMeta {
   role?: 'benefactor' | 'baby'
   username?: string
   city?: string
+  place_id?: number
   age?: number
   body_type?: z.infer<typeof BodyType>
   ethnicity?: z.infer<typeof Ethnicity>
@@ -19,6 +20,7 @@ export async function signUp(email: string, password: string, meta: SignupMeta =
   if (meta.role) data.role_hint = meta.role
   if (meta.username) data.username = meta.username
   if (meta.city) data.city = meta.city
+  if (meta.place_id != null) data.place_id = meta.place_id
   if (meta.age != null) data.age = meta.age
   if (meta.body_type) data.body_type = meta.body_type
   if (meta.ethnicity) data.ethnicity = meta.ethnicity

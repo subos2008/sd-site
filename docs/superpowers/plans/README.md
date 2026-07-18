@@ -14,6 +14,7 @@ Implementation plans for the SD Site MVP, decomposed into sequential milestones.
 | 04  | Token Economy + FauxProvider                          | to be written | Buy tokens via FauxProvider (sync test mode), balance display, ledger, webhook scaffolding. Admin grant for testing.                                                                                 |
 | 05  | Messaging (text + photo)                              | to be written | First-message token charge, baby-initiated locked-card flow, unlock-conversation paywall, replies, photo messages with curated favourites album.                                                     |
 | 06  | Secret Album + Read Receipts                          | to be written | Secret album upload, request/grant state machine (implicit + explicit), 10-token album unlock, locked/granted/unlocked rendering, read-receipts pill + unlock. Access requests as messages-tab rows. |
+| 015 | [Location Gazetteer + Distance](./2026-07-17-015-location-gazetteer-and-distance.md) | ✅ complete    | GeoNames-seeded `places` gazetteer replaces postcodes.io; pick-from-list `PlaceCombobox` typeahead on signup and profile edit; profiles keyed on `place_id`; population-radius disc distance model; CC BY 4.0 attribution shipped in footer. |
 
 ## How to start the next plan
 

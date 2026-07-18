@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import type { BodyType, Ethnicity } from '@shared/rpc-contracts'
+import type { BodyType, Ethnicity, PlaceSuggestionT } from '@shared/rpc-contracts'
 import { signUp } from '../api'
 import { recordSignupAttempt } from '@/features/signup-attempt/api'
 import { authError, authInput, authLabel, authSubmit } from './AuthShell'
 import { ChipSelect } from './ChipSelect'
+import { PlaceCombobox } from '@/features/places/components/PlaceCombobox'
 
 type BodyTypeValue = z.infer<typeof BodyType>
 type EthnicityValue = z.infer<typeof Ethnicity>
@@ -37,7 +38,7 @@ export function SignupForm({
     resolver: zodResolver(Schema),
   })
   const [username, setUsername] = useState('')
-  const [city, setCity] = useState('')
+  const [place, setPlace] = useState<PlaceSuggestionT | null>(null)
   const [age, setAge] = useState('')
   const [bodyType, setBodyType] = useState<BodyTypeValue | null>(null)
   const [ethnicity, setEthnicity] = useState<EthnicityValue | null>(null)
@@ -67,13 +68,13 @@ export function SignupForm({
 
   async function onSubmit(values: FormData) {
     setServerError(null)
-    if (under18) return
+    if (under18 || !place) return
     try {
       if (roleHint) {
         // Non-sensitive marketing signal — never ethnicity/body_type here.
         recordSignupAttempt({
           role: roleHint,
-          city,
+          city: place.name,
           age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : null,
           acquisition_source: acquisitionSource ?? null,
         })
@@ -81,7 +82,8 @@ export function SignupForm({
       await signUp(values.email, values.password, {
         role: roleHint,
         username: username.trim() || undefined,
-        city: city.trim() || undefined,
+        city: place.name,
+        place_id: place.id,
         age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : undefined,
         body_type: bodyType ?? undefined,
         ethnicity: ethnicity ?? undefined,
@@ -129,16 +131,15 @@ export function SignupForm({
         />
         {errors.password && <span className={authError}>{errors.password.message}</span>}
       </label>
-      <label className="flex flex-col gap-1.5">
-        <span className={authLabel}>{t('signup.city')}</span>
-        <input
-          className={authInput}
-          type="text"
-          placeholder={t('signup.cityPlaceholder')}
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-      </label>
+      <PlaceCombobox
+        label={t('signup.city')}
+        value={place}
+        onChange={setPlace}
+        labelClassName={authLabel}
+        inputClassName={authInput}
+        listClassName="rounded-xl border border-bone/20 bg-ink/95 divide-y divide-bone/10"
+        optionClassName="w-full text-left p-2 text-bone hover:bg-bone/10"
+      />
       <label className="flex flex-col gap-1.5">
         <span className={authLabel}>{t('signup.age')}</span>
         <input
@@ -176,7 +177,7 @@ export function SignupForm({
       )}
       <button
         type="submit"
-        disabled={isSubmitting || under18}
+        disabled={isSubmitting || under18 || !place}
         className={`${authSubmit} ${submitAccent} mt-2`}
       >
         {t('signup.submit')}

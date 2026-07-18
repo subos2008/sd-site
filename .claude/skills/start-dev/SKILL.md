@@ -1,6 +1,6 @@
 ---
 name: start-dev
-description: Use when starting local development on sd-site, when the user wants to run, view, or demo the site locally, or when something needs the dev stack up (Vite dev server, local Supabase, seeded dev users, geocode-city edge function).
+description: Use when starting local development on sd-site, when the user wants to run, view, or demo the site locally, or when something needs the dev stack up (Vite dev server, local Supabase, seeded dev users).
 ---
 
 # Start the sd-site local dev stack
@@ -58,27 +58,15 @@ SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep SERVICE_ROLE_KEY | cut
 pnpm seed:dev
 ```
 
-### 4. geocode-city edge function (onboarding location step)
+### 4. Vite dev server
 
-`supabase start` already serves it via the bundled edge runtime. Verify:
-
-```bash
-ANON=$(supabase status -o env | grep '^ANON_KEY' | cut -d= -f2- | tr -d '"')
-curl -s -X POST http://127.0.0.1:54321/functions/v1/geocode-city \
-  -H "Authorization: Bearer $ANON" -H 'Content-Type: application/json' -d '{"city":"x"}'
-```
-
-Any JSON body (even `{"ok":false,...}`) means the function is live. Connection refused / 404 → run `supabase functions serve geocode-city --no-verify-jwt` in the background and re-check.
-
-### 5. Vite dev server
-
-If nothing listens on 5173, start it in the background (plain `pnpm dev` — no env vars needed; `src/lib/supabase.ts` defaults to the local sandbox):
+If nothing listens on 5173, start it in the background (plain `pnpm dev` — the committed `.env.development` supplies `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` for local dev; `src/lib/supabase.ts` has no built-in defaults):
 
 ```bash
 pnpm dev   # run in background
 for i in $(seq 1 20); do curl -s -o /dev/null -w '%{http_code}' http://localhost:5173/ | grep -q 200 && break; sleep 0.5; done
 ```
 
-### 6. Report
+### 5. Report
 
 Tell the user the app URL, Studio URL, Mailpit URL, and the dev logins. Do not open a browser for them unless they ask.

@@ -27,6 +27,11 @@ export const APP_CONFIG = {
       { id: 'premium', tokens: 500, priceCents: 39999, currency: 'GBP' as const },
     ],
   },
+  location: {
+    // Countries whose places the autocomplete exposes. The gazetteer data
+    // model is global-ready; launch exposure is UK-only. See execution/015.
+    enabledCountries: ['GB'],
+  },
 } as const
 
 export type AppConfig = typeof APP_CONFIG

@@ -32,6 +32,7 @@ test('single-page signup: landing fork → captured metadata pre-fills the shrun
   await page.getByLabel(/username/i).fill(username)
   await page.getByLabel(/^password$/i).fill(password)
   await page.getByLabel(/location/i).fill(city)
+  await page.getByRole('option', { name: /^London,/ }).first().click()
   await page.getByLabel(/age/i).fill(age)
   await page.getByRole('button', { name: 'Fit' }).click()
   await page.getByRole('button', { name: 'Asian' }).click()
@@ -52,11 +53,8 @@ test('single-page signup: landing fork → captured metadata pre-fills the shrun
   await page.getByLabel(/date of birth/i).fill('2000-01-01')
   await page.getByRole('button', { name: /continue/i }).click()
 
-  // Step 5: location — city pre-filled from signup metadata.
-  await page.waitForURL(/onboarding\/location/)
-  await expect(page.getByLabel(/city or town/i)).toHaveValue(city)
-  await page.getByRole('button', { name: /look up/i }).click()
-  await page.getByRole('button', { name: /continue/i }).click()
+  // Step 5: location — committed by the signup bootstrap from the place
+  // picked at signup; the wizard has no location step.
 
   // Step 6: photo — baby needs 3.
   await page.waitForURL(/onboarding\/photo/)
