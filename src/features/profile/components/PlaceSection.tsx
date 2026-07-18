@@ -23,7 +23,7 @@ export function PlaceSection({ city }: { city: string | null }) {
       setSelected(null)
       close()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'unknown')
+      setError(e instanceof Error ? `${e.name}: ${e.message}` : 'unknown')
     }
   }
 

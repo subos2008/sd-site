@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(5);
+SELECT plan(8);
 
 -- Fixture geometry: A is a metro (radius 8) at 53.00N. B is a town (radius 1)
 -- 0.18 deg north = ~12.4 mi away. C is a town (radius 1) 2 deg south = ~138 mi.
@@ -15,12 +15,16 @@ VALUES
   ('cccccccc-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'v@x',  '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
   ('cccccccc-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'b1@x2', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
   ('cccccccc-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'b2@x2', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
-  ('cccccccc-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'b3@x2', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', '');
+  ('cccccccc-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'b3@x2', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
+  ('cccccccc-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 'b4@x2', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', '');
 
 UPDATE public.profiles SET role='benefactor', status='active', display_name='Viewer', date_of_birth='1980-01-01', place_id=900000020, last_active_at=now()                       WHERE id='cccccccc-0000-0000-0000-000000000001';
 UPDATE public.profiles SET role='baby',       status='active', display_name='SameMetro', date_of_birth='1998-01-01', place_id=900000020, last_active_at=now() - interval '1 min' WHERE id='cccccccc-0000-0000-0000-000000000002';
 UPDATE public.profiles SET role='baby',       status='active', display_name='NearTown',  date_of_birth='1998-01-01', place_id=900000021, last_active_at=now() - interval '2 min' WHERE id='cccccccc-0000-0000-0000-000000000003';
 UPDATE public.profiles SET role='baby',       status='active', display_name='FarAway',   date_of_birth='1998-01-01', place_id=900000022, last_active_at=now() - interval '3 min' WHERE id='cccccccc-0000-0000-0000-000000000004';
+-- Placeless profile: place_id left NULL (never picked a location). Must
+-- still surface in search, not be silently dropped by the places join.
+UPDATE public.profiles SET role='baby',       status='active', display_name='NoPlace',   date_of_birth='1998-01-01', place_id=NULL,         last_active_at=now() - interval '4 min' WHERE id='cccccccc-0000-0000-0000-000000000005';
 
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'cccccccc-0000-0000-0000-000000000001';
@@ -48,12 +52,33 @@ SELECT is((SELECT card->>'city_display_name' FROM c), 'Metroville',
 
 -- Radius filter is disc-aware: 5-mile search from the metro INCLUDES the
 -- overlapping near town (12.4 <= 5 + 8 + 1) but EXCLUDES the far town.
+-- The placeless profile (NoPlace) also passes: a distance filter can't
+-- evaluate a profile with no place, so it bypasses the filter rather than
+-- being silently hidden - same-place + overlapping town + placeless = 3.
 WITH r AS (SELECT public.view_search('{"distance_miles": 5}'::jsonb, NULL) AS body)
-SELECT is((SELECT jsonb_array_length(body->'cards') FROM r), 2,
-          '5-mile disc search includes same-place and overlapping town only');
+SELECT is((SELECT jsonb_array_length(body->'cards') FROM r), 3,
+          '5-mile disc search includes same-place, overlapping town, and placeless profile');
 WITH r AS (SELECT public.view_search('{"distance_miles": 5}'::jsonb, NULL) AS body)
 SELECT ok((SELECT NOT jsonb_path_exists(body, '$.cards[*] ? (@.display_name == "FarAway")') FROM r),
           'far town excluded by disc search');
+
+-- Placeless profile: card must still be present (no silent row drop) with
+-- distance_miles and city_display_name both null - never a fake zero.
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     c AS (SELECT e.card FROM r, jsonb_array_elements(r.body->'cards') AS e(card)
+            WHERE e.card->>'display_name' = 'NoPlace')
+SELECT ok((SELECT count(*) = 1 FROM c),
+          'placeless profile card is present, not silently dropped');
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     c AS (SELECT e.card FROM r, jsonb_array_elements(r.body->'cards') AS e(card)
+            WHERE e.card->>'display_name' = 'NoPlace')
+SELECT ok((SELECT card ? 'distance_miles' AND card->>'distance_miles' IS NULL FROM c),
+          'placeless profile distance_miles is null, not a fake zero');
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     c AS (SELECT e.card FROM r, jsonb_array_elements(r.body->'cards') AS e(card)
+            WHERE e.card->>'display_name' = 'NoPlace')
+SELECT ok((SELECT card ? 'city_display_name' AND card->>'city_display_name' IS NULL FROM c),
+          'placeless profile city_display_name is null');
 
 SELECT * FROM finish();
 ROLLBACK;

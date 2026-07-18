@@ -63,9 +63,15 @@ export function useSignupBootstrap(): void {
     const placeId = session?.user?.user_metadata?.place_id
     if (typeof placeId !== 'number') return
     locationDone.current = true
-    void setProfileLocation(placeId).catch(() => {
-      // best-effort; complete_onboarding backstops with location_missing
-      locationDone.current = false
-    })
+    void setProfileLocation(placeId).then(
+      (res) => {
+        // best-effort; complete_onboarding backstops with location_missing
+        if (!res.ok) locationDone.current = false
+      },
+      () => {
+        // best-effort; complete_onboarding backstops with location_missing
+        locationDone.current = false
+      },
+    )
   }, [session, me])
 }

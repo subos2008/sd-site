@@ -60,7 +60,7 @@ pnpm seed:dev
 
 ### 4. Vite dev server
 
-If nothing listens on 5173, start it in the background (plain `pnpm dev` — no env vars needed; `src/lib/supabase.ts` defaults to the local sandbox):
+If nothing listens on 5173, start it in the background (plain `pnpm dev` — the committed `.env.development` supplies `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` for local dev; `src/lib/supabase.ts` has no built-in defaults):
 
 ```bash
 pnpm dev   # run in background

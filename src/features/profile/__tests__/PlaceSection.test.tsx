@@ -67,4 +67,20 @@ describe('PlaceSection', () => {
     await userEvent.click(screen.getByRole('button', { name: /save/i }))
     expect(await screen.findByRole('alert')).toHaveTextContent(/place_not_found/)
   })
+
+  it('keeps Save disabled when a query is typed but no suggestion is picked', async () => {
+    mswServer.use(
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({
+          ok: true,
+          places: [{ id: 2643123, name: 'Manchester', display_name: 'Manchester, Greater Manchester' }],
+        }),
+      ),
+    )
+    render(wrap(<PlaceSection city="London" />))
+    await userEvent.click(screen.getByRole('button', { name: /edit/i }))
+    await userEvent.type(screen.getByRole('combobox'), 'Manch')
+    await screen.findByRole('option', { name: /Manchester, Greater Manchester/i })
+    expect(screen.getByRole('button', { name: /save/i })).toBeDisabled()
+  })
 })
