@@ -2,24 +2,25 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the postcodes.io geocoding dependency with a local GeoNames-seeded `places` gazetteer, make the onboarding location step a pick-from-list typeahead, move profiles to a canonical `place_id`, and switch distance to a population-radius disc model so same-metro users stop seeing "0 mi" false precision.
+**Goal:** Replace the postcodes.io geocoding dependency with a local GeoNames-seeded `places` gazetteer, make city selection a pick-from-list typeahead everywhere it happens (signup page, onboarding fallback, profile edit), move profiles to a canonical `place_id`, and switch distance to a population-radius disc model so same-metro users stop seeing "0 mi" false precision.
 
-**Architecture:** A `places` table (GeoNames cities500, GB subset committed as a generated seed migration) is public reference data. Autocomplete is a `search_places` RPC (pg_trgm prefix + similarity, ranked by population, country-filtered via `app_config`). `profiles.place_id` replaces the three denormalised city columns; view RPCs join `places` and report effective distance `max(0, centroid_distance − r_a − r_b)`. The `geocode-city` edge function is deleted; no request leaves our infrastructure.
+**Architecture:** A `places` table (GeoNames cities500, GB subset committed as a generated seed migration) is public reference data. Autocomplete is a `search_places` RPC (pg_trgm prefix + similarity, ranked by population, country-filtered via `app_config`) callable by `anon` because the primary pick happens on the pre-auth signup page; the picked `place_id` rides in auth metadata and is auto-committed by the onboarding LocationStep (which doubles as a picker fallback). A shared `PlaceCombobox` component serves signup, the wizard fallback, and a new profile-edit section. `profiles.place_id` replaces the three denormalised city columns; view RPCs join `places` and report effective distance `max(0, centroid_distance − r_a − r_b)`. The `geocode-city` edge function is deleted; no request leaves our infrastructure.
 
-**Tech Stack:** Postgres (PostGIS, pg_trgm, pgTAP), Supabase RPCs (plpgsql, SECURITY DEFINER, jsonb envelope), React + react-query + zod contracts, MSW unit tests, Playwright e2e, Node seed-generation script (esbuild-free, curl+unzip).
+**Tech Stack:** Postgres (PostGIS, pg_trgm, pgTAP), Supabase RPCs (plpgsql, SECURITY DEFINER, jsonb envelope), React + react-query + zod contracts, MSW unit tests, Playwright e2e, Node seed-generation script (curl+unzip, gen-config pattern).
 
 ## Global Constraints
 
 - Migrations live in `supabase/migrations/` and are plain SQL; new ones in this plan use timestamps `20260719000000`–`20260719000005` (the repo already has `20260718…` files — do not go below that).
-- pgTAP fixture rule (repo CLAUDE.md): INSERT into `auth.users` and any RLS-protected reference data (including `places`) BEFORE `SET LOCAL ROLE authenticated`. Switching to `anon` requires `SET LOCAL "request.jwt.claim.sub" = ''` first.
-- All RPCs: `SECURITY DEFINER`, `SET search_path = public` (add `, storage, extensions` only where the current function already has it), return jsonb `{ok, ...}` envelopes, `GRANT EXECUTE ... TO authenticated`.
+- pgTAP fixture rule (repo CLAUDE.md): INSERT into `auth.users` and any RLS-protected reference data (including `places`) BEFORE `SET LOCAL ROLE authenticated`/`anon`. Switching to `anon` requires `SET LOCAL "request.jwt.claim.sub" = ''` first.
+- All RPCs: `SECURITY DEFINER`, `SET search_path = public` (add `, storage, extensions` only where the current function already has it), return jsonb `{ok, ...}` envelopes.
 - `supabase db reset` may report `Error status 502: invalid response from upstream server` on CLI 2.78.1 — migrations still apply; verify with `supabase status` + a psql query, do not treat as failure.
 - Do NOT prepend `PATH=/usr/bin:...` to `pnpm build` (breaks arm64 rollup bindings). Plain `pnpm build` only.
 - No emoji anywhere (commits, docs, code). Do not mention Claude in commit messages. Commit each task; do NOT `git push` (hook enforces).
-- GeoNames data is CC BY 4.0 — visible attribution ships in this plan (Task 8), not as a follow-up.
+- GeoNames data is CC BY 4.0 — visible attribution ships in this plan (Task 11), not as a follow-up.
 - Frontend errors must be surfaced: any query/mutation handled inline sets `meta: { suppressGlobalError: true }` AND renders the error (name + message) itself.
 - Never excuse a failing check as pre-existing; fix it in the task where it surfaces.
 - `pnpm test:db` requires local Supabase running (`supabase status` to check; `supabase start` if not).
+- Signup metadata (auth `user_metadata`) is the bridge between the pre-auth signup page and the post-confirm wizard: `role_hint`, `username`, `city`, `age`, `body_type`, `ethnicity` already ride there (`src/features/auth/api.ts`); this plan adds `place_id`.
 
 ---
 
@@ -315,7 +316,7 @@ git commit -m "Seed GB places from GeoNames cities500 via generated migration"
 
 ---
 
-### Task 3: `search_places` autocomplete RPC + country config
+### Task 3: `search_places` autocomplete RPC (anon-callable) + country config
 
 **Files:**
 - Modify: `shared/app-config.ts` (add `location.enabledCountries`)
@@ -325,7 +326,7 @@ git commit -m "Seed GB places from GeoNames cities500 via generated migration"
 
 **Interfaces:**
 - Consumes: `public.places`, `public.app_config` (`key='location'`, `value->'enabledCountries'` jsonb array).
-- Produces: `public.search_places(p_query text, p_limit int DEFAULT 10) RETURNS jsonb` — `{ok:true, places:[{id, name, display_name}]}` ranked prefix-first then population; `{ok:false, error:'query_too_short'}` for <2 chars; raises `location_config_missing` if config absent (fail closed, no ambient default). Granted to `authenticated` only.
+- Produces: `public.search_places(p_query text, p_limit int DEFAULT 10) RETURNS jsonb` — `{ok:true, places:[{id, name, display_name}]}` ranked prefix-first then population; `{ok:false, error:'query_too_short'}` for <2 chars; raises `location_config_missing` if config absent (fail closed, no ambient default). Granted to `anon` AND `authenticated`: the primary caller is the PRE-AUTH signup page. Places are public reference data, so anonymous read-only search is deliberate.
 
 - [ ] **Step 1: Write the failing pgTAP test**
 
@@ -343,22 +344,13 @@ INSERT INTO public.places (id, name, display_name, country_code, admin1_name, la
   (900000004, 'Richmondtest',   'Richmondtest, North Yorkshire', 'GB', 'England', 54.40, -1.73, 8000,    'P', 'PPL', 1),
   (900000005, 'Testville',      'Testville',                     'US', NULL,      40.70, -74.0, 9000000, 'P', 'PPL', 8);
 
-INSERT INTO auth.users (id, instance_id, email, raw_app_meta_data, raw_user_meta_data,
-                        aud, role, created_at, updated_at,
-                        confirmation_token, email_change_token_new, recovery_token)
-VALUES ('77777777-7777-7777-7777-777777777777', '00000000-0000-0000-0000-000000000000',
-        'places-test@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated',
-        now(), now(), '', '', '');
-
--- Unauthenticated call is rejected.
-SET LOCAL ROLE authenticated;
+-- The whole test runs as anon: signup-page autocomplete is pre-auth.
+SET LOCAL ROLE anon;
 SET LOCAL "request.jwt.claim.sub" = '';
-SELECT throws_ok($$SELECT public.search_places('Test')$$, 'P0001', 'unauthenticated',
-                 'unauthenticated call rejected');
 
-SET LOCAL "request.jwt.claim.sub" = '77777777-7777-7777-7777-777777777777';
+WITH r AS (SELECT public.search_places('Testchest') AS body)
+SELECT is((SELECT body->>'ok' FROM r), 'true', 'anon can search places');
 
--- Too-short query.
 SELECT is((SELECT public.search_places('a'))::jsonb->>'ok', 'false', 'short query returns ok:false');
 
 -- Prefix + population ranking: bigger town first for a shared prefix.
@@ -416,6 +408,8 @@ Create `supabase/migrations/20260719000002_rpc_search_places.sql`:
 -- then trigram similarity catches misspellings; population breaks ties so
 -- "man" surfaces Manchester before Mangotsfield. Exposure is limited to
 -- app_config location.enabledCountries — fail closed if config is missing.
+-- Callable by anon: the pre-auth signup page is the primary caller, and
+-- places are public reference data (RLS already allows anon SELECT).
 
 CREATE OR REPLACE FUNCTION public.search_places(p_query text, p_limit int DEFAULT 10)
 RETURNS jsonb
@@ -425,15 +419,10 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  me      uuid := auth.uid();
   q       text := trim(coalesce(p_query, ''));
   enabled text[];
   results jsonb;
 BEGIN
-  IF me IS NULL THEN
-    RAISE EXCEPTION 'unauthenticated' USING errcode = 'P0001';
-  END IF;
-
   IF length(q) < 2 THEN
     RETURN jsonb_build_object('ok', false, 'error', 'query_too_short');
   END IF;
@@ -462,7 +451,7 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION public.search_places(text, int) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.search_places(text, int) TO anon, authenticated;
 ```
 
 - [ ] **Step 5: Apply and verify it passes**
@@ -474,7 +463,7 @@ Expected: all pass; `36_rpc_search_places` 7/7.
 
 ```bash
 git add shared/app-config.ts supabase/migrations/20260509000001_app_config_seed.sql supabase/migrations/20260719000002_rpc_search_places.sql supabase/tests/36_rpc_search_places.sql
-git commit -m "Add search_places autocomplete RPC with config-driven country filter"
+git commit -m "Add anon-callable search_places RPC with config-driven country filter"
 ```
 
 ---
@@ -487,7 +476,7 @@ git commit -m "Add search_places autocomplete RPC with config-driven country fil
 
 **Interfaces:**
 - Consumes: `public.places` (Task 1).
-- Produces: `profiles.place_id bigint REFERENCES places(id)`; `public.set_profile_location(p_place_id bigint) RETURNS jsonb` — `{ok:true}` or `{ok:false, error:'place_not_found'}`. TRANSITIONAL: it also writes the legacy `city_display_name`/`city_lat`/`city_lng` columns (from the place row) so the current views and `complete_onboarding` keep working until Tasks 6–7. The legacy 3-arg `set_profile_location(text, dp, dp)` continues to exist until Task 7 (PostgREST disambiguates by named args, so both can coexist).
+- Produces: `profiles.place_id bigint REFERENCES places(id)`; `public.set_profile_location(p_place_id bigint) RETURNS jsonb` — `{ok:true}` or `{ok:false, error:'place_not_found'}`. TRANSITIONAL: it also writes the legacy `city_display_name`/`city_lat`/`city_lng` columns (from the place row) so the current views and `complete_onboarding` keep working until Tasks 9–10. The legacy 3-arg `set_profile_location(text, dp, dp)` continues to exist until Task 10 (PostgREST disambiguates by named args, so both can coexist).
 
 - [ ] **Step 1: Write the failing pgTAP test**
 
@@ -609,126 +598,97 @@ git commit -m "Add profiles.place_id and place-based set_profile_location overlo
 
 ---
 
-### Task 5: Frontend typeahead + geocode removal
+### Task 5: Shared places feature — contracts, api, hooks, `PlaceCombobox`
 
 **Files:**
-- Modify: `shared/rpc-contracts.ts` (SetProfileLocationInput; add SearchPlaces contracts; remove Geocode contracts)
-- Modify: `src/features/onboarding/api.ts`
-- Modify: `src/features/onboarding/hooks.ts`
-- Rewrite: `src/features/onboarding/components/LocationStep.tsx`
-- Modify: `src/i18n/en/onboarding.json`
-- Delete: `src/features/onboarding/geocode.ts`, `supabase/functions/geocode-city/` (whole directory)
-- Modify: `e2e/onboarding.spec.ts` (3 location-step interactions)
-- Test: `src/features/onboarding/__tests__/LocationStep.test.tsx` (new)
+- Modify: `shared/rpc-contracts.ts` (replace `SetProfileLocationInput`; add SearchPlaces contracts)
+- Create: `src/features/places/api.ts`
+- Create: `src/features/places/hooks.ts`
+- Create: `src/features/places/components/PlaceCombobox.tsx`
+- Modify: `src/i18n/en/common.json` (two keys)
+- Test: `src/features/places/__tests__/PlaceCombobox.test.tsx`
 
 **Interfaces:**
-- Consumes: `search_places` RPC (Task 3), `set_profile_location(p_place_id)` (Task 4).
-- Produces: `searchPlaces(query: string)` in api.ts returning `SearchPlacesResult`; `useSearchPlaces(query: string)` query hook (enabled at `query.length >= 2`, `meta: { suppressGlobalError: true }`); `useSetLocation()` mutation now takes `{ place_id: number }`. `PlaceSuggestion` zod schema `{id: number, name: string, display_name: string}`.
+- Consumes: `search_places` and `set_profile_location(p_place_id)` RPCs.
+- Produces (used by Tasks 6–8):
+  - `PlaceSuggestion` zod schema `{id: number, name: string, display_name: string}`, type `PlaceSuggestionT`.
+  - `searchPlaces(query: string)`, `setProfileLocation(placeId: number)` in `places/api.ts`.
+  - `useSearchPlaces(query: string)` (enabled at `query.length >= 2`, `suppressGlobalError`), `useSetLocation()` mutation taking `{ place_id: number }`, invalidating `['my-profile']`.
+  - `<PlaceCombobox label value onChange initialText? onTextChange? labelClassName? inputClassName? listClassName? optionClassName? />` — debounced (250ms) pick-only combobox; typing clears the selection (`onChange(null)`); renders no-results and inline error states itself.
 
 - [ ] **Step 1: Write the failing component test**
 
-Create `src/features/onboarding/__tests__/LocationStep.test.tsx`:
+Create `src/features/places/__tests__/PlaceCombobox.test.tsx`:
 
 ```tsx
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { createMemoryRouter, RouterProvider } from 'react-router'
 import { http, HttpResponse } from 'msw'
 import { mswServer } from '../../../test-setup'
-import { LocationStep } from '../components/LocationStep'
+import { PlaceCombobox } from '../components/PlaceCombobox'
 import { createQueryClient } from '@/lib/query-client'
 import { initI18n } from '@/lib/i18n'
+import type { ReactNode } from 'react'
 
 await initI18n()
 
 const RPC = 'http://127.0.0.1:54321/rest/v1/rpc'
 
-function myProfileHandler(role: 'benefactor' | 'baby') {
-  return http.post(`${RPC}/view_my_profile`, () =>
-    HttpResponse.json({
-      ok: true,
-      profile: {
-        profile_id: '00000000-0000-4000-8000-000000000003',
-        role, status: 'pending_onboarding',
-        display_name: 'B', age: 25, date_of_birth: '1999-01-01',
-        gender: 'female', looking_for: 'male', city_display_name: null,
-        tagline: null, about: null, wants: null,
-        height_cm: null, body_type: null, ethnicity: null, hair_color: null, eye_color: null,
-        has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
-        education: null, yearly_income_band: null, net_worth_band: null,
-        token_balance: 0, photos: [], interests: [],
-      },
-    }),
-  )
+function wrap(ui: ReactNode) {
+  return <QueryClientProvider client={createQueryClient()}>{ui}</QueryClientProvider>
 }
 
-function renderStep() {
-  const router = createMemoryRouter(
-    [
-      { path: '/onboarding/location', element: <LocationStep /> },
-      { path: '/onboarding/photo', element: <p>photo step</p> },
-    ],
-    { initialEntries: ['/onboarding/location'] },
-  )
-  render(
-    <QueryClientProvider client={createQueryClient()}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
-  )
-}
+const LONDON = { id: 2643743, name: 'London', display_name: 'London, Greater London' }
 
-describe('LocationStep', () => {
-  it('suggests places while typing, submits the picked place id, and advances', async () => {
-    let locationCalledWith: unknown = null
+describe('PlaceCombobox', () => {
+  it('suggests places while typing and reports the picked place', async () => {
     mswServer.use(
-      myProfileHandler('benefactor'),
       http.post(`${RPC}/search_places`, () =>
-        HttpResponse.json({
-          ok: true,
-          places: [
-            { id: 2643123, name: 'Manchester', display_name: 'Manchester, Greater Manchester' },
-            { id: 2643124, name: 'Mancetter', display_name: 'Mancetter, Warwickshire' },
-          ],
-        }),
+        HttpResponse.json({ ok: true, places: [LONDON] }),
       ),
-      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
-        locationCalledWith = await request.json()
-        return HttpResponse.json({ ok: true })
-      }),
     )
-    renderStep()
-    await userEvent.type(screen.getByRole('combobox'), 'Manch')
+    const onChange = vi.fn()
+    render(wrap(<PlaceCombobox label="City" value={null} onChange={onChange} />))
+    await userEvent.type(screen.getByRole('combobox'), 'Lond')
     await userEvent.click(
-      await screen.findByRole('option', { name: /Manchester, Greater Manchester/i }),
+      await screen.findByRole('option', { name: /London, Greater London/i }),
     )
-    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
-    expect(await screen.findByText(/photo step/i)).toBeInTheDocument()
-    expect(locationCalledWith).toEqual({ p_place_id: 2643123 })
+    expect(onChange).toHaveBeenCalledWith(LONDON)
   })
 
-  it('keeps continue disabled until a suggestion is picked', async () => {
+  it('clears the selection when the user types again', async () => {
     mswServer.use(
-      myProfileHandler('benefactor'),
-      http.post(`${RPC}/search_places`, () => HttpResponse.json({ ok: true, places: [] })),
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({ ok: true, places: [LONDON] }),
+      ),
     )
-    renderStep()
-    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+    const onChange = vi.fn()
+    render(wrap(<PlaceCombobox label="City" value={LONDON} onChange={onChange} />))
+    await userEvent.type(screen.getByRole('combobox'), 'x')
+    expect(onChange).toHaveBeenCalledWith(null)
+  })
+
+  it('shows a no-results row', async () => {
+    mswServer.use(
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({ ok: true, places: [] }),
+      ),
+    )
+    render(wrap(<PlaceCombobox label="City" value={null} onChange={vi.fn()} />))
     await userEvent.type(screen.getByRole('combobox'), 'Xy')
     expect(await screen.findByText(/no places found/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
   })
 
   it('shows an inline error when the search RPC fails', async () => {
     mswServer.use(
-      myProfileHandler('benefactor'),
       http.post(`${RPC}/search_places`, () =>
         HttpResponse.json({ message: 'boom' }, { status: 500 }),
       ),
     )
-    renderStep()
-    await userEvent.type(screen.getByRole('combobox'), 'Manch')
+    render(wrap(<PlaceCombobox label="City" value={null} onChange={vi.fn()} />))
+    await userEvent.type(screen.getByRole('combobox'), 'Lond')
     // The query client retries queries once (retry: 1, ~1s backoff) before
     // surfacing isError — allow for that.
     expect(await screen.findByRole('alert', {}, { timeout: 4000 })).toBeInTheDocument()
@@ -738,14 +698,12 @@ describe('LocationStep', () => {
 
 - [ ] **Step 2: Run it to verify it fails**
 
-Run: `pnpm vitest run src/features/onboarding/__tests__/LocationStep.test.tsx`
-Expected: FAIL (no combobox — component still has the lookup-button flow).
+Run: `pnpm vitest run src/features/places`
+Expected: FAIL (module does not exist).
 
 - [ ] **Step 3: Update the contracts**
 
-In `shared/rpc-contracts.ts`:
-
-Replace the `SetProfileLocationInput` block:
+In `shared/rpc-contracts.ts`, replace the `SetProfileLocationInput` block:
 
 ```ts
 export const SetProfileLocationInput = z.object({
@@ -754,9 +712,7 @@ export const SetProfileLocationInput = z.object({
 export const SetProfileLocationResult = RpcResult(z.object({}))
 ```
 
-Delete the whole `---- Geocode Edge Function ----` section (`GeocodeCityInput`, `GeocodeCityResult`).
-
-Add, near the other Plan-03-era additions at the bottom:
+and add, at the bottom with the other later additions:
 
 ```ts
 // ---- 015: places autocomplete ----
@@ -776,21 +732,38 @@ export const SearchPlacesResult = RpcResult(z.object({
 export type PlaceSuggestionT = z.infer<typeof PlaceSuggestion>
 ```
 
-- [ ] **Step 4: Update api.ts and hooks.ts**
+- [ ] **Step 4: Write api and hooks**
 
-In `src/features/onboarding/api.ts`: add `SearchPlacesResult` to the contracts import, and replace `setProfileLocation`:
+Create `src/features/places/api.ts`:
 
 ```ts
-export const setProfileLocation = (placeId: number) =>
-  callRpc('set_profile_location', { p_place_id: placeId }, SetProfileLocationResult)
+import { callRpc } from '@/lib/rpc'
+import { SearchPlacesResult, SetProfileLocationResult } from '@shared/rpc-contracts'
 
 export const searchPlaces = (query: string) =>
   callRpc('search_places', { p_query: query }, SearchPlacesResult)
+
+export const setProfileLocation = (placeId: number) =>
+  callRpc('set_profile_location', { p_place_id: placeId }, SetProfileLocationResult)
 ```
 
-In `src/features/onboarding/hooks.ts`: add `useQuery` to the react-query import, import `searchPlaces`, and replace `useSetLocation`:
+Create `src/features/places/hooks.ts`:
 
 ```ts
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { searchPlaces, setProfileLocation } from './api'
+
+export function useSearchPlaces(query: string) {
+  return useQuery({
+    queryKey: ['search-places', query],
+    queryFn: () => searchPlaces(query),
+    enabled: query.length >= 2,
+    staleTime: 60_000,
+    // Rendered inline by PlaceCombobox; a toast per keystroke would be noise.
+    meta: { suppressGlobalError: true },
+  })
+}
+
 export function useSetLocation() {
   const qc = useQueryClient()
   return useMutation({
@@ -799,29 +772,287 @@ export function useSetLocation() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
 }
-
-export function useSearchPlaces(query: string) {
-  return useQuery({
-    queryKey: ['search-places', query],
-    queryFn: () => searchPlaces(query),
-    enabled: query.length >= 2,
-    staleTime: 60_000,
-    // Handled inline in LocationStep (typeahead errors would be noisy as toasts).
-    meta: { suppressGlobalError: true },
-  })
-}
 ```
 
-- [ ] **Step 5: Rewrite LocationStep**
+(Note: `src/features/onboarding/hooks.ts` also exports a `useSetLocation` until Task 6 — different module, no conflict.)
 
-Replace `src/features/onboarding/components/LocationStep.tsx` entirely:
+- [ ] **Step 5: Write the component**
+
+Create `src/features/places/components/PlaceCombobox.tsx`:
 
 ```tsx
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { PlaceSuggestionT } from '@shared/rpc-contracts'
+import { useSearchPlaces } from '../hooks'
+
+interface Props {
+  label: string
+  value: PlaceSuggestionT | null
+  onChange: (place: PlaceSuggestionT | null) => void
+  /** Free text to seed the input with (e.g. a signup-metadata city string). */
+  initialText?: string
+  /** Reports the raw typed text (e.g. for the signup-attempt capture). */
+  onTextChange?: (text: string) => void
+  labelClassName?: string
+  inputClassName?: string
+  listClassName?: string
+  optionClassName?: string
+}
+
+export function PlaceCombobox({
+  label,
+  value,
+  onChange,
+  initialText,
+  onTextChange,
+  labelClassName = '',
+  inputClassName = 'border p-2 rounded',
+  listClassName = 'border rounded divide-y bg-white',
+  optionClassName = 'w-full text-left p-2 hover:bg-slate-100',
+}: Props) {
+  const { t } = useTranslation('common')
+  const [input, setInput] = useState(initialText ?? value?.display_name ?? '')
+  const [query, setQuery] = useState('')
+
+  // Debounce: fire the search RPC 250ms after the user stops typing.
+  useEffect(() => {
+    const id = setTimeout(() => setQuery(input.trim()), 250)
+    return () => clearTimeout(id)
+  }, [input])
+
+  const search = useSearchPlaces(value ? '' : query)
+  const suggestions = search.data?.ok ? search.data.places : []
+  const listOpen = !value && query.length >= 2
+
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className={labelClassName}>{label}</span>
+      <input
+        className={inputClassName}
+        type="text"
+        role="combobox"
+        aria-expanded={listOpen && suggestions.length > 0}
+        aria-controls="place-options"
+        aria-autocomplete="list"
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value)
+          onTextChange?.(e.target.value)
+          onChange(null)
+        }}
+      />
+      {listOpen && (
+        <ul id="place-options" role="listbox" className={listClassName}>
+          {suggestions.map((p) => (
+            <li key={p.id}>
+              <button
+                type="button"
+                role="option"
+                aria-selected="false"
+                className={optionClassName}
+                onClick={() => {
+                  onChange(p)
+                  setInput(p.display_name)
+                }}
+              >
+                {p.display_name}
+              </button>
+            </li>
+          ))}
+          {search.isSuccess && suggestions.length === 0 && (
+            <li className="p-2 text-sm opacity-70">{t('places.noResults')}</li>
+          )}
+        </ul>
+      )}
+      {search.isError && (
+        <div role="alert" className="text-sm text-red-700">
+          {t('places.searchError')}{' '}
+          {search.error instanceof Error
+            ? `${search.error.name}: ${search.error.message}`
+            : null}
+        </div>
+      )}
+    </label>
+  )
+}
+```
+
+- [ ] **Step 6: Add the i18n keys**
+
+In `src/i18n/en/common.json`, add (mind commas):
+
+```json
+  "places.noResults": "No places found — try a nearby town or city.",
+  "places.searchError": "Search failed."
+```
+
+- [ ] **Step 7: Run tests + typecheck**
+
+Run: `pnpm vitest run src/features/places` then `pnpm typecheck`
+Expected: 4/4 PASS; typecheck clean (nothing imports the old `SetProfileLocationInput` shape).
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add shared/rpc-contracts.ts src/features/places src/i18n/en/common.json
+git commit -m "Add shared places feature with PlaceCombobox typeahead"
+```
+
+---
+
+### Task 6: Wizard LocationStep — auto-commit signup place, picker fallback; delete geocode
+
+**Files:**
+- Rewrite: `src/features/onboarding/components/LocationStep.tsx`
+- Modify: `src/features/onboarding/hooks.ts` (drop local `useSetLocation`, re-export from places)
+- Modify: `src/features/onboarding/api.ts` (drop `setProfileLocation`)
+- Modify: `src/i18n/en/onboarding.json`
+- Delete: `src/features/onboarding/geocode.ts`, `supabase/functions/geocode-city/` (whole directory)
+- Modify: `shared/rpc-contracts.ts` (delete Geocode contracts)
+- Modify: `e2e/onboarding.spec.ts` (3 location blocks), `e2e/likes-and-filters.spec.ts` (1 block), `e2e/single-page-signup.spec.ts` (location block)
+- Test: `src/features/onboarding/__tests__/LocationStep.test.tsx` (new)
+
+**Interfaces:**
+- Consumes: `PlaceCombobox`, `useSetLocation` (Task 5); auth metadata `place_id` (number, absent until Task 7) and `city` (string, already set by signup today).
+- Produces: LocationStep behaviour relied on by e2e: if `user_metadata.place_id` is a number, the step auto-commits it via `set_profile_location` and navigates on, showing only a progress line (RoleStep auto-commit pattern); otherwise it renders `PlaceCombobox` seeded with `user_metadata.city` and a Continue button enabled only after a pick. On auto-commit failure it falls back to the picker with the error shown.
+
+- [ ] **Step 1: Write the failing component test**
+
+Create `src/features/onboarding/__tests__/LocationStep.test.tsx`:
+
+```tsx
+import { describe, expect, it } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { createMemoryRouter, RouterProvider } from 'react-router'
+import { http, HttpResponse } from 'msw'
+import type { Session } from '@supabase/supabase-js'
+import { mswServer } from '../../../test-setup'
+import { LocationStep } from '../components/LocationStep'
+import { AuthContext } from '@/lib/auth-context'
+import { createQueryClient } from '@/lib/query-client'
+import { initI18n } from '@/lib/i18n'
+
+await initI18n()
+
+const RPC = 'http://127.0.0.1:54321/rest/v1/rpc'
+const LONDON = { id: 2643743, name: 'London', display_name: 'London, Greater London' }
+
+function myProfileHandler() {
+  return http.post(`${RPC}/view_my_profile`, () =>
+    HttpResponse.json({
+      ok: true,
+      profile: {
+        profile_id: '00000000-0000-4000-8000-000000000003',
+        role: 'benefactor', status: 'pending_onboarding',
+        display_name: 'B', age: 30, date_of_birth: '1994-01-01',
+        gender: 'male', looking_for: 'female', city_display_name: null,
+        tagline: null, about: null, wants: null,
+        height_cm: null, body_type: null, ethnicity: null, hair_color: null, eye_color: null,
+        has_piercings: null, has_tattoos: null, smoking: null, drinking: null,
+        education: null, yearly_income_band: null, net_worth_band: null,
+        token_balance: 0, photos: [], interests: [],
+      },
+    }),
+  )
+}
+
+function sessionWith(meta: Record<string, unknown>): Session {
+  return { user: { id: 'u1', user_metadata: meta } } as unknown as Session
+}
+
+function renderStep(meta: Record<string, unknown>) {
+  const router = createMemoryRouter(
+    [
+      { path: '/onboarding/location', element: <LocationStep /> },
+      { path: '/onboarding/photo', element: <p>photo step</p> },
+    ],
+    { initialEntries: ['/onboarding/location'] },
+  )
+  render(
+    <QueryClientProvider client={createQueryClient()}>
+      <AuthContext.Provider value={{ status: 'authenticated', session: sessionWith(meta) }}>
+        <RouterProvider router={router} />
+      </AuthContext.Provider>
+    </QueryClientProvider>,
+  )
+}
+
+describe('LocationStep', () => {
+  it('auto-commits a signup place_id and skips to the next step', async () => {
+    let calledWith: unknown = null
+    mswServer.use(
+      myProfileHandler(),
+      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
+        calledWith = await request.json()
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    renderStep({ place_id: 2643743, city: 'London, Greater London' })
+    expect(await screen.findByText(/photo step/i)).toBeInTheDocument()
+    expect(calledWith).toEqual({ p_place_id: 2643743 })
+  })
+
+  it('shows the picker when no place_id rode in metadata, seeded with the city text', async () => {
+    let calledWith: unknown = null
+    mswServer.use(
+      myProfileHandler(),
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({ ok: true, places: [LONDON] }),
+      ),
+      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
+        calledWith = await request.json()
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    renderStep({ city: 'London' })
+    // Seeded text fires the debounced search on mount — options appear unprompted.
+    expect(await screen.findByRole('combobox')).toHaveValue('London')
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+    await userEvent.click(
+      await screen.findByRole('option', { name: /London, Greater London/i }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+    expect(await screen.findByText(/photo step/i)).toBeInTheDocument()
+    expect(calledWith).toEqual({ p_place_id: 2643743 })
+  })
+
+  it('falls back to the picker with an alert when the auto-commit fails', async () => {
+    mswServer.use(
+      myProfileHandler(),
+      http.post(`${RPC}/set_profile_location`, () =>
+        HttpResponse.json({ ok: false, error: 'place_not_found' }),
+      ),
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({ ok: true, places: [LONDON] }),
+      ),
+    )
+    renderStep({ place_id: 999, city: 'Atlantis' })
+    expect(await screen.findByRole('combobox')).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(/place_not_found/)
+  })
+})
+```
+
+- [ ] **Step 2: Run it to verify it fails**
+
+Run: `pnpm vitest run src/features/onboarding/__tests__/LocationStep.test.tsx`
+Expected: FAIL (component still has the lookup-button flow).
+
+- [ ] **Step 3: Rewrite LocationStep**
+
+Replace `src/features/onboarding/components/LocationStep.tsx` entirely:
+
+```tsx
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import type { PlaceSuggestionT } from '@shared/rpc-contracts'
-import { useSearchPlaces, useSetLocation, useMyProfile } from '../hooks'
+import { PlaceCombobox } from '@/features/places/components/PlaceCombobox'
+import { useSetLocation, useMyProfile } from '../hooks'
+import { useSession } from '@/lib/auth-context'
 import { nextStepPath } from '../steps'
 
 export function LocationStep() {
@@ -830,37 +1061,44 @@ export function LocationStep() {
   const setLocation = useSetLocation()
   const { data: me } = useMyProfile()
   const role = me?.ok ? me.profile.role : null
+  const { session } = useSession()
+  const meta = session?.user?.user_metadata ?? {}
+  const metadataPlaceId = typeof meta.place_id === 'number' ? meta.place_id : null
+  const metadataCity = typeof meta.city === 'string' ? meta.city : ''
 
-  const [input, setInput] = useState('')
-  const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<PlaceSuggestionT | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
+  const [hintFailed, setHintFailed] = useState(false)
+  const attempted = useRef(false)
 
-  // Debounce: fire the search RPC 250ms after the user stops typing.
+  // Both roles' step after 'location' is 'photo', so a not-yet-loaded role
+  // cannot misroute; the fallback only affects which sequence is consulted.
+  async function commit(placeId: number) {
+    const res = await setLocation.mutateAsync({ place_id: placeId })
+    if (!res.ok) throw new Error(res.error)
+    navigate(nextStepPath(role ?? 'benefactor', 'location'))
+  }
+
+  // Auto-commit the place picked at signup (rides in auth metadata), once.
   useEffect(() => {
-    const id = setTimeout(() => setQuery(input.trim()), 250)
-    return () => clearTimeout(id)
-  }, [input])
+    if (attempted.current || metadataPlaceId == null) return
+    attempted.current = true
+    commit(metadataPlaceId).catch((e) => {
+      setServerError(e instanceof Error ? e.message : 'unknown')
+      setHintFailed(true)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metadataPlaceId])
 
-  const search = useSearchPlaces(selected ? '' : query)
-  const suggestions = search.data?.ok ? search.data.places : []
-  const listOpen = !selected && query.length >= 2
-
-  function onPick(place: PlaceSuggestionT) {
-    setSelected(place)
-    setInput(place.display_name)
+  if (metadataPlaceId != null && !hintFailed) {
+    return <p className="p-4">{t('location.settingUp')}</p>
   }
 
   async function onContinue() {
     if (!selected) return
     setServerError(null)
     try {
-      const res = await setLocation.mutateAsync({ place_id: selected.id })
-      if (!res.ok) {
-        setServerError(res.error)
-        return
-      }
-      navigate(nextStepPath(role ?? 'benefactor', 'location'))
+      await commit(selected.id)
     } catch (e) {
       setServerError(e instanceof Error ? e.message : 'unknown')
     }
@@ -869,50 +1107,12 @@ export function LocationStep() {
   return (
     <section className="flex flex-col gap-3 p-4 max-w-sm">
       <h2 className="text-xl">{t('location.title')}</h2>
-      <label className="flex flex-col gap-1">
-        <span>{t('location.placeName')}</span>
-        <input
-          className="border p-2 rounded"
-          type="text"
-          role="combobox"
-          aria-expanded={listOpen && suggestions.length > 0}
-          aria-controls="place-options"
-          aria-autocomplete="list"
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value)
-            setSelected(null)
-          }}
-        />
-      </label>
-      {listOpen && (
-        <ul id="place-options" role="listbox" className="border rounded divide-y">
-          {suggestions.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                role="option"
-                aria-selected="false"
-                className="w-full text-left p-2 hover:bg-slate-100"
-                onClick={() => onPick(p)}
-              >
-                {p.display_name}
-              </button>
-            </li>
-          ))}
-          {search.isSuccess && suggestions.length === 0 && (
-            <li className="p-2 text-sm text-slate-600">{t('location.noResults')}</li>
-          )}
-        </ul>
-      )}
-      {search.isError && (
-        <div role="alert" className="text-red-700">
-          {t('location.searchError')}{' '}
-          {search.error instanceof Error
-            ? `${search.error.name}: ${search.error.message}`
-            : null}
-        </div>
-      )}
+      <PlaceCombobox
+        label={t('location.placeName')}
+        value={selected}
+        onChange={setSelected}
+        initialText={metadataCity}
+      />
       <button
         type="button"
         className="bg-slate-800 text-white py-2 rounded"
@@ -931,67 +1131,501 @@ export function LocationStep() {
 }
 ```
 
-- [ ] **Step 6: Update i18n**
+- [ ] **Step 4: Rewire hooks/api and delete the geocode path**
 
-In `src/i18n/en/onboarding.json`, replace the `location.*` keys with:
+In `src/features/onboarding/hooks.ts`: delete the local `useSetLocation` function and add to the re-export block at the top:
 
-```json
-  "location.title": "Where are you based?",
-  "location.placeName": "City or town",
-  "location.noResults": "No places found — try a nearby town or city.",
-  "location.searchError": "Search failed.",
-  "location.continue": "Continue",
+```ts
+export { useSetLocation } from '@/features/places/hooks'
 ```
 
-(`location.lookup` and `location.notFound` are removed.)
+Remove `setProfileLocation` from the `./api` import list.
 
-- [ ] **Step 7: Delete the geocode path**
+In `src/features/onboarding/api.ts`: delete the `setProfileLocation` export and remove `SetProfileLocationResult` from the contracts import.
+
+In `shared/rpc-contracts.ts`: delete the `---- Geocode Edge Function ----` section (`GeocodeCityInput`, `GeocodeCityResult`).
 
 ```bash
 git rm src/features/onboarding/geocode.ts
 git rm -r supabase/functions/geocode-city
 ```
 
-- [ ] **Step 8: Run unit tests + typecheck**
+- [ ] **Step 5: Update i18n**
 
-Run: `pnpm vitest run src/features/onboarding` then `pnpm typecheck`
-Expected: LocationStep tests PASS; typecheck clean (the compiler confirms no remaining reference to `geocodeCity`/`GeocodeCityResult`).
+In `src/i18n/en/onboarding.json`, replace the `location.*` keys with:
 
-- [ ] **Step 9: Update the e2e location interactions**
+```json
+  "location.title": "Where are you based?",
+  "location.placeName": "City or town",
+  "location.settingUp": "Saving your location…",
+  "location.continue": "Continue",
+```
 
-In `e2e/onboarding.spec.ts` there are THREE identical location-step blocks (in `seedActiveCounterpart`, the benefactor test, and the baby test):
+(`location.lookup` and `location.notFound` are removed; no-results/error copy lives in `common.json` via PlaceCombobox.)
+
+- [ ] **Step 6: Run unit tests + typecheck**
+
+Run: `pnpm vitest run src/features/onboarding src/features/places` then `pnpm typecheck`
+Expected: all PASS; typecheck confirms nothing references `geocodeCity`/`GeocodeCityResult` anymore.
+
+- [ ] **Step 7: Update the e2e location interactions**
+
+All four blocks currently read:
 
 ```ts
-  await page.waitForURL(/onboarding\/location/)
-  await page.getByLabel(/city or town/i).fill('Manchester')
+  await page.getByLabel(/city or town/i).fill('<city>')
   await page.getByRole('button', { name: /look up/i }).click()
   await page.getByRole('button', { name: /continue/i }).click()
 ```
 
-Replace each with:
+- `e2e/onboarding.spec.ts` (3 blocks, city `Manchester`) and `e2e/likes-and-filters.spec.ts` (1 block, city `Manchester`) — replace each with:
 
 ```ts
-  await page.waitForURL(/onboarding\/location/)
   await page.getByLabel(/city or town/i).fill('Manchester')
   await page.getByRole('option', { name: /^Manchester,/ }).first().click()
   await page.getByRole('button', { name: /continue/i }).click()
 ```
 
-- [ ] **Step 10: Run e2e to verify the flow end-to-end**
+- `e2e/single-page-signup.spec.ts` — signup metadata still carries only the free-text city (place_id arrives in Task 7), so the wizard shows the seeded picker. Replace the step-5 block with:
+
+```ts
+  // Step 5: location — picker seeded from signup metadata; pick from the list.
+  await page.waitForURL(/onboarding\/location/)
+  await expect(page.getByLabel(/city or town/i)).toHaveValue(city)
+  await page.getByRole('option', { name: /^London,/ }).first().click()
+  await page.getByRole('button', { name: /continue/i }).click()
+```
+
+- [ ] **Step 8: Run e2e**
 
 Run: `pnpm test:e2e`
-Expected: both onboarding tests PASS with zero external network (postcodes.io is gone from the stack).
+Expected: all specs PASS with zero external network (postcodes.io is gone from the stack).
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
-git add -A shared/rpc-contracts.ts src/features/onboarding src/i18n/en/onboarding.json e2e/onboarding.spec.ts
-git commit -m "Replace geocode lookup with places typeahead in onboarding"
+git add -A shared/rpc-contracts.ts src/features/onboarding src/i18n/en/onboarding.json e2e
+git commit -m "Wizard location step: auto-commit signup place, picker fallback, geocode removed"
 ```
 
 ---
 
-### Task 6: View RPCs v3 — places join + disc-model distance
+### Task 7: Signup page — city becomes the place typeahead
+
+**Files:**
+- Modify: `src/features/auth/components/SignupForm.tsx`
+- Modify: `src/features/auth/api.ts` (`SignupMeta.place_id`)
+- Modify: `src/features/auth/__tests__/SignupForm.test.tsx`
+- Modify: `e2e/single-page-signup.spec.ts`
+
+**Interfaces:**
+- Consumes: `PlaceCombobox`, `PlaceSuggestionT` (Task 5); anon-callable `search_places` (Task 3).
+- Produces: signup metadata now carries `place_id` (number) when the user picks, plus `city` as the picked `display_name` (or the raw typed text if nothing was picked — the wizard fallback then collects the real place). `recordSignupAttempt` keeps receiving a city string (picked display name, else raw text) — the marketing signal survives.
+
+- [ ] **Step 1: Extend the failing form test**
+
+In `src/features/auth/__tests__/SignupForm.test.tsx`:
+
+Add imports and wrap the render helper in a QueryClientProvider (PlaceCombobox uses react-query):
+
+```tsx
+import { QueryClientProvider } from '@tanstack/react-query'
+import { createQueryClient } from '@/lib/query-client'
+```
+
+```tsx
+function render(ui: ReactElement) {
+  const utils = rtlRender(
+    <QueryClientProvider client={createQueryClient()}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </QueryClientProvider>,
+  )
+  return {
+    ...utils,
+    rerender: (next: ReactElement) =>
+      utils.rerender(
+        <QueryClientProvider client={createQueryClient()}>
+          <MemoryRouter>{next}</MemoryRouter>
+        </QueryClientProvider>,
+      ),
+  }
+}
+```
+
+Update the metadata test (`sends captured fields as signup metadata and records the attempt`): add a `search_places` handler to its `mswServer.use(...)`:
+
+```tsx
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/search_places', () =>
+        HttpResponse.json({
+          ok: true,
+          places: [{ id: 2643743, name: 'London', display_name: 'London, Greater London' }],
+        }),
+      ),
+```
+
+and after `await userEvent.type(screen.getByLabelText(/location/i), 'London')` add:
+
+```tsx
+    await userEvent.click(
+      await screen.findByRole('option', { name: /London, Greater London/i }),
+    )
+```
+
+then change the expectation to:
+
+```tsx
+    expect(body).toMatchObject({
+      data: {
+        role_hint: 'baby', username: 'Lex',
+        city: 'London, Greater London', place_id: 2643743,
+        age: 22, body_type: 'curvy', ethnicity: 'asian',
+      },
+    })
+```
+
+Add one new test for the unpicked-text fallback:
+
+```tsx
+  it('sends raw city text without place_id when nothing is picked', async () => {
+    let body: Record<string, unknown> | null = null
+    mswServer.use(
+      http.post('http://127.0.0.1:54321/rest/v1/rpc/search_places', () =>
+        HttpResponse.json({ ok: true, places: [] }),
+      ),
+      http.post('http://127.0.0.1:54321/auth/v1/signup', async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ user: { id: 'u', email: 'a@b.test' }, session: null })
+      }),
+    )
+    render(<SignupForm roleHint="baby" />)
+    await userEvent.type(screen.getByLabelText(/email/i), 'a@b.test')
+    await userEvent.type(screen.getByLabelText(/password/i), 'pw123456')
+    await userEvent.type(screen.getByLabelText(/location/i), 'Atlantis')
+    await userEvent.click(screen.getByRole('button', { name: /sign up/i }))
+    await screen.findByText(/check your email/i)
+    expect(body).toMatchObject({ data: { city: 'Atlantis' } })
+    expect((body as { data?: Record<string, unknown> })?.data?.place_id).toBeUndefined()
+  })
+```
+
+- [ ] **Step 2: Run it to verify it fails**
+
+Run: `pnpm vitest run src/features/auth`
+Expected: the updated/added tests FAIL (no combobox options; no place_id in metadata).
+
+- [ ] **Step 3: Extend the auth api metadata**
+
+In `src/features/auth/api.ts`, add to `SignupMeta`:
+
+```ts
+  place_id?: number
+```
+
+and in `signUp`, after the `city` line:
+
+```ts
+  if (meta.place_id != null) data.place_id = meta.place_id
+```
+
+- [ ] **Step 4: Swap the city input for PlaceCombobox**
+
+In `src/features/auth/components/SignupForm.tsx`:
+
+Add imports:
+
+```tsx
+import type { PlaceSuggestionT } from '@shared/rpc-contracts'
+import { PlaceCombobox } from '@/features/places/components/PlaceCombobox'
+```
+
+Replace `const [city, setCity] = useState('')` with:
+
+```tsx
+  const [place, setPlace] = useState<PlaceSuggestionT | null>(null)
+  const [cityText, setCityText] = useState('')
+```
+
+Replace the city `<label>…</label>` block with:
+
+```tsx
+      <PlaceCombobox
+        label={t('signup.city')}
+        value={place}
+        onChange={setPlace}
+        onTextChange={setCityText}
+        labelClassName={authLabel}
+        inputClassName={authInput}
+        listClassName="rounded-xl border border-bone/20 bg-ink/95 divide-y divide-bone/10"
+        optionClassName="w-full text-left p-2 text-bone hover:bg-bone/10"
+      />
+```
+
+(Style note: match the surrounding AuthShell dark palette; adjust utility classes to taste if `authInput`'s look differs — visual only, no behaviour.)
+
+In `onSubmit`, the attempt record and metadata become:
+
+```tsx
+        recordSignupAttempt({
+          role: roleHint,
+          city: place?.display_name ?? cityText.trim(),
+          age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : null,
+          acquisition_source: acquisitionSource ?? null,
+        })
+```
+
+```tsx
+      await signUp(values.email, values.password, {
+        role: roleHint,
+        username: username.trim() || undefined,
+        city: (place?.display_name ?? cityText.trim()) || undefined,
+        place_id: place?.id,
+        age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : undefined,
+        body_type: bodyType ?? undefined,
+        ethnicity: ethnicity ?? undefined,
+      })
+```
+
+- [ ] **Step 5: Run unit tests**
+
+Run: `pnpm vitest run src/features/auth` then `pnpm typecheck`
+Expected: all PASS.
+
+- [ ] **Step 6: Update the signup e2e**
+
+In `e2e/single-page-signup.spec.ts`:
+
+Step 2 — replace `await page.getByLabel(/location/i).fill(city)` with:
+
+```ts
+  await page.getByLabel(/location/i).fill(city)
+  await page.getByRole('option', { name: /^London,/ }).first().click()
+```
+
+Step 5 — the wizard now auto-commits the metadata place and never shows the location UI. Delete the whole step-5 block (`waitForURL location`, `toHaveValue`, option click, continue) and replace with:
+
+```ts
+  // Step 5: location — auto-committed from the place picked at signup; the
+  // wizard skips straight to photos.
+```
+
+(the existing `await page.waitForURL(/onboarding\/photo/)` in step 6 is the assertion).
+
+- [ ] **Step 7: Run e2e**
+
+Run: `pnpm test:e2e`
+Expected: all PASS — signup picks the place, wizard skips location, remaining specs unaffected.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add src/features/auth e2e/single-page-signup.spec.ts
+git commit -m "Signup city field becomes place typeahead; place_id rides in metadata"
+```
+
+---
+
+### Task 8: Profile page — editable location section
+
+**Files:**
+- Create: `src/features/profile/components/PlaceSection.tsx`
+- Modify: `src/features/profile/pages/MyProfilePage.tsx`
+- Modify: `src/i18n/en/profile.json`
+- Test: `src/features/profile/__tests__/PlaceSection.test.tsx`
+
+**Interfaces:**
+- Consumes: `PlaceCombobox`, `useSetLocation` (Task 5), `EditableSection` (existing), profile i18n keys `edit.save`/`edit.cancel`/`edit.saving` (existing).
+- Produces: `<PlaceSection city={string | null} />` on MyProfilePage — view mode shows the current place name; edit mode is the combobox + save (calls `set_profile_location`, invalidates `['my-profile']` via the hook, closes on success, shows the error inline otherwise).
+
+- [ ] **Step 1: Write the failing component test**
+
+Create `src/features/profile/__tests__/PlaceSection.test.tsx`:
+
+```tsx
+import { describe, expect, it } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { http, HttpResponse } from 'msw'
+import { mswServer } from '../../../test-setup'
+import { PlaceSection } from '../components/PlaceSection'
+import { createQueryClient } from '@/lib/query-client'
+import { initI18n } from '@/lib/i18n'
+import type { ReactNode } from 'react'
+
+await initI18n()
+
+const RPC = 'http://127.0.0.1:54321/rest/v1/rpc'
+
+function wrap(ui: ReactNode) {
+  return <QueryClientProvider client={createQueryClient()}>{ui}</QueryClientProvider>
+}
+
+describe('PlaceSection', () => {
+  it('shows the current city and saves a newly picked place', async () => {
+    let calledWith: unknown = null
+    mswServer.use(
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({
+          ok: true,
+          places: [{ id: 2643123, name: 'Manchester', display_name: 'Manchester, Greater Manchester' }],
+        }),
+      ),
+      http.post(`${RPC}/set_profile_location`, async ({ request }) => {
+        calledWith = await request.json()
+        return HttpResponse.json({ ok: true })
+      }),
+    )
+    render(wrap(<PlaceSection city="London" />))
+    expect(screen.getByText('London')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /edit/i }))
+    const box = screen.getByRole('combobox')
+    await userEvent.clear(box)
+    await userEvent.type(box, 'Manch')
+    await userEvent.click(
+      await screen.findByRole('option', { name: /Manchester, Greater Manchester/i }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: /save/i }))
+    expect(await screen.findByText('London')).toBeInTheDocument() // back to view mode
+    expect(calledWith).toEqual({ p_place_id: 2643123 })
+  })
+
+  it('shows the error inline when saving fails', async () => {
+    mswServer.use(
+      http.post(`${RPC}/search_places`, () =>
+        HttpResponse.json({
+          ok: true,
+          places: [{ id: 2643123, name: 'Manchester', display_name: 'Manchester, Greater Manchester' }],
+        }),
+      ),
+      http.post(`${RPC}/set_profile_location`, () =>
+        HttpResponse.json({ ok: false, error: 'place_not_found' }),
+      ),
+    )
+    render(wrap(<PlaceSection city={null} />))
+    await userEvent.click(screen.getByRole('button', { name: /edit/i }))
+    await userEvent.type(screen.getByRole('combobox'), 'Manch')
+    await userEvent.click(
+      await screen.findByRole('option', { name: /Manchester, Greater Manchester/i }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: /save/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(/place_not_found/)
+  })
+})
+```
+
+- [ ] **Step 2: Run it to verify it fails**
+
+Run: `pnpm vitest run src/features/profile/__tests__/PlaceSection.test.tsx`
+Expected: FAIL (component does not exist).
+
+- [ ] **Step 3: Write the component**
+
+Create `src/features/profile/components/PlaceSection.tsx`:
+
+```tsx
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { PlaceSuggestionT } from '@shared/rpc-contracts'
+import { PlaceCombobox } from '@/features/places/components/PlaceCombobox'
+import { useSetLocation } from '@/features/places/hooks'
+import { EditableSection } from './EditableSection'
+
+export function PlaceSection({ city }: { city: string | null }) {
+  const { t } = useTranslation('profile')
+  const setLocation = useSetLocation()
+  const [selected, setSelected] = useState<PlaceSuggestionT | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function save(close: () => void) {
+    if (!selected) return
+    setError(null)
+    try {
+      const res = await setLocation.mutateAsync({ place_id: selected.id })
+      if (!res.ok) {
+        setError(res.error)
+        return
+      }
+      setSelected(null)
+      close()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'unknown')
+    }
+  }
+
+  return (
+    <EditableSection
+      title={t('section.place.title')}
+      renderView={() => <p className="text-sm">{city ?? t('section.place.empty')}</p>}
+      renderEdit={(close) => (
+        <div className="flex flex-col gap-3">
+          <PlaceCombobox
+            label={t('section.place.label')}
+            value={selected}
+            onChange={setSelected}
+            initialText={city ?? ''}
+          />
+          {error && (
+            <div role="alert" className="text-sm text-red-700">
+              {error}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="bg-slate-800 text-white px-3 py-1.5 rounded disabled:opacity-50"
+              disabled={!selected || setLocation.isPending}
+              onClick={() => void save(close)}
+            >
+              {setLocation.isPending ? t('edit.saving') : t('edit.save')}
+            </button>
+            <button type="button" className="px-3 py-1.5 border rounded" onClick={close}>
+              {t('edit.cancel')}
+            </button>
+          </div>
+        </div>
+      )}
+    />
+  )
+}
+```
+
+- [ ] **Step 4: Mount it and add i18n keys**
+
+In `src/i18n/en/profile.json`, add:
+
+```json
+  "section.place.title": "Location",
+  "section.place.label": "City or town",
+  "section.place.empty": "Not set",
+```
+
+In `src/features/profile/pages/MyProfilePage.tsx`: import it —
+
+```tsx
+import { PlaceSection } from '../components/PlaceSection'
+```
+
+and render it directly after `<CompleteProfileNudge …/>`:
+
+```tsx
+      <PlaceSection city={p.city_display_name} />
+```
+
+- [ ] **Step 5: Run tests**
+
+Run: `pnpm vitest run src/features/profile` then `pnpm typecheck`
+Expected: all PASS.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add src/features/profile src/i18n/en/profile.json
+git commit -m "Add editable location section to my-profile using the place typeahead"
+```
+
+---
+
+### Task 9: View RPCs v3 — places join + disc-model distance
 
 **Files:**
 - Create: `supabase/migrations/20260719000004_rpc_views_v3.sql`
@@ -1073,11 +1707,11 @@ ROLLBACK;
 - [ ] **Step 2: Run it to verify it fails**
 
 Run: `pnpm test:db`
-Expected: `38_places_distance` FAILS (profiles have `place_id` set but views still read `city_*`, which is NULL for these fixtures → distance NULL / city NULL).
+Expected: `38_places_distance` FAILS (views still read the legacy `city_*` columns, which these fixtures leave NULL).
 
 - [ ] **Step 3: Write the views v3 migration**
 
-Create `supabase/migrations/20260719000004_rpc_views_v3.sql`. It redefines all four view functions. `_profile_card_for_viewer`, `view_profile`, `view_my_profile` are copies of the current definitions in `supabase/migrations/20260718000002_rpc_views_ethnicity.sql` with ONLY the location parts changed; `view_search` gets the disc-aware filter. Full content:
+Create `supabase/migrations/20260719000004_rpc_views_v3.sql`. It redefines all four view functions: copies of the current definitions in `supabase/migrations/20260718000002_rpc_views_ethnicity.sql` with ONLY the location parts changed. Full content:
 
 ```sql
 -- 015: views v3 — location comes from the places gazetteer via
@@ -1433,7 +2067,7 @@ GRANT EXECUTE ON FUNCTION public.view_search(jsonb, text) TO authenticated;
 
 - [ ] **Step 4: Migrate the existing pgTAP fixtures to `place_id`**
 
-The four existing tests set `city_lat/city_lng/city_display_name` directly; the v3 views no longer read those columns, so each test needs fixture places inserted (BEFORE `SET LOCAL ROLE`) and profile UPDATEs switched to `place_id`. Use radius `0` fixtures where a test asserts centroid-like behaviour.
+The four existing tests set `city_lat/city_lng/city_display_name` directly; the v3 views no longer read those columns, so each test needs fixture places inserted (BEFORE `SET LOCAL ROLE`) and profile UPDATEs switched to `place_id`. Use radius `0` fixtures where a test asserts centroid-exact behaviour — the disc model degrading to centroid maths at radius 0 is itself a spec acceptance criterion.
 
 `supabase/tests/18_rpc_view_search.sql` — after the `auth.users` INSERT, add:
 
@@ -1457,7 +2091,7 @@ INSERT INTO public.places (id, name, display_name, country_code, admin1_name, la
   (900000032, 'TestEdinburgh', 'TestEdinburgh, Scotland','GB', 'Scotland', 55.9533, -3.1883, 500000, 'P', 'PPLA', 0);
 ```
 
-and replace London-coordinate fragments with `place_id=900000030`, Edinburgh's with `place_id=900000032`. Radius 0 keeps the existing distance-filter expectations exact (disc model degrades to centroid maths at radius 0 — that degradation IS one of the spec's acceptance criteria, so leave these radii at 0 deliberately and let `38` cover non-zero radii).
+and replace London-coordinate fragments with `place_id=900000030`, Edinburgh's with `place_id=900000032`. Radius 0 keeps the existing distance-filter expectations exact.
 
 - [ ] **Step 5: Apply and verify db tests pass**
 
@@ -1514,17 +2148,12 @@ In `src/features/search/components/ProfileCard.tsx`, replace the city/distance l
         </div>
 ```
 
-- [ ] **Step 9: Run the full frontend suite**
+- [ ] **Step 9: Run the full frontend suite and e2e**
 
-Run: `pnpm vitest run` then `pnpm typecheck`
-Expected: all pass (payload keys unchanged, so existing mocks still parse).
+Run: `pnpm vitest run && pnpm typecheck && pnpm test:e2e`
+Expected: all pass (payload keys unchanged, so existing mocks still parse; e2e flows unaffected).
 
-- [ ] **Step 10: Run e2e**
-
-Run: `pnpm test:e2e`
-Expected: PASS (onboarding writes place_id via the transitional RPC; search cards render from the joined place).
-
-- [ ] **Step 11: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
 git add supabase/migrations/20260719000004_rpc_views_v3.sql supabase/tests/18_rpc_view_search.sql supabase/tests/19_rpc_view_profile.sql supabase/tests/29_rpc_view_likes_tab.sql supabase/tests/31_rpc_view_search_filters.sql supabase/tests/38_places_distance.sql src/lib/format.ts src/lib/__tests__/format.test.ts src/features/search/components/ProfileCard.tsx
@@ -1533,16 +2162,16 @@ git commit -m "Switch view RPCs to places join with disc-model distance"
 
 ---
 
-### Task 7: Cleanup — drop legacy columns, legacy RPC, migrate remaining fixtures and seeds
+### Task 10: Cleanup — drop legacy columns, legacy RPC, migrate remaining fixtures and seeds
 
 **Files:**
 - Create: `supabase/migrations/20260719000005_location_cleanup.sql`
-- Modify: `supabase/tests/10_profiles_schema.sql`, `17_rpc_complete_onboarding.sql`, `33_baby_activation_gate.sql`
+- Modify: `supabase/tests/10_profiles_schema.sql`, `17_rpc_complete_onboarding.sql`, `33_baby_activation_gate.sql`, `37_rpc_set_profile_location_v2.sql`
 - Delete: `supabase/tests/15_rpc_set_profile_location.sql` (superseded by `37`)
 - Modify: `scripts/seed-dev-users.mjs`
 
 **Interfaces:**
-- Consumes: everything above; frontend no longer references the legacy RPC signature (Task 5).
+- Consumes: everything above; the frontend no longer references the legacy RPC signature (Task 6).
 - Produces: `profiles` without `city_display_name`/`city_lat`/`city_lng`; `set_profile_location(bigint)` no longer writes legacy columns; `complete_onboarding` checks `place_id IS NULL` for `location_missing`; legacy `set_profile_location(text, double precision, double precision)` dropped. `places` is the single source of truth.
 
 - [ ] **Step 1: Update the schema pgTAP test to the desired end state (failing)**
@@ -1558,7 +2187,7 @@ SELECT hasnt_column('public', 'profiles', 'city_lng',          'legacy city_lng 
 
 and bump `SELECT plan(n);` by +2 (two lines became four).
 
-Also update `17_rpc_complete_onboarding.sql` and `33_baby_activation_gate.sql`: before each file's `SET LOCAL ROLE authenticated`, insert a fixture place:
+Update `17_rpc_complete_onboarding.sql` and `33_baby_activation_gate.sql`: before each file's `SET LOCAL ROLE authenticated`, insert a fixture place:
 
 ```sql
 INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
@@ -1571,18 +2200,18 @@ and replace each `SELECT public.set_profile_location('London', 51.5074, -0.1278)
 SELECT public.set_profile_location(900000040::bigint);
 ```
 
+Update `37_rpc_set_profile_location_v2.sql`: remove the two transitional assertions ('legacy display name synced from place', 'legacy lat synced from place') and drop `plan(5)` to `plan(3)` — the columns they query are about to disappear.
+
 Delete the superseded legacy-signature test:
 
 ```bash
 git rm supabase/tests/15_rpc_set_profile_location.sql
 ```
 
-Also update `37_rpc_set_profile_location_v2.sql`: remove the two transitional assertions ('legacy display name synced from place', 'legacy lat synced from place') and drop `plan(5)` to `plan(3)` — the columns they query are about to disappear.
-
 - [ ] **Step 2: Run to verify failures**
 
 Run: `pnpm test:db`
-Expected: `10` FAILS (`hasnt_column` — columns still exist). 17/33 pass already (new RPC exists). This is the RED state for the migration.
+Expected: `10` FAILS (`hasnt_column` — columns still exist); `37` FAILS on its reduced plan count until the migration lands. This is the RED state for the migration.
 
 - [ ] **Step 3: Write the cleanup migration**
 
@@ -1702,11 +2331,7 @@ Expected: ALL pass, including updated 10/17/33/37; `15` is gone.
 
 - [ ] **Step 5: Update the dev seed script**
 
-In `scripts/seed-dev-users.mjs`: the fixtures keep their `city` names but drop `lat`/`lng`; the profile update uses a looked-up `place_id`. Replace the fixture `lat`/`lng` properties and the update block:
-
-Fixture entries lose `lat:`/`lng:` (delete those two properties from all three fixtures).
-
-After the `fixtures` array, add:
+In `scripts/seed-dev-users.mjs`: fixtures keep their `city` names but lose `lat:`/`lng:` (delete those two properties from all three fixtures). After the `fixtures` array, add:
 
 ```js
 // Resolve seeded GeoNames places by name (largest population wins).
@@ -1741,8 +2366,7 @@ with
 
 - [ ] **Step 6: Verify the seed runs**
 
-Run: `SUPABASE_SERVICE_ROLE_KEY="$(supabase status -o env | grep SERVICE_ROLE_KEY | cut -d= -f2- | tr -d '\"')" pnpm seed:dev`
-(Or obtain the key from `supabase status` output by hand — keep the loopback guard intact.)
+Run `pnpm seed:dev` with `SUPABASE_SERVICE_ROLE_KEY` taken from `supabase status` output (keep the loopback guard intact).
 Expected: `seeded lex@local.test` etc., no errors.
 
 - [ ] **Step 7: Full check**
@@ -1759,12 +2383,11 @@ git commit -m "Drop legacy city columns and geocode-era location RPC"
 
 ---
 
-### Task 8: GeoNames attribution, leftovers sweep, docs
+### Task 11: GeoNames attribution, leftovers sweep, docs
 
 **Files:**
 - Modify: `src/i18n/en/landing.json`, `src/features/landing/pages/LandingPage.tsx`
 - Modify: `execution/README.md`, `docs/superpowers/plans/README.md`
-- Test: `src/features/landing/__tests__/` (extend the existing landing test if one asserts footer content; otherwise the i18n render is covered by the page test)
 
 **Interfaces:**
 - Consumes: nothing new.
@@ -1823,9 +2446,11 @@ git commit -m "Add GeoNames attribution and close out spec 015"
 
 ## Notes for the executor
 
+- **Task order matters for green commits:** the wizard picker (Task 6) lands BEFORE the signup typeahead (Task 7) — until Task 7, signup metadata has `city` text but no `place_id`, so the wizard fallback carries the e2e; Task 7 then flips single-page-signup to auto-skip.
 - **Legacy v1 zod schemas** (`ProfileCard`, `ViewProfileResult`, `ViewMyProfileResult` in `shared/rpc-contracts.ts`) still mention `city_display_name` — leave them; the key is unchanged in v2/v3 payloads and those schemas are inert. Do NOT rename payload keys; that was considered and rejected (churn without user value).
-- **Spec open questions resolved with defaults:** radius buckets as in Task 2; committed GB seed as a generated migration (gen-config precedent); denormalised columns dropped; distance display `~N mi` with blank-at-0 banding; default UI search radius untouched (FilterSheet has a free number input, no preset to widen — flag in review if beta density suggests adding one).
-- **Interaction with spec 010:** already landed (role_hint work is committed); this plan's LocationStep rewrite is based on the current file as of `d9eb0d9`-era main.
+- **Spec open questions resolved with defaults:** radius buckets as in Task 2; committed GB seed as a generated migration (gen-config precedent); denormalised columns dropped; distance display `~N mi` with blank-at-0 banding; default UI search radius untouched (FilterSheet has a free number input, no preset to widen — flag in review if beta density suggests adding one). Additional default taken with the signup integration: picking a place at signup is OPTIONAL (matches the current form, keeps signup friction low); the wizard fallback guarantees `complete_onboarding` still gets a real `place_id`. If Ryan prefers a mandatory pick at signup, that is a `disabled` condition on the submit button plus dropping the wizard fallback path — decide before Task 7 executes.
+- **Anon-callable `search_places`** is deliberate (pre-auth signup page). It exposes only public GeoNames data already readable by `anon` under RLS. If abuse appears later, rate limiting belongs at the edge, not in the RPC.
+- **Signup-attempt capture:** `recordSignupAttempt` keeps receiving a plain city string — the picked `display_name`, or the raw typed text when nothing was picked — so the marketing funnel signal is preserved either way.
 
 ### Plan 015 execution deviations
 
