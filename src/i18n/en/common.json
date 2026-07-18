@@ -1,3 +1,5 @@
 {
-  "appBootHeading": "SD Site — foundations bootstrap"
+  "appBootHeading": "SD Site — foundations bootstrap",
+  "places.noResults": "No places found — try a nearby town or city.",
+  "places.searchError": "Search failed."
 }
