@@ -441,6 +441,57 @@ rich: books, lists, diaries, what's written down and who's in it.
 - **Book Club** — liked (2026-07-18).
 - **Wish List** — liked (2026-07-18).
 
+## Deep dives
+
+### Between Us (dug 2026-07-18)
+
+**What the name does.** The only candidate whose subject is *both people*:
+"us" includes the gent and the lady equally, so the grammar itself is
+two-sided. Double register: *"just between us"* (complicity — the axis-c
+promise: what's between us stays between us) and *"what's between us"*
+(the relationship, the chemistry — "there's something between us"). It
+promises privacy without shame and intimacy without sordidness — the
+girls' safety brief and the gents' something-special brief in one phrase.
+Notably it has **no gain-word at all**: the perks slot is empty, making it
+the most deniable, ASA-proof, affiliate-safe name on the shortlist — the
+wink has to live in the copy, not the name.
+
+**Copy surface.** "What's between us stays between us." / "Just between
+us." Chat header: *between us*. Share-nudge: "keep it between us."
+Speakability is fine ("I'm on Between Us"), mildly quirky as a proper
+noun. Visual identity: the *space between* two marks/figures as the motif;
+lowercase wordmark.
+
+**Collisions (the real findings).**
+
+- **Between (VCNC)** — a private couples app with 35M+ couples, living at
+  **between.us** ([between.us](https://between.us/)). Not dating (it's for
+  existing couples) but it owns "private space for two" in the app stores
+  and holds the exact-phrase hack domain. Biggest issue: trademark
+  opposition risk in adjacent classes + user confusion ("Between"
+  vs "Between Us"). A smaller "Just Between Us" couples-chat app also
+  exists.
+- **Little Mix — *Between Us*** (2021 greatest-hits album, UK #3): clogs
+  the UK SERP on the exact phrase, precisely where the brand-harvest
+  strategy lives. No trademark clash (music classes), but years of album
+  results to out-rank in our launch market.
+- **Among Us** phonetic adjacency for younger users — minor, meme-level.
+- Assorted small films/series titled "Between Us" — minor.
+
+**Domains.** betweenus.com registered but idle → acquisition candidate.
+betweenus.co.uk explicitly for sale (Aftermarket). between.us is the
+couples app itself. betweenus.app occupied; .io unclear.
+
+**Verdict.** As a *name*, one of the warmest and most compliance-proof on
+the list. The costs are all external: a 35M-user couples app one
+preposition away, a UK chart album on the exact phrase, and a generic-
+phrase SERP — the hardest branded-search fight of any shortlist
+candidate, where Tacit or Kept Company would own their SERPs almost
+immediately. Usable, but budget for teaching Google and differentiating
+from Between. If promoted: run UK IPO/EUIPO searches on "Between Us" AND
+"Between" (classes 45, 9, 42) and open an acquisition enquiry on
+betweenus.com before falling in love.
+
 Claude's top picks, for what they're worth: Kept Company, Best Kept,
 Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — from
 the secrecy riff: Moonlight, Classified, Locket, Secret Keeper — and from
