@@ -23,37 +23,68 @@ UPDATE public.profiles SET role='benefactor', status='active', display_name='Dad
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'aaaaaaaa-0000-0000-0000-000000000001';
 
--- view_search returns array of baby cards for a benefactor viewer
-WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body)
+-- view_search returns cards for a benefactor viewer; the local DB may already
+-- contain other active profiles (seeded dev users, e2e-created users), so
+-- only assert on the subset of returned cards that belong to this fixture,
+-- rather than the total count.
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     fixture_cards AS (
+       SELECT c FROM r, jsonb_array_elements(body->'cards') c
+        WHERE (c->>'profile_id')::uuid IN (
+          'aaaaaaaa-0000-0000-0000-000000000002',
+          'aaaaaaaa-0000-0000-0000-000000000003'
+        )
+     )
 SELECT is(
-  jsonb_array_length((SELECT body->'cards' FROM r)),
-  2,
-  'benefactor sees 2 baby cards'
+  (SELECT count(*) FROM fixture_cards),
+  2::bigint,
+  'benefactor sees both fixture baby cards'
 );
 
 -- Each card has expected fields (path-based fallback: primary_photo_path)
 WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
-     c AS (SELECT (body->'cards'->0) AS card FROM r)
+     c AS (
+       SELECT card FROM r, jsonb_array_elements(body->'cards') card
+        WHERE (card->>'profile_id')::uuid = 'aaaaaaaa-0000-0000-0000-000000000002'
+     )
 SELECT ok((SELECT card ? 'profile_id' AND card ? 'display_name' AND card ? 'age'
               AND card ? 'city_display_name' AND card ? 'distance_miles'
               AND card ? 'primary_photo_path' FROM c),
   'card has all required fields');
 
--- Ordering: London baby (closer + more recent) appears first for London viewer
-WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body)
-SELECT is(
-  (SELECT body->'cards'->0->>'display_name' FROM r),
-  'Baby1',
-  'closer + more recent baby ranks first'
+-- Ordering: London baby (closer + more recent) ranks ahead of the Manchester
+-- baby among the fixture's own cards (unrelated rows may be interleaved, so
+-- compare the two fixture cards' relative positions rather than assuming
+-- either is literally first in the array).
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     positions AS (
+       SELECT (card->>'profile_id')::uuid AS profile_id, ord
+         FROM r, jsonb_array_elements(body->'cards') WITH ORDINALITY AS t(card, ord)
+        WHERE (card->>'profile_id')::uuid IN (
+          'aaaaaaaa-0000-0000-0000-000000000002',
+          'aaaaaaaa-0000-0000-0000-000000000003'
+        )
+     )
+SELECT ok(
+  (SELECT ord FROM positions WHERE profile_id = 'aaaaaaaa-0000-0000-0000-000000000002')
+    < (SELECT ord FROM positions WHERE profile_id = 'aaaaaaaa-0000-0000-0000-000000000003'),
+  'closer + more recent baby ranks ahead of the further, staler one'
 );
 
--- A baby viewer sees benefactors only
+-- A baby viewer sees benefactors only; again scope to the fixture's own rows.
 SET LOCAL "request.jwt.claim.sub" = 'aaaaaaaa-0000-0000-0000-000000000002';
-WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body)
+WITH r AS (SELECT public.view_search('{}'::jsonb, NULL) AS body),
+     fixture_cards AS (
+       SELECT c FROM r, jsonb_array_elements(body->'cards') c
+        WHERE (c->>'profile_id')::uuid IN (
+          'aaaaaaaa-0000-0000-0000-000000000001',
+          'aaaaaaaa-0000-0000-0000-000000000004'
+        )
+     )
 SELECT is(
-  jsonb_array_length((SELECT body->'cards' FROM r)),
-  2,
-  'baby sees 2 benefactor cards'
+  (SELECT count(*) FROM fixture_cards),
+  2::bigint,
+  'baby sees both fixture benefactor cards'
 );
 
 SELECT * FROM finish();
