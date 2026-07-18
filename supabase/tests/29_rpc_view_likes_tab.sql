@@ -15,14 +15,17 @@ VALUES
    'lt3@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(),
    '', '', '');
 
+INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
+  (900000030, 'TestLondon', 'TestLondon, England', 'GB', 'England', 51.5074, -0.1278, 9000000, 'P', 'PPLC', 0);
+
 UPDATE public.profiles SET role='benefactor', status='active', display_name='Me',
-       date_of_birth='1985-01-01', city_lat=51.5, city_lng=-0.1, city_display_name='London'
+       date_of_birth='1985-01-01', place_id=900000030
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaab01';
 UPDATE public.profiles SET role='baby', status='active', display_name='LikedMe',
-       date_of_birth='1998-01-01', city_lat=51.5, city_lng=-0.1, city_display_name='London'
+       date_of_birth='1998-01-01', place_id=900000030
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaab02';
 UPDATE public.profiles SET role='baby', status='active', display_name='MyFav',
-       date_of_birth='1996-01-01', city_lat=51.5, city_lng=-0.1, city_display_name='London'
+       date_of_birth='1996-01-01', place_id=900000030
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaab03';
 
 -- Seed: lt2 likes me; I like lt3 (direct INSERT as superuser to avoid RPC notification side effects)

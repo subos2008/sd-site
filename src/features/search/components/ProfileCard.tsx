@@ -50,7 +50,11 @@ export function ProfileCard({ card }: { card: ProfileCardV2T }) {
           {card.display_name}, {card.age}
         </div>
         <div className="text-sm text-slate-600">
-          {card.city_display_name} · {formatDistance(card.distance_miles, i18n.language)}
+          {card.city_display_name}
+          {(() => {
+            const d = formatDistance(card.distance_miles, i18n.language)
+            return d ? ` · ${d}` : ''
+          })()}
         </div>
         {card.tagline && (
           <div className="text-xs italic text-slate-700 mt-1 truncate">{card.tagline}</div>

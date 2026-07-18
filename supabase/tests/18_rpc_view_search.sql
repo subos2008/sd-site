@@ -11,10 +11,14 @@ VALUES
   ('aaaaaaaa-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'b2@x', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
   ('aaaaaaaa-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'd2@x', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', '');
 
-UPDATE public.profiles SET role='benefactor', status='active', display_name='Daddy',  date_of_birth='1985-01-01', city_lat=51.5074, city_lng=-0.1278, city_display_name='London', last_active_at=now()             WHERE id='aaaaaaaa-0000-0000-0000-000000000001';
-UPDATE public.profiles SET role='baby',       status='active', display_name='Baby1',  date_of_birth='1998-01-01', city_lat=51.5074, city_lng=-0.1278, city_display_name='London', last_active_at=now() - interval '1 min' WHERE id='aaaaaaaa-0000-0000-0000-000000000002';
-UPDATE public.profiles SET role='baby',       status='active', display_name='Baby2',  date_of_birth='1999-01-01', city_lat=53.4808, city_lng=-2.2426, city_display_name='Manchester', last_active_at=now() - interval '2 min' WHERE id='aaaaaaaa-0000-0000-0000-000000000003';
-UPDATE public.profiles SET role='benefactor', status='active', display_name='Daddy2', date_of_birth='1980-01-01', city_lat=53.4808, city_lng=-2.2426, city_display_name='Manchester', last_active_at=now()             WHERE id='aaaaaaaa-0000-0000-0000-000000000004';
+INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
+  (900000030, 'TestLondon',     'TestLondon, England',     'GB', 'England', 51.5074, -0.1278, 9000000, 'P', 'PPLC', 0),
+  (900000031, 'TestManchester', 'TestManchester, England', 'GB', 'England', 53.4808, -2.2426, 550000,  'P', 'PPLA', 0);
+
+UPDATE public.profiles SET role='benefactor', status='active', display_name='Daddy',  date_of_birth='1985-01-01', place_id=900000030, last_active_at=now()             WHERE id='aaaaaaaa-0000-0000-0000-000000000001';
+UPDATE public.profiles SET role='baby',       status='active', display_name='Baby1',  date_of_birth='1998-01-01', place_id=900000030, last_active_at=now() - interval '1 min' WHERE id='aaaaaaaa-0000-0000-0000-000000000002';
+UPDATE public.profiles SET role='baby',       status='active', display_name='Baby2',  date_of_birth='1999-01-01', place_id=900000031, last_active_at=now() - interval '2 min' WHERE id='aaaaaaaa-0000-0000-0000-000000000003';
+UPDATE public.profiles SET role='benefactor', status='active', display_name='Daddy2', date_of_birth='1980-01-01', place_id=900000031, last_active_at=now()             WHERE id='aaaaaaaa-0000-0000-0000-000000000004';
 
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = 'aaaaaaaa-0000-0000-0000-000000000001';

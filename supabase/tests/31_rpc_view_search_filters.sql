@@ -10,24 +10,28 @@ VALUES
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba03', '00000000-0000-0000-0000-000000000000', 'sf3@x', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', ''),
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba04', '00000000-0000-0000-0000-000000000000', 'sf4@x', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), '', '', '');
 
+INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
+  (900000030, 'TestLondon',    'TestLondon, England',    'GB', 'England', 51.5074, -0.1278, 9000000, 'P', 'PPLC', 0),
+  (900000032, 'TestEdinburgh', 'TestEdinburgh, Scotland','GB', 'Scotland', 55.9533, -3.1883, 500000, 'P', 'PPLA', 0);
+
 UPDATE public.profiles SET role='benefactor', status='active', display_name='Viewer',
-       date_of_birth='1980-01-01', city_lat=51.5074, city_lng=-0.1278, city_display_name='London',
+       date_of_birth='1980-01-01', place_id=900000030,
        last_active_at=now()
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba01';
 
 UPDATE public.profiles SET role='baby', status='active', display_name='Young',
-       date_of_birth=(now() - interval '19 years')::date, city_lat=51.5074, city_lng=-0.1278,
-       city_display_name='London', last_active_at=now() - interval '1 min'
+       date_of_birth=(now() - interval '19 years')::date, place_id=900000030,
+       last_active_at=now() - interval '1 min'
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba02';
 
 UPDATE public.profiles SET role='baby', status='active', display_name='Mid',
-       date_of_birth='1995-01-01', city_lat=51.5074, city_lng=-0.1278,
-       city_display_name='London', last_active_at=now() - interval '2 min'
+       date_of_birth='1995-01-01', place_id=900000030,
+       last_active_at=now() - interval '2 min'
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba03';
 
 UPDATE public.profiles SET role='baby', status='active', display_name='Far',
-       date_of_birth='1995-01-01', city_lat=55.9533, city_lng=-3.1883,  -- Edinburgh, ~330mi from London
-       city_display_name='Edinburgh', last_active_at=now() - interval '3 min'
+       date_of_birth='1995-01-01', place_id=900000032,  -- Edinburgh, ~330mi from London
+       last_active_at=now() - interval '3 min'
  WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaba04';
 
 -- Seed interest mapping under superuser before switching roles (RLS would block this for authenticated)
