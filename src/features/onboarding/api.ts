@@ -2,7 +2,6 @@ import { callRpc } from '@/lib/rpc'
 import {
   SetProfileRoleResult,
   SetProfileIdentityResult,
-  SetProfileLocationResult,
   CompleteOnboardingResult,
   PrepareMediaUploadResult,
   FinalizeMediaUploadResult,
@@ -32,13 +31,6 @@ export const setProfileIdentity = (
       p_looking_for: looking_for,
     },
     SetProfileIdentityResult,
-  )
-
-export const setProfileLocation = (display_name: string, lat: number, lng: number) =>
-  callRpc(
-    'set_profile_location',
-    { p_display_name: display_name, p_lat: lat, p_lng: lng },
-    SetProfileLocationResult,
   )
 
 export const prepareMediaUpload = (args: {

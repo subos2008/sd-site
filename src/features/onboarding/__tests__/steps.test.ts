@@ -4,14 +4,18 @@ import { stepsForRole, nextStepPath } from '../steps'
 describe('onboarding step sequences', () => {
   it('benefactor path skips bio/details/interests', () => {
     expect(stepsForRole('benefactor')).toEqual([
-      'role', 'identity', 'location', 'photo', 'complete',
+      'role', 'identity', 'photo', 'complete',
     ])
   })
 
   it('baby path includes bio/details/interests', () => {
     expect(stepsForRole('baby')).toEqual([
-      'role', 'identity', 'location', 'photo', 'bio', 'details', 'interests', 'complete',
+      'role', 'identity', 'photo', 'bio', 'details', 'interests', 'complete',
     ])
+  })
+
+  it('routes identity straight to photo (location is captured at signup)', () => {
+    expect(nextStepPath('baby', 'identity')).toBe('/onboarding/photo')
   })
 
   it('routes benefactor from photo straight to complete', () => {

@@ -48,11 +48,6 @@ async function seedActiveCounterpart(browser: Browser, role: 'benefactor' | 'bab
   await page.getByLabel(/date of birth/i).fill('1990-01-01')
   await page.getByRole('button', { name: /continue/i }).click()
 
-  await page.waitForURL(/onboarding\/location/)
-  await page.getByLabel(/city or town/i).fill('Manchester')
-  await page.getByRole('button', { name: /look up/i }).click()
-  await page.getByRole('button', { name: /continue/i }).click()
-
   if (role === 'benefactor') {
     await page.waitForURL(/onboarding\/photo/)
     await page.getByRole('button', { name: /skip for now/i }).click()
@@ -77,7 +72,7 @@ async function seedActiveCounterpart(browser: Browser, role: 'benefactor' | 'bab
   await context.close()
 }
 
-test('benefactor onboarding: role → identity → location → skip photo → search (no details/interests)', async ({
+test('benefactor onboarding: role → identity → skip photo → search (no details/interests)', async ({
   page,
   browser,
 }) => {
@@ -96,12 +91,6 @@ test('benefactor onboarding: role → identity → location → skip photo → s
   await page.getByLabel(/date of birth/i).fill('1980-01-01')
   await page.getByRole('button', { name: /continue/i }).click()
 
-  // Step 3: location
-  await page.waitForURL(/onboarding\/location/)
-  await page.getByLabel(/city or town/i).fill('Manchester')
-  await page.getByRole('button', { name: /look up/i }).click()
-  await page.getByRole('button', { name: /continue/i }).click()
-
   // Step 4: photo — benefactor skips entirely
   await page.waitForURL(/onboarding\/photo/)
   await page.getByRole('button', { name: /skip for now/i }).click()
@@ -117,7 +106,7 @@ test('benefactor onboarding: role → identity → location → skip photo → s
   await expect(page.getByRole('heading')).toBeVisible()
 })
 
-test('baby onboarding: role → identity → location → 3 photos → bio → skip details/interests → search', async ({
+test('baby onboarding: role → identity → 3 photos → bio → skip details/interests → search', async ({
   page,
   browser,
 }) => {
@@ -134,12 +123,6 @@ test('baby onboarding: role → identity → location → 3 photos → bio → s
   await page.waitForURL(/onboarding\/identity/)
   await page.getByLabel(/username/i).fill('Lex')
   await page.getByLabel(/date of birth/i).fill('1999-01-01')
-  await page.getByRole('button', { name: /continue/i }).click()
-
-  // Step 3: location
-  await page.waitForURL(/onboarding\/location/)
-  await page.getByLabel(/city or town/i).fill('Manchester')
-  await page.getByRole('button', { name: /look up/i }).click()
   await page.getByRole('button', { name: /continue/i }).click()
 
   // Step 4: photo — baby must reach babyMinPhotos (3) before Continue enables.

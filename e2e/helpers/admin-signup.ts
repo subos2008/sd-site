@@ -33,6 +33,7 @@ export async function createConfirmedUser(): Promise<{ email: string; password: 
     email,
     password,
     email_confirm: true,
+    user_metadata: { place_id: 2643743, city: 'London' },
   })
   if (error) throw error
   return { email, password }

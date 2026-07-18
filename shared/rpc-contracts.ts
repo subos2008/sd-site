@@ -128,14 +128,6 @@ export const ViewMyProfileResult = RpcResult(z.object({
   }),
 }))
 
-// ---- Geocode Edge Function (HTTP, not RPC, but parsed the same way) ----
-
-export const GeocodeCityInput  = z.object({ place_name: z.string().min(2) })
-export const GeocodeCityResult = z.union([
-  z.object({ ok: z.literal(true),  display_name: z.string(), lat: z.number(), lng: z.number() }),
-  z.object({ ok: z.literal(false), error: z.string() }),
-])
-
 // Types
 export type ProfileCardT       = z.infer<typeof ProfileCard>
 export type ViewSearchResultT  = z.infer<typeof ViewSearchResult>

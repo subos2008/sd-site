@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   setProfileRole,
   setProfileIdentity,
-  setProfileLocation,
   prepareMediaUpload,
   finalizeMediaUpload,
   addToProfilePhotos,
@@ -35,16 +34,6 @@ export function useSetIdentity() {
       looking_for: 'male' | 'female' | 'any'
     }) =>
       setProfileIdentity(args.display_name, args.date_of_birth, args.gender, args.looking_for),
-    meta: { suppressGlobalError: true },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
-  })
-}
-
-export function useSetLocation() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (args: { display_name: string; lat: number; lng: number }) =>
-      setProfileLocation(args.display_name, args.lat, args.lng),
     meta: { suppressGlobalError: true },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-profile'] }),
   })
