@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(11);
+SELECT plan(13);
 
 SELECT has_table('public', 'profiles', 'profiles table exists');
 SELECT col_is_pk('public', 'profiles', 'id', 'profiles.id is PK');
@@ -10,8 +10,10 @@ SELECT has_column('public', 'profiles', 'display_name',         'display_name co
 SELECT has_column('public', 'profiles', 'date_of_birth',        'date_of_birth column');
 SELECT has_column('public', 'profiles', 'status',               'status column');
 SELECT has_column('public', 'profiles', 'token_balance',        'token_balance column');
-SELECT has_column('public', 'profiles', 'city_lat',             'city_lat column');
-SELECT has_column('public', 'profiles', 'city_lng',             'city_lng column');
+SELECT has_column('public',   'profiles', 'place_id',          'place_id column');
+SELECT hasnt_column('public', 'profiles', 'city_display_name', 'legacy city_display_name dropped');
+SELECT hasnt_column('public', 'profiles', 'city_lat',          'legacy city_lat dropped');
+SELECT hasnt_column('public', 'profiles', 'city_lng',          'legacy city_lng dropped');
 
 -- DOB ≥ 18 CHECK: inserting a 17-year-old DOB must raise.
 SELECT throws_ok(

@@ -8,6 +8,9 @@ VALUES ('88888888-8888-8888-8888-888888888888', '00000000-0000-0000-0000-0000000
         'comp@local.test', '{}'::jsonb, '{}'::jsonb, 'authenticated', 'authenticated', now(), now(),
         '', '', '');
 
+INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
+  (900000040, 'Gateville', 'Gateville, England', 'GB', 'England', 51.5074, -0.1278, 100000, 'P', 'PPL', 3);
+
 SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claim.sub" = '88888888-8888-8888-8888-888888888888';
 
@@ -40,7 +43,7 @@ SELECT is(
 );
 
 -- 4. Add location. Benefactor needs NO photo -> ok.
-SELECT public.set_profile_location('London', 51.5074, -0.1278);
+SELECT public.set_profile_location(900000040::bigint);
 SELECT is(
   (SELECT public.complete_onboarding())::text,
   '{"ok": true}',

@@ -197,6 +197,51 @@ export type Database = {
           },
         ]
       }
+      places: {
+        Row: {
+          admin1_name: string | null
+          country_code: string
+          display_name: string
+          feature_class: string
+          feature_code: string
+          geog: unknown
+          id: number
+          lat: number
+          lng: number
+          name: string
+          population: number
+          radius_miles: number
+        }
+        Insert: {
+          admin1_name?: string | null
+          country_code: string
+          display_name: string
+          feature_class: string
+          feature_code: string
+          geog?: unknown
+          id: number
+          lat: number
+          lng: number
+          name: string
+          population?: number
+          radius_miles: number
+        }
+        Update: {
+          admin1_name?: string | null
+          country_code?: string
+          display_name?: string
+          feature_class?: string
+          feature_code?: string
+          geog?: unknown
+          id?: number
+          lat?: number
+          lng?: number
+          name?: string
+          population?: number
+          radius_miles?: number
+        }
+        Relationships: []
+      }
       profile_interests: {
         Row: {
           created_at: string
@@ -267,9 +312,6 @@ export type Database = {
         Row: {
           about: string | null
           body_type: Database["public"]["Enums"]["body_type"] | null
-          city_display_name: string | null
-          city_lat: number | null
-          city_lng: number | null
           created_at: string
           date_of_birth: string | null
           display_name: string | null
@@ -286,6 +328,7 @@ export type Database = {
           last_active_at: string | null
           looking_for: Database["public"]["Enums"]["profile_looking_for"] | null
           net_worth_band: Database["public"]["Enums"]["net_worth_band"] | null
+          place_id: number | null
           role: Database["public"]["Enums"]["profile_role"] | null
           smoking: Database["public"]["Enums"]["smoking_habit"] | null
           status: Database["public"]["Enums"]["profile_status"]
@@ -298,9 +341,6 @@ export type Database = {
         Insert: {
           about?: string | null
           body_type?: Database["public"]["Enums"]["body_type"] | null
-          city_display_name?: string | null
-          city_lat?: number | null
-          city_lng?: number | null
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
@@ -319,6 +359,7 @@ export type Database = {
             | Database["public"]["Enums"]["profile_looking_for"]
             | null
           net_worth_band?: Database["public"]["Enums"]["net_worth_band"] | null
+          place_id?: number | null
           role?: Database["public"]["Enums"]["profile_role"] | null
           smoking?: Database["public"]["Enums"]["smoking_habit"] | null
           status?: Database["public"]["Enums"]["profile_status"]
@@ -331,9 +372,6 @@ export type Database = {
         Update: {
           about?: string | null
           body_type?: Database["public"]["Enums"]["body_type"] | null
-          city_display_name?: string | null
-          city_lat?: number | null
-          city_lng?: number | null
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
@@ -352,6 +390,7 @@ export type Database = {
             | Database["public"]["Enums"]["profile_looking_for"]
             | null
           net_worth_band?: Database["public"]["Enums"]["net_worth_band"] | null
+          place_id?: number | null
           role?: Database["public"]["Enums"]["profile_role"] | null
           smoking?: Database["public"]["Enums"]["smoking_habit"] | null
           status?: Database["public"]["Enums"]["profile_status"]
@@ -361,7 +400,15 @@ export type Database = {
           wants?: string | null
           yearly_income_band?: Database["public"]["Enums"]["income_band"] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       spatial_ref_sys: {
         Row: {
@@ -763,6 +810,10 @@ export type Database = {
       }
       remove_profile_photo: { Args: { p_media_item_id: string }; Returns: Json }
       reorder_profile_photos: { Args: { p_ordered: string[] }; Returns: Json }
+      search_places: {
+        Args: { p_limit?: number; p_query: string }
+        Returns: Json
+      }
       set_profile_bio: {
         Args: { p_about: string; p_tagline: string; p_wants: string }
         Returns: Json
@@ -797,14 +848,13 @@ export type Database = {
         Args: { p_interest_ids: string[] }
         Returns: Json
       }
-      set_profile_location: {
-        Args: { p_display_name: string; p_lat: number; p_lng: number }
-        Returns: Json
-      }
+      set_profile_location: { Args: { p_place_id: number }; Returns: Json }
       set_profile_role: {
         Args: { p_role: Database["public"]["Enums"]["profile_role"] }
         Returns: Json
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: unknown

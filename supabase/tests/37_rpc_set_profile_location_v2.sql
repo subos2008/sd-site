@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan(5);
+SELECT plan(3);
 
 INSERT INTO public.places (id, name, display_name, country_code, admin1_name, lat, lng, population, feature_class, feature_code, radius_miles) VALUES
   (900000010, 'Placetown', 'Placetown, England', 'GB', 'England', 53.48, -2.24, 500000, 'P', 'PPL', 5);
@@ -23,17 +23,6 @@ SELECT is(
   (SELECT place_id FROM public.profiles WHERE id = '88888888-8888-8888-8888-888888888888'),
   900000010::bigint,
   'place_id persisted');
-
--- Transitional: legacy denormalised columns stay in sync until dropped.
-SELECT is(
-  (SELECT city_display_name FROM public.profiles WHERE id = '88888888-8888-8888-8888-888888888888'),
-  'Placetown, England',
-  'legacy display name synced from place');
-
-SELECT is(
-  (SELECT city_lat FROM public.profiles WHERE id = '88888888-8888-8888-8888-888888888888'),
-  53.48::double precision,
-  'legacy lat synced from place');
 
 SELECT is(
   (SELECT public.set_profile_location(123456789012::bigint))::text,
