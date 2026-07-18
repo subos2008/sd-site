@@ -15,3 +15,6 @@ INSERT INTO public.app_config(key, value) VALUES ('onboarding', $cfg_onboarding$
 
 INSERT INTO public.app_config(key, value) VALUES ('payments', $cfg_payments${"provider":"faux","packages":[{"id":"starter","tokens":50,"priceCents":4999,"currency":"GBP"},{"id":"plus","tokens":150,"priceCents":12999,"currency":"GBP"},{"id":"premium","tokens":500,"priceCents":39999,"currency":"GBP"}]}$cfg_payments$::jsonb)
   ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
+
+INSERT INTO public.app_config(key, value) VALUES ('location', $cfg_location${"enabledCountries":["GB"]}$cfg_location$::jsonb)
+  ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
