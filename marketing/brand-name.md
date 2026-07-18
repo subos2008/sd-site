@@ -216,6 +216,7 @@ discreet life, and objects that hold secrets.
 | **Secret Keeper** | parked/idle | The safety promise personified — "we keep your secret." Does what the incumbent's "secret" does, but as a service promise. |
 | Secret Garden | in use (hotel) | Hidden place of beauty; famous novel; feminine and romantic. Crowded namespace (spas, florists). |
 | Secret Hour | **for sale** (HugeDomains) | The hour that isn't in your calendar; moody, cinematic. |
+| **Secret World** | secretworld.com and thesecretworld.com **both parked/idle** | Ryan's seed (2026-07-18). Axis (b) at maximum scale: not a secret feature but a whole world behind the door — pairs perfectly with the door identity ("step into the secret world"). Slight fantasy-genre coding; "The Secret World" was a Funcom MMO (games trademark class, now dormant-ish) — needs a look. |
 | Secret Life | parked/idle | Double-life coded — drifts affair-ward ("The Secret Life of…"). |
 | Secret Door | in use | Speakeasy energy; domain live. |
 | Secret Society | in use | Clubby but conspiratorial. |
@@ -265,6 +266,54 @@ discreet life, and objects that hold secrets.
 | Quiet Benefits | **available** | Hand-registrable; essentially a re-skin of the incumbent formula. Does exactly what it says. |
 | Mutual Benefits | registered, unchecked | The most literal statement of the two-sided deal; a bit insurance-brochure. |
 | Hidden / Private / Full Benefits | registered, unchecked | Weaker variants; "Full Benefits" is the cheekiest of the three. |
+
+### The perks slot (words that can do what "benefits" does)
+
+Ryan's ask (2026-07-18): if perks ≈ benefits, what other words fill that
+slot — the deniable mutual-gain word? Grouped by register; any of these
+can also pair with a discretion word.
+
+**The idiom kings**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Finer Things** | finerthings.com and thefinerthings.com **both parked/idle** | "Appreciates the finer things in life" is *the* euphemism for this entire lifestyle — fully deniable, warm, aspirational, and both domains look dormant. The Office's "Finer Things Club" is an endearing echo. Best find in this section. |
+| **Mutual Interest** | parked/idle | Romantic interest + financial interest in one word, "mutual" makes it two-sided. The cleverest double meaning since Cashmere; a touch dry. |
+| **Soft Life** | softlife.com and thesoftlife.com **both parked/idle** | The current-era supply-side aspiration term — "I want a soft life" is exactly the promise, in the target demographic's own words. Trend-risk: TikTok vocabulary ages fast. |
+| Easy Street | parked/idle | "On easy street" — comfort achieved; money-for-nothing tilt. |
+
+**British comfort words**
+
+| Name | .com | Opinion |
+|---|---|---|
+| Trimmings | gated/unclear | "With all the trimmings" — roast-dinner warmth, very UK, fully deniable, gently funny. |
+| Cushy | parked/idle | "A cushy number" — comfortable and easy, cheeky British register. |
+| Comforts | parked/idle | "All the comforts" — soft, plain, a little flat alone. |
+| Niceties | parked/idle | Pleasant extras + social graces; refined, slightly prim. |
+| Little Luxuries | parked/idle | Does what it says; long, candle-shop energy. |
+| Nice Things | in use | "This is why we can't have nice things" — cute-ironic; domain live. |
+
+**Deal-sweetener words**
+
+| Name | .com | Opinion |
+|---|---|---|
+| Treats | parked/idle | Warm and giftable; "treat yourself/her" copy writes itself; mild sweet-adjacency. |
+| Boon / Boons | gated / parked | "Grant me a boon" — courtly-love vocabulary, knights and ladies; archaic in a charming way. |
+| Privileges | parked/idle | Membership + gain; UK class connotation cuts both ways. |
+| Sweeteners | parked/idle | "A sweetener" closes a deal — sharp double meaning, but it *is* sugar-adjacent; flag. |
+| Spoils | 502/unclear | "The spoils" — idiom, but "spoil" is category lexicon; flag. |
+| Gravy Train | parked/idle | Comic, memorable, and completely money-for-nothing coded; flag. |
+| Icing | in use (Claire's) | "Icing on the cake" — also literally sugar; domain is a teen accessories brand. |
+| Upside | in use (cashback app) | Modern, optimistic gain-word; domain runs a real business. |
+
+**Provision words**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Keep** | parked/idle | Triple meaning: "earning your keep" (provision), the castle keep (the safe stronghold — the security promise), and the kept family. One spellable word, dormant .com. Underrated. |
+| Provisions | gated/unclear | Supplies + providing-for; general-store aesthetic. |
+| Pin Money | parked/idle | The historical term for a wife's personal allowance — charming, obscure, money-forward. |
+| (Maintenance) | — | The actual UK legal word for support payments — divorce-coded, unusable, noted for completeness. |
 
 ### The understanding (agreement/complicity theme)
 
@@ -384,6 +433,13 @@ rich: books, lists, diaries, what's written down and who's in it.
 ## Ryan's shortlist (running)
 
 - **Tacit** — kept (2026-07-17).
+- **Between Us** — liked (2026-07-18).
+- **Cherished** — "has a nice ring" (2026-07-18).
+- **Confidante** — "cool" (2026-07-18).
+- **Black Book** — liked, with his caveat: confusing for younger or
+  non-native-English audiences who don't know the idiom (2026-07-18).
+- **Book Club** — liked (2026-07-18).
+- **Wish List** — liked (2026-07-18).
 
 Claude's top picks, for what they're worth: Kept Company, Best Kept,
 Secret Admirer, With Benefits, Sub Rosa (buyable today), Cashmere — from
