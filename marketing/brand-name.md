@@ -386,7 +386,7 @@ us-words.
 
 | Name | .com | Opinion |
 |---|---|---|
-| **Bond** | parked/idle | The find: an emotional bond, a financial bond (it *pays interest*), and a James Bond glint of suave wealth — three registers in one syllable. Bond Street adds London luxury for free. Flag: 4-letter dictionary .com will be expensive even dormant. |
+| ~~Bond~~ | parked/idle | Struck by Ryan (2026-07-18): "too heavy for dating." (Was: emotional bond + financial bond + James Bond in one syllable.) |
 | **Private Introductions** | parked/idle | The exact phrase Mayfair matchmakers use — "a private introductions service". Positioning-discipline perfect: sounds like an agency, not an app. Long, but the classiest construction in the doc. |
 | **Mutual Friend** | premium lander | "We met through a mutual friend" — the cover story for how every couple met, and the site *is* the mutual friend. Fuses connection with discretion; the door metaphor with a face. |
 | **Go-Between** | parked/idle | The intermediary personified — and L.P. Hartley's *The Go-Between* is literally about carrying messages between secret lovers. Literary, British; mild procurer-adjacency flag, and the novel ends badly. |
@@ -396,7 +396,7 @@ us-words.
 | Crossed Paths / Paths Crossed | both parked/idle | Romantic fate — though Happn built its whole mechanic on "crossed paths"; check. |
 | Only Us | parked lander | "It's only us" + an unavoidable OnlyFans echo — permission-structure association as feature or bug. |
 | We Met | parked/idle | "How we met" — the story every couple performs; sweet, app-y. |
-| Click | parked/idle | "We just clicked" — instant-connection idiom; premium dictionary domain. |
+| **Click** | parked/idle | Ryan: "interesting" (2026-07-18). Three angles: "we just clicked" (instant chemistry); the *clique* homophone — spoken aloud it also says "exclusive circle"; and the click of a lock opening — the sound of the secret door, tying the door identity together. Variants: theclick.com, weclicked.com, justclicked.com all parked/idle; clickwith.com and itclicked.com for sale (HugeDomains). UK flags: BBC Click (tech show), "click and collect" retail phrase. |
 | Entwined | parked-ish | Romantic intertwining; a little romance-novel. |
 | Together | in use — an actual dating site | Dead on collision. |
 | The right circles (Circles, Smart Set, Society, High Society, Milieu, Coterie) | all in use/collided | The social-access register — highsociety.com is age-gated adult, Coterie is a diaper brand, Smart Set a print shop. Keep "moving in the right circles" as copy, not name. |
@@ -509,8 +509,13 @@ rich: books, lists, diaries, what's written down and who's in it.
   non-native-English audiences who don't know the idiom (2026-07-18).
 - **Book Club** — liked (2026-07-18).
 - **Wish List** — liked (2026-07-18).
-- **Finer Things** — "decent" (2026-07-18). Both finerthings.com and
-  thefinerthings.com dormant.
+- **Finer Things** — "decent", upgraded to "cool" (2026-07-18). Both
+  finerthings.com and thefinerthings.com dormant.
+- **Butterflies** — "cool" (2026-07-18). butterflies.com dormant.
+- **Click** — "interesting" (2026-07-18); see the connection section for
+  the three-angle read (clicked / clique / the lock).
+
+Struck: ~~Bond~~ ("too heavy for dating").
 
 ## Deep dives
 
