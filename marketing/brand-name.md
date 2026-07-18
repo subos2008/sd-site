@@ -315,6 +315,27 @@ can also pair with a discretion word.
 | Pin Money | parked/idle | The historical term for a wife's personal allowance — charming, obscure, money-forward. |
 | (Maintenance) | — | The actual UK legal word for support payments — divorce-coded, unusable, noted for completeness. |
 
+**Wave two (2026-07-18): gift-and-courtship words, and money hiding in warm words**
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Gifted** | parked/idle | Double meaning both sides: she is gifted (talented, special) *and* gifted (given gifts). One word, warm, spellable, dormant .com. Strong. |
+| **Consideration** / Considerations | 502 / parked | The contract-law word for the value exchanged — "for good consideration" — wearing the everyday coat of "he's so considerate". The sneakiest legal double on the list. |
+| **Attentions** | 502/unclear | Austen-era courtship: "paying his attentions to her" — and you *pay* attentions. Obscure-charming, literary. |
+| **Darling** | parked/idle | The endearment — and *Darling* (1965) is literally a film about a kept woman. Warm, British, speakable ("hello, Darling"). |
+| Favourite | **for sale** | The royal favourite — the court's kept companion (*The Favourite* made it famous). UK/US spelling split taxes branded search. |
+| Appreciation | .org redirect | Gratitude + *asset appreciation* — value that grows. Corporate-award-plaque risk. |
+| Dividends | parked/idle | "It pays dividends" — finance-coded but idiomatic. |
+| Cushion | in use (seat cushions) | "A financial cushion" + literal comfort; domain runs a real business. |
+| Trappings | parked/idle | "The trappings of wealth" — but the word contains "trap"; flag. |
+| Wherewithal | parked/idle | "The wherewithal" = the means to do it. Fun, wordy, long. |
+| Dearest | parked/idle | Letter-opening intimacy ("My dearest…"); "dear" also means expensive — a quiet British money pun. |
+| Cosseted | parked/idle | Pampered, British, posh-obscure. |
+| Gestures / Grand Gesture | for sale / in use (chocolatier) | "Grand gestures" — romance expressed through generosity; the singular domain is a chocolate shop. |
+| Sweetheart | in use (Dart Container) | "A sweetheart deal" = preferential terms + the endearment — but it's sugar-adjacent and the deal idiom is corruption-coded. |
+| Safety Net | parked/idle | The girls' brief said out loud; welfare/circus register. |
+| (Sponsor) | — | Noted only: "sponsor" is literal sugar-slang in several markets — category keyword abroad, unusable. |
+
 ### The understanding (agreement/complicity theme)
 
 | Name | .com | Opinion |
