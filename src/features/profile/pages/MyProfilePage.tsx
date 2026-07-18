@@ -5,6 +5,7 @@ import { CompleteProfileNudge } from '../components/CompleteProfileNudge'
 import { DetailsSection } from '../components/DetailsSection'
 import { InterestsSection } from '../components/InterestsSection'
 import { PhotoGallery } from '../components/PhotoGallery'
+import { PlaceSection } from '../components/PlaceSection'
 
 export function MyProfilePage() {
   const { t } = useTranslation('profile')
@@ -33,6 +34,7 @@ export function MyProfilePage() {
         hasDetails={hasDetails}
         hasInterests={hasInterests}
       />
+      <PlaceSection city={p.city_display_name} />
       <dl className="text-sm grid grid-cols-2 gap-2">
         <dt className="text-slate-500">{t('yourStatus')}</dt>
         <dd>{p.status}</dd>
