@@ -485,6 +485,8 @@ rich: books, lists, diaries, what's written down and who's in it.
   non-native-English audiences who don't know the idiom (2026-07-18).
 - **Book Club** — liked (2026-07-18).
 - **Wish List** — liked (2026-07-18).
+- **Finer Things** — "decent" (2026-07-18). Both finerthings.com and
+  thefinerthings.com dormant.
 
 ## Deep dives
 
