@@ -109,5 +109,7 @@ ALTER TABLE public.profiles
 --    up directly with the service-role key (to resolve place_id by city name), which
 --    fails with "permission denied for table places" without this grant — service_role
 --    has BYPASSRLS but that does not substitute for the table-level GRANT Postgres
---    still requires.
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.places TO service_role;
+--    still requires. SELECT-only: the only service_role consumer is a read-only lookup,
+--    and 20260719000000_places.sql documents places as writable by nobody at runtime
+--    (populated only via migration seed data).
+GRANT SELECT ON public.places TO service_role;
