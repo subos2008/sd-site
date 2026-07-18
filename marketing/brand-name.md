@@ -336,6 +336,30 @@ can also pair with a discretion word.
 | Safety Net | parked/idle | The girls' brief said out loud; welfare/circus register. |
 | (Sponsor) | — | Noted only: "sponsor" is literal sugar-slang in several markets — category keyword abroad, unusable. |
 
+**Wave three (2026-07-18): the money lens removed — benefit as joy,
+warmth, safety.** Trade-off to be honest about: draining the money also
+drains the insider wink. These are pure-dating names — maximally safe
+under positioning discipline ("the product is a dating site"), minimally
+coded. That may be exactly right, or too tame.
+
+| Name | .com | Opinion |
+|---|---|---|
+| **Butterflies** | parked/idle | "Gives me butterflies" — the benefit of dating itself, in the body. Warm, universal, zero money, dormant .com. Best of this wave. |
+| **Swoon** | parked/idle | The reaction she deserves and he wants to cause. Short, flirty, British-friendly; UK sofa brand Swoon Editions exists. |
+| **Best Part** | parked/idle | "The best part of my week" — the product's promise as its name. Plain words, ownable-ish. |
+| **Good Graces** | **for sale** (premium lander) | "To be in her good graces" — favour and access earned, not bought. Courtly, literate, quietly two-sided. |
+| Silver Lining | parked/idle | The good hidden inside the situation; optimistic, gentle. |
+| Blush | parked/idle | Flirty, feminine, one syllable; beauty-brand crowded. |
+| Frisson | parked/idle | The shiver of excitement — posh, French, spelling tax. |
+| The Good Part | **for sale** (HugeDomains) | "Skip to the good part" — current, musical, meme-adjacent. |
+| Better Days | parked/idle | Gentle uplift; slightly melancholy undertone (implies worse days). |
+| Goodness | parked/idle | Wholesome + "oh my goodness" flirt; a bit grocery-brand. |
+| Kismet | **for sale** | Fate/meant-to-be — dating-coded destiny; spelling risk mild. |
+| Escapes | parked/idle | The benefit as a little escape from routine; whisper of escaping *someone* — mild affair-flag. |
+| Serendipity | in use | The lucky find (and the NYC romance film) — long, misspellable. |
+| Whirlwind | gated | "A whirlwind romance" — excitement itself; unclear holder. |
+| Sunshine / Warmth / Bloom / Sanctuary / Cocoon / Safe Haven / Highlight / Delight / Simple Pleasures / Charms | in use (various) | The rest of the register — all live businesses (fireplaces, leave-management software, Tootsie candy…); words noted for copy use even where domains are gone. |
+
 ### The understanding (agreement/complicity theme)
 
 | Name | .com | Opinion |
